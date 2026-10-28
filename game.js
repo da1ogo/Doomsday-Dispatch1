@@ -26,7 +26,10 @@ class BunkerGame {
     this.radioFineGivenToday = false;
     this.debtorArrested = false;
     this.seenDispatchIds = [];
-    this.conduits = { heat: 'mine', power: 'water', hydro: 'hydro' };
+    this.conduits = { heat: 'auto', energy: 'auto', water: 'auto' };
+    this.resolvedSectorEmergencies = {};
+    this.achievementQueue = [];
+    this.isShowingToast = false;
     
     // Player Economy & Profile (Russified: Алексей Волков, ДИСП-74Б)
     this.playerProfile = {
@@ -317,6 +320,7 @@ class BunkerGame {
     this.bindAppMarket();
     this.bindGazette();
     this.bindTorRadio();
+    this.bindTelemetryAnalyzer();
     this.bindCalculator();
     this.bindWordPad();
     this.bindContextMenu();
@@ -1009,6 +1013,7 @@ class BunkerGame {
       "icon-market": "win-market",
       "icon-gazette": "win-gazette",
       "icon-calc": "win-calc",
+      "icon-telemetry": "win-telemetry",
       "icon-wordpad": "win-wordpad",
       "icon-tutorial": "win-tutorial",
       "icon-tor": "win-tor"
@@ -3462,89 +3467,80 @@ class BunkerGame {
   }
 
   // =========================================================================
-  // MAP CONDUITS & TOGGLE SWITCHES
+  // MAP CONDUITS & 6-SECTOR RESOURCE ROUTING
   // =========================================================================
   bindMapConduits() {
-    const btnHeat = document.getElementById("btn-conduit-heat");
-    const btnPower = document.getElementById("btn-conduit-power");
-    const btnHydro = document.getElementById("btn-conduit-hydro");
+    const selHeat = document.getElementById("select-conduit-heat");
+    const selEnergy = document.getElementById("select-conduit-energy");
+    const selWater = document.getElementById("select-conduit-water");
 
-    if (btnHeat) {
-      btnHeat.addEventListener("click", () => {
-        if (!this.conduits) this.conduits = { heat: "mine", power: "water", hydro: "hydro" };
-        this.conduits.heat = this.conduits.heat === "mine" ? "block" : "mine";
-        window.soundEngine.playClick();
-        
-        const isMine = this.conduits.heat === "mine";
-        btnHeat.textContent = isMine ? "В ШАХТУ [РЕЖИМ А]" : "В ЖИЛОЙ БЛОК [РЕЖИМ Б]";
-        btnHeat.classList.toggle("active", isMine);
+    const ensureValidConduits = () => {
+      if (!this.conduits || typeof this.conduits !== "object") {
+        this.conduits = { heat: 'auto', energy: 'auto', water: 'auto' };
+      }
+      // Migrate old format if encountered
+      if (this.conduits.heat === "mine") this.conduits.heat = "sec_mine";
+      if (this.conduits.heat === "block") this.conduits.heat = "sec_block";
+      if (this.conduits.power === "water" || this.conduits.energy === "water") this.conduits.energy = "sec_water";
+      if (this.conduits.power === "radar" || this.conduits.energy === "radar") this.conduits.energy = "sec_radar";
+      if (this.conduits.hydro === "hydro" || this.conduits.water === "hydro") this.conduits.water = "sec_hydro";
+      if (this.conduits.hydro === "taps" || this.conduits.water === "taps") this.conduits.water = "sec_block";
+      if (!this.conduits.energy && this.conduits.power) this.conduits.energy = this.conduits.power;
+      if (!this.conduits.water && this.conduits.hydro) this.conduits.water = this.conduits.hydro;
+    };
 
-        const secMine = this.getSector("sec_mine");
-        const secBlock = this.getSector("sec_block");
-        if (isMine) {
-          if (secMine) secMine.heat = Math.min(100, (secMine.heat || 70) + 10);
-          if (secBlock) secBlock.heat = Math.max(10, (secBlock.heat || 70) - 8);
-          this.logEvent("[ТЕПЛОТРАССА]: Поток пара направлен на обогрев горизонта Шахты.");
-        } else {
-          if (secBlock) secBlock.heat = Math.min(100, (secBlock.heat || 70) + 12);
-          if (secMine) secMine.heat = Math.max(10, (secMine.heat || 70) - 8);
-          this.logEvent("[ТЕПЛОТРАССА]: Поток пара перенаправлен в радиаторы Жилого Блока №4.");
-        }
+    this.syncMapConduitSelects = () => {
+      ensureValidConduits();
+      if (selHeat && this.conduits.heat) selHeat.value = this.conduits.heat;
+      if (selEnergy && this.conduits.energy) selEnergy.value = this.conduits.energy;
+      if (selWater && this.conduits.water) selWater.value = this.conduits.water;
+    };
+
+    if (selHeat) {
+      selHeat.addEventListener("change", (e) => {
+        ensureValidConduits();
+        this.conduits.heat = e.target.value;
+        window.soundEngine?.playClick();
+        const sec = this.getSector(this.conduits.heat);
+        const name = sec ? sec.name : this.conduits.heat;
+        this.logEvent(`[ТЕПЛОТРАССА]: Главная тепломагистраль переключена на сектор «${name}».`);
         this.renderTacticalMap();
         if (this.selectedSectorId) this.selectSector(this.selectedSectorId);
+        this.saveGame();
       });
     }
 
-    if (btnPower) {
-      btnPower.addEventListener("click", () => {
-        if (!this.conduits) this.conduits = { heat: "mine", power: "water", hydro: "hydro" };
-        this.conduits.power = this.conduits.power === "water" ? "radar" : "water";
-        window.soundEngine.playClick();
-
-        const isWater = this.conduits.power === "water";
-        btnPower.textContent = isWater ? "ВОДООЧИСТКА [РЕЖИМ А]" : "РАДАР ПЕРИМЕТРА [РЕЖИМ Б]";
-        btnPower.classList.toggle("active", isWater);
-
-        const secWater = this.getSector("sec_water");
-        const secRadar = this.getSector("sec_radar");
-        if (isWater) {
-          if (secWater) secWater.water = Math.min(100, (secWater.water || 70) + 10);
-          this.logEvent("[ЭНЕРГОСЕТЬ]: Мощность реактора подана на глубинные насосы Водоочистки.");
-        } else {
-          if (secRadar) secRadar.riotRisk = Math.max(0, (secRadar.riotRisk || 15) - 15);
-          this.logEvent("[ЭНЕРГОСЕТЬ]: Мощность переведена на внешние радары и турели Периметра.");
-        }
+    if (selEnergy) {
+      selEnergy.addEventListener("change", (e) => {
+        ensureValidConduits();
+        this.conduits.energy = e.target.value;
+        this.conduits.power = e.target.value;
+        window.soundEngine?.playClick();
+        const sec = this.getSector(this.conduits.energy);
+        const name = sec ? sec.name : this.conduits.energy;
+        this.logEvent(`[ЭНЕРГОСЕТЬ]: Приоритет мощности турбогенератора подан в сектор «${name}».`);
         this.renderTacticalMap();
         if (this.selectedSectorId) this.selectSector(this.selectedSectorId);
+        this.saveGame();
       });
     }
 
-    if (btnHydro) {
-      btnHydro.addEventListener("click", () => {
-        if (!this.conduits) this.conduits = { heat: "mine", power: "water", hydro: "hydro" };
-        this.conduits.hydro = this.conduits.hydro === "hydro" ? "taps" : "hydro";
-        window.soundEngine.playClick();
-
-        const isHydro = this.conduits.hydro === "hydro";
-        btnHydro.textContent = isHydro ? "ГИДРОПОНИКА [РЕЖИМ А]" : "ЖИЛЫЕ КРАНЫ [РЕЖИМ Б]";
-        btnHydro.classList.toggle("active", isHydro);
-
-        const secHydro = this.getSector("sec_hydro");
-        const secBlock = this.getSector("sec_block");
-        if (isHydro) {
-          if (secHydro) secHydro.food = Math.min(100, (secHydro.food || 70) + 12);
-          this.logEvent("[ГИДРОМАГИСТРАЛЬ]: Питательный раствор подается на стеллажи Теплиц.");
-        } else {
-          if (secBlock) {
-            secBlock.water = Math.min(100, (secBlock.water || 70) + 15);
-            secBlock.riotRisk = Math.max(0, (secBlock.riotRisk || 15) - 10);
-          }
-          this.logEvent("[ГИДРОМАГИСТРАЛЬ]: Чистая вода направлена в краны каморок Жилого Блока.");
-        }
+    if (selWater) {
+      selWater.addEventListener("change", (e) => {
+        ensureValidConduits();
+        this.conduits.water = e.target.value;
+        this.conduits.hydro = e.target.value;
+        window.soundEngine?.playClick();
+        const sec = this.getSector(this.conduits.water);
+        const name = sec ? sec.name : this.conduits.water;
+        this.logEvent(`[ВОДОПРОВОД]: Напорная линия артезианских насосов направлена в сектор «${name}».`);
         this.renderTacticalMap();
         if (this.selectedSectorId) this.selectSector(this.selectedSectorId);
+        this.saveGame();
       });
     }
+
+    this.syncMapConduitSelects();
   }
 
   // =========================================================================
@@ -3888,6 +3884,7 @@ class BunkerGame {
   }
 
   renderTacticalMap() {
+    this.syncMapConduitSelects?.();
     const nodesGroup = document.getElementById("svg-nodes-group");
     if (!nodesGroup) return;
 
@@ -4508,6 +4505,18 @@ class BunkerGame {
       disp.onApprove(this);
     }
 
+    // Mark emergency in this sector resolved live!
+    if (!this.resolvedSectorEmergencies) this.resolvedSectorEmergencies = {};
+    if (disp.sectorId) {
+      this.resolvedSectorEmergencies[disp.sectorId] = true;
+    }
+
+    // Instantly refresh telemetry window if open on screen!
+    const winTel = document.getElementById("win-telemetry");
+    if (winTel && winTel.style.display !== "none") {
+      this.updateTelemetryDisplay(this.selectedTelemetrySector || disp.sectorId);
+    }
+
     this.updateResourceUI();
 
     this.showDispatchStamp("approved", "ОДОБРЕНО", () => {
@@ -4682,13 +4691,43 @@ class BunkerGame {
         return;
       }
 
-      // Sector Natural Consumption & Simulation
+      // Sector Natural Consumption & Simulation with Conduits Priority & Auto Mode
       let nightCasualties = 0;
+      const heatTarget = this.conduits?.heat || "auto";
+      const energyTarget = this.conduits?.energy || this.conduits?.power || "auto";
+      const waterTarget = this.conduits?.water || this.conduits?.hydro || "auto";
+
       this.sectors.forEach(sec => {
         if (sec.status !== "dead") {
-          sec.heat = Math.max(0, (sec.heat ?? 70) - 10);
+          // Heat supply: Auto distributes evenly (-5), priority buffs (+10), others starved (-10)
+          if (heatTarget === "auto") {
+            sec.heat = Math.max(0, (sec.heat ?? 70) - 5);
+          } else if (sec.id === heatTarget) {
+            sec.heat = Math.min(100, (sec.heat ?? 70) + 10);
+          } else {
+            sec.heat = Math.max(0, (sec.heat ?? 70) - 10);
+          }
+
+          // Food consumption (all sectors consume rations)
           sec.food = Math.max(0, (sec.food ?? 70) - 15);
-          sec.water = Math.max(0, (sec.water ?? 70) - 15);
+
+          // Water supply: Auto distributes evenly (-10), priority buffs (+10), others starved (-15)
+          if (waterTarget === "auto") {
+            sec.water = Math.max(0, (sec.water ?? 70) - 10);
+          } else if (sec.id === waterTarget) {
+            sec.water = Math.min(100, (sec.water ?? 70) + 10);
+          } else {
+            sec.water = Math.max(0, (sec.water ?? 70) - 15);
+          }
+
+          // Energy / Stability: Auto is calm, priority calms (-15), others build tension (+5)
+          if (energyTarget === "auto") {
+            // Balanced, baseline status
+          } else if (sec.id === energyTarget) {
+            sec.riotRisk = Math.max(0, (sec.riotRisk || 10) - 15);
+          } else {
+            sec.riotRisk = Math.min(100, (sec.riotRisk || 10) + 5);
+          }
 
           // Check crisis conditions
           let sectorDead = 0;
@@ -4954,10 +4993,18 @@ class BunkerGame {
       this.openWindow("win-inbox");
       document.getElementById("win-inbox")?.classList.add("tutorial-highlight");
     } else if (this.tutorialStep === 2) {
-      if (stepEl) stepEl.textContent = "Шаг 2 из 7: Анализ телеметрии";
+      if (stepEl) stepEl.textContent = "Шаг 2 из 7: Анализ телеметрии и ГОСТ";
       if (textEl) textEl.innerHTML = `
-        <strong>Никогда не верьте тексту на слово!</strong><br>
-        Внизу бланка депеши отображаются объективные датчики секторов (температура, пары спирта, вибрация, шум). Если начальник заявляет о морозе, а на датчике +20°C — это наглая ложь! Выдача ресурсов лжецам карается штрафами.
+        <strong>Никогда не верьте тексту депеши на слово!</strong><br>
+        Откройте <strong>«Анализатор телеметрии»</strong> (кнопка в депеше или ярлык на рабочем столе) и сверьте датчики с таблицей в <strong>«Обучение.hlp»</strong>. Если начальник врет об аварии, а показатели в норме — жмите «Отказать»! Для терминала также доступен апгрейд цветовой индикации в <em>БункерМаркете</em>.<br><br>
+        <div style="background: rgba(0,0,0,0.4); border-left: 3px solid #ffcc00; padding: 6px 8px; font-size: 11px; line-height: 1.45;">
+          <strong style="color: #ffea00;">ПРИМЕР РАССЛЕДОВАНИЯ:</strong><br>
+          1. Пришла депеша (например: авария в Шахте, мороз).<br>
+          2. Жмите <code>[ ПУЛЬТ ДАТЧИКОВ ]</code> в бланке депеши.<br>
+          3. Посмотрите показатель прибора (температура забоя).<br>
+          4. Сверьте со Справочником ГОСТ в «Обучение.hlp» (норма: +15°C..+24°C).<br>
+          5. <strong>Вердикт:</strong> если датчик в норме — отказ за обман; если реальный мороз — выдавайте ресурс.
+        </div>
       `;
       this.openWindow("win-inbox");
       document.getElementById("win-inbox")?.classList.add("tutorial-highlight");
@@ -4978,12 +5025,17 @@ class BunkerGame {
       this.openWindow("win-map");
       document.getElementById("win-map")?.classList.add("tutorial-highlight");
     } else if (this.tutorialStep === 5) {
-      if (stepEl) stepEl.textContent = "Шаг 5 из 7: Магистрали и тумблеры";
+      if (stepEl) stepEl.textContent = "Шаг 5 из 7: Инфраструктурные магистрали";
       if (textEl) textEl.innerHTML = `
-        <strong>Тумблеры перенаправляют потоки без расхода склада!</strong><br>
-        • Теплотрасса: перенаправление пара (Шахта ⇄ Жилой Блок).<br>
-        • Энергосеть: переключение мощности (Водоочистка ⇄ Радар).<br>
-        • Гидросеть: подача воды (Теплицы ⇄ Жилые краны).
+        <strong>Магистрали перенаправляют потоки без траты склада!</strong><br>
+        Через выпадающие списки направляйте <strong>Тепло (🔥)</strong>, <strong>Энергию (⚡)</strong> и <strong>Водопровод (💧)</strong> в любой из 6 секторов.<br>
+        • Подключенный сектор получает мощную подпитку.<br>
+        • Остальные 5 секторов ночью не получают центрального снабжения и постепенно деградируют. Балансируйте потоки!<br><br>
+        <div style="background: rgba(0,0,0,0.4); border-left: 3px solid #00d4ff; padding: 6px 8px; font-size: 11px; line-height: 1.45;">
+          <strong style="color: #66ccff;">РЕЖИМЫ РАБОТЫ:</strong><br>
+          • <strong>[ АВТО / РАВНОМЕРНО ]</strong>: автоматика делит тепло, свет и воду поровну на весь бункер (стабильный режим без микроконтроля).<br>
+          • <strong>Выбор сектора</strong>: экстренная мера, если конкретный отсек на грани замерзания или бунта — спасает сектор без трат склада.
+        </div>
       `;
       this.openWindow("win-map");
       document.getElementById("win-map")?.classList.add("tutorial-highlight");
@@ -5146,6 +5198,22 @@ class BunkerGame {
   }
 
   showAchievementToast(ach) {
+    if (!this.achievementQueue) this.achievementQueue = [];
+    this.achievementQueue.push(ach);
+    if (!this.isShowingToast) {
+      this.processAchievementQueue();
+    }
+  }
+
+  processAchievementQueue() {
+    if (!this.achievementQueue || this.achievementQueue.length === 0) {
+      this.isShowingToast = false;
+      return;
+    }
+
+    this.isShowingToast = true;
+    const ach = this.achievementQueue.shift();
+
     const toast = document.getElementById("achievement-toast");
     const toastTitle = document.getElementById("toast-title");
     const toastDesc = document.getElementById("toast-desc");
@@ -5158,10 +5226,13 @@ class BunkerGame {
     }
 
     if (window.soundEngine) window.soundEngine.playAchievementChime();
-    toast.classList.add("show");
+    if (toast) toast.classList.add("show");
 
     setTimeout(() => {
-      toast.classList.remove("show");
+      if (toast) toast.classList.remove("show");
+      setTimeout(() => {
+        this.processAchievementQueue();
+      }, 400);
     }, 4500);
   }
 
@@ -5197,7 +5268,7 @@ class BunkerGame {
       }
 
       card.innerHTML = `
-        <div class="ach-icon-box" style="padding: 2px; overflow: hidden; background: #e0e0e0; border: 1px solid #999;">
+        <div class="ach-icon-box" style="padding: 2px; overflow: hidden; ">
           ${iconHtml}
         </div>
         <div class="ach-details">
@@ -5208,6 +5279,315 @@ class BunkerGame {
 
       list.appendChild(card);
     });
+  }
+
+  // =========================================================================
+  // SECTOR TELEMETRY & SENSOR ANALYZER SYSTEM
+  // =========================================================================
+  bindTelemetryAnalyzer() {
+    const iconTel = document.getElementById("icon-telemetry");
+    if (iconTel) {
+      iconTel.addEventListener("click", () => {
+        this.openTelemetryWindow();
+      });
+    }
+
+    const btnFromInbox = document.getElementById("btn-open-analyzer-from-inbox");
+    if (btnFromInbox) {
+      btnFromInbox.addEventListener("click", () => {
+        const disp = this.dispatches[this.currentDispatchIdx];
+        const secId = disp?.sectorId || "sec_mine";
+        this.openTelemetryWindow(secId);
+      });
+    }
+
+    // Кнопки переключения секторов
+    document.querySelectorAll("#telemetry-sector-tabs .tel-tab").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#telemetry-sector-tabs .tel-tab").forEach(b => {
+          b.classList.remove("active");
+          b.style.fontWeight = "normal";
+        });
+        btn.classList.add("active");
+        btn.style.fontWeight = "bold";
+
+        const secId = btn.getAttribute("data-sec");
+        this.selectedTelemetrySector = secId;
+        window.soundEngine.playClick();
+        this.updateTelemetryDisplay(secId);
+      });
+    });
+  }
+
+  openTelemetryWindow(targetSectorId = null) {
+    this.openWindow("win-telemetry");
+    const secId = targetSectorId || this.selectedTelemetrySector || "sec_mine";
+    this.selectedTelemetrySector = secId;
+
+    // Подсветить нужную вкладку
+    document.querySelectorAll("#telemetry-sector-tabs .tel-tab").forEach(btn => {
+      const match = (btn.getAttribute("data-sec") === secId);
+      btn.classList.toggle("active", match);
+      btn.style.fontWeight = match ? "bold" : "normal";
+    });
+
+    this.updateTelemetryDisplay(secId);
+  }
+
+  updateTelemetryDisplay(secId) {
+    const sec = this.getSector(secId);
+    const secNameEl = document.getElementById("tel-sec-name");
+    if (secNameEl && sec) secNameEl.textContent = sec.name;
+
+    const currentDisp = this.dispatches[this.currentDispatchIdx];
+    const isResolved = !!(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[secId]);
+    const isCurrentSectorDisp = !isResolved && (currentDisp && currentDisp.sectorId === secId);
+    const facts = isCurrentSectorDisp ? (currentDisp.telemetryFacts || {}) : {};
+
+    const isAnalyzerInstalled = !!this.flags.telemetryAnalyzerInstalled;
+
+    const COLOR_OK = "#33ff66";
+    const COLOR_WARN = "#ffcc00";
+    const COLOR_CRIT = "#ff3333";
+
+    const applyColor = (el, color) => {
+      if (!el) return;
+      el.style.color = isAnalyzerInstalled ? color : "#33ff66";
+    };
+
+    // 1. Температура забоя и давление пара
+    const tempEl = document.getElementById("tel-val-temp");
+    const pressEl = document.getElementById("tel-val-pressure");
+    if (tempEl) {
+      let cleanTemp = "";
+      if (facts.sensorTemp) {
+        cleanTemp = facts.sensorTemp.split("(")[0].trim();
+        tempEl.textContent = cleanTemp || facts.sensorTemp;
+      } else {
+        cleanTemp = sec ? `+${Math.round(sec.heat / 3.5 + 5)}°C` : "+19°C";
+        tempEl.textContent = cleanTemp;
+      }
+
+      // GOST temperature limits per sector
+      const tempNum = parseFloat(cleanTemp.replace(/[^0-9.-]/g, "")) || 20;
+      let minT = 15, maxT = 24;
+      if (secId === "sec_water") { minT = 10; maxT = 16; }
+      else if (secId === "sec_hydro") { minT = 16; maxT = 25; }
+      else if (secId === "sec_med") { minT = 18; maxT = 22; }
+      else if (secId === "sec_radar") { minT = -5; maxT = 18; }
+      else if (secId === "sec_block") { minT = 18; maxT = 22; }
+
+      if (tempNum >= minT && tempNum <= maxT) {
+        applyColor(tempEl, COLOR_OK);
+      } else if (tempNum < minT - 5 || tempNum > maxT + 5) {
+        applyColor(tempEl, COLOR_CRIT);
+      } else {
+        applyColor(tempEl, COLOR_WARN);
+      }
+    }
+
+    if (pressEl) {
+      let rawP = facts.sensorSteamPressure || facts.sensorPressure || facts.sensorBoilerTemp || "4.2 атм";
+      rawP = rawP.split("(")[0].trim();
+      pressEl.textContent = rawP;
+
+      const pNum = parseFloat(rawP.replace(/[^0-9.-]/g, "")) || 4;
+      let maxP = 6.0;
+      if (secId === "sec_water") maxP = 8.0;
+      if (secId === "sec_hydro") maxP = 4.0;
+
+      if (pNum <= maxP) {
+        applyColor(pressEl, COLOR_OK);
+      } else if (pNum > maxP + 2.0 || rawP.includes("свищ") || rawP.includes("взрыв")) {
+        applyColor(pressEl, COLOR_CRIT);
+      } else {
+        applyColor(pressEl, COLOR_WARN);
+      }
+    }
+
+    // 2. Газоанализатор и спирт
+    const alcEl = document.getElementById("tel-val-alcohol");
+    const gasStatusEl = document.getElementById("tel-val-gas-status");
+    let hasAlcoholReading = false;
+    let alcNum = 0.0;
+
+    if (alcEl) {
+      if (facts.sensorAudio && facts.sensorAudio.includes("спирт")) {
+        alcEl.textContent = "2.8‰";
+        alcNum = 2.8;
+        hasAlcoholReading = true;
+      } else if (facts.sensorAlcohol) {
+        const rawAlc = facts.sensorAlcohol.split("(")[0].trim();
+        alcEl.textContent = rawAlc;
+        alcNum = parseFloat(rawAlc.replace(/[^0-9.-]/g, "")) || 0;
+        if (alcNum > 0.05) hasAlcoholReading = true;
+      } else {
+        alcEl.textContent = "0.0‰";
+        alcNum = 0.0;
+      }
+
+      let maxAlc = 0.2;
+      if (secId === "sec_water") maxAlc = 0.0; // СТРОГО 0.0‰
+      else if (secId === "sec_hydro" || secId === "sec_radar") maxAlc = 0.1;
+      else if (secId === "sec_med") maxAlc = 0.3;
+      else if (secId === "sec_block") maxAlc = 0.5;
+
+      if (alcNum <= maxAlc) {
+        applyColor(alcEl, COLOR_OK);
+      } else if (alcNum > maxAlc + 0.6) {
+        applyColor(alcEl, COLOR_CRIT);
+      } else {
+        applyColor(alcEl, COLOR_WARN);
+      }
+    }
+
+    if (gasStatusEl) {
+      if (hasAlcoholReading || alcNum > 0.2) {
+        gasStatusEl.textContent = "Пары летучих фракций зафиксированы";
+        applyColor(gasStatusEl, alcNum > 1.0 ? COLOR_CRIT : COLOR_WARN);
+      } else {
+        gasStatusEl.textContent = "Спектр газовой смеси стабилен";
+        applyColor(gasStatusEl, COLOR_OK);
+      }
+    }
+
+    // 3. Периметр и движение
+    const motOutEl = document.getElementById("tel-val-motion-out");
+    const perimStatusEl = document.getElementById("tel-val-perimeter-status");
+    if (motOutEl) {
+      let motText = "0 тепловых отметок";
+      if (facts.sensorMotion) {
+        motText = facts.sensorMotion.split("(")[0].trim() || facts.sensorMotion;
+      } else if (facts.sensorPerimeter) {
+        motText = facts.sensorPerimeter.split("(")[0].trim();
+      }
+      motOutEl.textContent = motText;
+
+      const isHostile = motText.includes("силуэт") || motText.includes("цел") || motText.includes("отметок: 4") || motText.includes("прорыв");
+      if (motText.includes("0 тепловых") || motText.includes("Штатно") || motText === "0") {
+        applyColor(motOutEl, COLOR_OK);
+      } else if (isHostile) {
+        applyColor(motOutEl, COLOR_CRIT);
+      } else {
+        applyColor(motOutEl, COLOR_WARN);
+      }
+    }
+    if (perimStatusEl) {
+      perimStatusEl.textContent = "Сектор наблюдения включен";
+      applyColor(perimStatusEl, COLOR_OK);
+    }
+
+    // 4. Акустика и сейсмика
+    const audioEl = document.getElementById("tel-val-audio");
+    const seismicEl = document.getElementById("tel-val-seismic");
+    if (audioEl) {
+      const audText = facts.sensorAudio || "Фоновый уровень 28 дБ";
+      audioEl.textContent = audText;
+
+      const audNum = parseFloat(audText.replace(/[^0-9.-]/g, "")) || 28;
+      let maxDb = 45;
+      if (secId === "sec_mine") maxDb = 75;
+      else if (secId === "sec_hydro") maxDb = 30;
+      else if (secId === "sec_med") maxDb = 35;
+      else if (secId === "sec_radar") maxDb = 50;
+      else if (secId === "sec_block") maxDb = 60;
+
+      const isRiotSound = audText.includes("звон") || audText.includes("пение") || audText.includes("крик");
+      if (isRiotSound || audNum > maxDb + 15) {
+        applyColor(audioEl, COLOR_CRIT);
+      } else if (audNum > maxDb) {
+        applyColor(audioEl, COLOR_WARN);
+      } else {
+        applyColor(audioEl, COLOR_OK);
+      }
+    }
+
+    if (seismicEl) {
+      const cleanSeismic = (facts.sensorSeismic || "0.1 балла").split("(")[0].trim();
+      seismicEl.textContent = cleanSeismic;
+      const sNum = parseFloat(cleanSeismic.replace(/[^0-9.-]/g, "")) || 0.1;
+
+      if (sNum <= 1.0) {
+        applyColor(seismicEl, COLOR_OK);
+      } else if (sNum > 3.0) {
+        applyColor(seismicEl, COLOR_CRIT);
+      } else {
+        applyColor(seismicEl, COLOR_WARN);
+      }
+    }
+
+    // 5. Биология и фильтры
+    const sporesEl = document.getElementById("tel-val-spores");
+    const filterEl = document.getElementById("tel-val-filter");
+    if (sporesEl) {
+      const cleanBio = (facts.sensorBio || "Класс 0 (Отрицательно)").split("(")[0].trim();
+      sporesEl.textContent = cleanBio;
+      if (cleanBio.includes("Класс 0") || cleanBio.includes("Отрицательно")) {
+        applyColor(sporesEl, COLOR_OK);
+      } else if (cleanBio.includes("Класс 1")) {
+        applyColor(sporesEl, COLOR_WARN);
+      } else {
+        applyColor(sporesEl, COLOR_CRIT);
+      }
+    }
+
+    if (filterEl) {
+      const cleanFilt = (facts.sensorFilter || facts.sensorCasualties || "Износ: 12%").split("(")[0].trim();
+      filterEl.textContent = cleanFilt;
+      const filtNum = parseFloat(cleanFilt.replace(/[^0-9.-]/g, "")) || 15;
+      if (filtNum < 60) {
+        applyColor(filterEl, COLOR_OK);
+      } else if (filtNum >= 85) {
+        applyColor(filterEl, COLOR_CRIT);
+      } else {
+        applyColor(filterEl, COLOR_WARN);
+      }
+    }
+
+    // 6. Энергосеть и приборы
+    const powerEl = document.getElementById("tel-val-power");
+    const fridgeEl = document.getElementById("tel-val-fridge");
+    if (powerEl) {
+      const pwrText = (facts.sensorPower || facts.sensorLabor || "100%").split("(")[0].trim();
+      powerEl.textContent = pwrText;
+      const pwrNum = parseFloat(pwrText.replace(/[^0-9.-]/g, "")) || 100;
+      if (pwrNum >= 80) {
+        applyColor(powerEl, COLOR_OK);
+      } else if (pwrNum < 50) {
+        applyColor(powerEl, COLOR_CRIT);
+      } else {
+        applyColor(powerEl, COLOR_WARN);
+      }
+    }
+
+    if (fridgeEl) {
+      let rawF = (facts.sensorTemp && facts.sensorTemp.includes("Холодильники")) ? facts.sensorTemp : "+3°C";
+      rawF = rawF.split("(")[0].trim();
+      fridgeEl.textContent = rawF;
+      const fNum = parseFloat(rawF.replace(/[^0-9.-]/g, "")) || 3;
+      if (fNum >= 2 && fNum <= 5) {
+        applyColor(fridgeEl, COLOR_OK);
+      } else if (fNum > 8) {
+        applyColor(fridgeEl, COLOR_CRIT);
+      } else {
+        applyColor(fridgeEl, COLOR_WARN);
+      }
+    }
+
+    // Сводный вывод
+    const conclusionEl = document.getElementById("tel-summary-conclusion");
+    if (conclusionEl) {
+      if (isResolved) {
+        conclusionEl.textContent = `[СИСТЕМА]: Запрос сектора [${sec?.name || secId}] удовлетворен. Аварийный режим снят, показатели приведены в норму ГОСТ.`;
+        conclusionEl.style.color = "#33ff66";
+      } else if (isAnalyzerInstalled) {
+        conclusionEl.textContent = `[АНАЛИЗАТОР v1.2 АКТИВЕН]: Автоматическое сканирование ГОСТ выполнено. Зеленый — допуск, Желтый — внимание, Красный — нарушение!`;
+        conclusionEl.style.color = "#33ff66";
+      } else {
+        conclusionEl.textContent = `[БАЗОВАЯ ТЕЛЕМЕТРИЯ]: Ручная сверка. Для автоподсветки нарушений ГОСТ приобретите «Анализатор телеметрии v1.2» в БункерМаркете.`;
+        conclusionEl.style.color = "#88c0a0";
+      }
+    }
   }
 }
 

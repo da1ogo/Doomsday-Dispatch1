@@ -195,7 +195,7 @@ const APP_MARKET_DATABASE = [
     id: "app_telemetry",
     name: "Анализатор телеметрии v1.2",
     category: "Утилиты",
-    price: 450,
+    price: 2200,
     icon: "📡",
     desc: "Автоматически подсвечивает расхождения в датчиках при анализе депеш."
   },
