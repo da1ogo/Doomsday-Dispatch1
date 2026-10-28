@@ -1,0 +1,2989 @@
+/* ==========================================================================
+   BUNKER-OS v3.11 - Visual Stylesheet (Windows 95 / Retro CRT Vibe)
+   ========================================================================== */
+
+:root {
+  --win-bg: #c0c0c0;
+  --win-face: #c0c0c0;
+  --win-light: #ffffff;
+  --win-shadow: #808080;
+  --win-dark-shadow: #000000;
+  --win-title-active-left: #000080;
+  --win-title-active-right: #1084d0;
+  --win-title-inactive-left: #7b7d7b;
+  --win-title-inactive-right: #b5b5b5;
+  --desktop-bg: #0b3838;
+  --crt-green: #33ff66;
+  --crt-amber: #ffb000;
+  --crt-red: #ff3333;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "MS Sans Serif", Tahoma, "Segoe UI", Arial, sans-serif;
+  font-size: 11px;
+  background-color: var(--desktop-bg);
+  color: #000;
+  image-rendering: pixelated;
+}
+
+/* CRT Screen Effect Overlay */
+#crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 6px 100%;
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.65);
+  transition: opacity 0.3s ease;
+}
+
+#crt-overlay.disabled {
+  display: none;
+}
+
+/* ==========================================================================
+   DESKTOP & TASKBAR
+   ========================================================================== */
+#desktop {
+  width: 100vw;
+  height: calc(100vh - 30px);
+  position: relative;
+  overflow: hidden;
+  background: var(--desktop-bg);
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 16px 16px;
+  display: none; /* Hidden until login! Fixes flash bug */
+}
+
+#desktop.unlocked {
+  display: block;
+}
+
+.desktop-icons {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 10;
+  max-height: calc(100vh - 60px);
+  flex-wrap: wrap;
+}
+
+.desktop-icon {
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.desktop-icon:hover {
+  background-color: rgba(0, 0, 128, 0.3);
+}
+
+.desktop-icon.selected {
+  background-color: #000080;
+}
+
+.desktop-icon.selected .icon-label {
+  background: #000080;
+  color: #fff;
+}
+
+.desktop-icon .icon-img-svg {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+
+.desktop-icon .icon-label {
+  color: #fff;
+  font-size: 11px;
+  text-shadow: 1px 1px 1px #000;
+  line-height: 1.2;
+  word-break: break-word;
+  padding: 1px 3px;
+}
+
+/* Taskbar */
+#taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 30px;
+  background: var(--win-bg);
+  border-top: 2px solid var(--win-light);
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  z-index: 9999;
+}
+
+.btn-start {
+  height: 24px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  background: var(--win-face);
+  outline: none;
+}
+
+.btn-start:active, .btn-start.active {
+  border-top: 2px solid var(--win-dark-shadow);
+  border-left: 2px solid var(--win-dark-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 3px 7px 1px 9px;
+}
+
+.taskbar-tasks {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  margin: 0 8px;
+  overflow-x: auto;
+}
+
+.task-item {
+  height: 22px;
+  min-width: 120px;
+  max-width: 180px;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-item.active {
+  background: #e0e0e0;
+  border-top: 2px solid var(--win-dark-shadow);
+  border-left: 2px solid var(--win-dark-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  font-weight: bold;
+}
+
+.taskbar-tray {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 22px;
+  padding: 0 8px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  font-size: 11px;
+  position: relative;
+}
+
+.tray-btn {
+  cursor: pointer;
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tray-btn:hover {
+  background: #d8d8d8;
+}
+
+/* Tray Volume Popup */
+#tray-volume-popup {
+  position: absolute;
+  bottom: 26px;
+  right: 65px;
+  width: 50px;
+  height: 120px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  z-index: 100002;
+}
+
+#tray-volume-popup.active {
+  display: flex;
+}
+
+#tray-vol-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 20px;
+  height: 80px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   DESKTOP RIGHT-CLICK CONTEXT MENU
+   ========================================================================== */
+#desktop-context-menu {
+  position: fixed;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  min-width: 150px;
+  z-index: 100000;
+  padding: 2px;
+}
+
+.context-item {
+  padding: 4px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.context-item:hover {
+  background: #000080;
+  color: #fff;
+}
+
+.context-divider {
+  height: 1px;
+  border-top: 1px solid var(--win-shadow);
+  border-bottom: 1px solid var(--win-light);
+  margin: 3px 2px;
+}
+
+/* ==========================================================================
+   WINDOW STYLES (Win95 3D Bevels)
+   ========================================================================== */
+.window {
+  position: absolute;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  min-height: 160px;
+  resize: both;
+  overflow: hidden;
+  z-index: 100;
+}
+
+/* Classic Win95 diagonal resize handle grip */
+/* Classic Win95 diagonal resize handle grip */
+.window::after,
+.win-resize-handle {
+  content: "";
+  position: absolute;
+  right: 1px;
+  bottom: 1px;
+  width: 14px;
+  height: 14px;
+  cursor: se-resize;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #555 1.5px, transparent 1.5px);
+  background-size: 4px 4px;
+  background-position: bottom right;
+  opacity: 0.7;
+}
+
+.window.minimized {
+  display: none !important;
+}
+
+.window-header {
+  height: 22px;
+  padding: 2px 3px;
+  background: linear-gradient(90deg, var(--win-title-active-left), var(--win-title-active-right));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: move;
+}
+
+.window.inactive .window-header {
+  background: linear-gradient(90deg, var(--win-title-inactive-left), var(--win-title-inactive-right));
+}
+
+.window-title {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 2px;
+}
+
+.window-controls {
+  display: flex;
+  gap: 2px;
+}
+
+.win-btn {
+  width: 16px;
+  height: 14px;
+  background: var(--win-face);
+  border-top: 1px solid var(--win-light);
+  border-left: 1px solid var(--win-light);
+  border-right: 1px solid var(--win-dark-shadow);
+  border-bottom: 1px solid var(--win-dark-shadow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-family: monospace;
+  font-weight: bold;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.win-btn:active {
+  border-top: 1px solid var(--win-dark-shadow);
+  border-left: 1px solid var(--win-dark-shadow);
+  border-right: 1px solid var(--win-light);
+  border-bottom: 1px solid var(--win-light);
+}
+
+.window-content {
+  flex: 1;
+  padding: 6px;
+  overflow: auto;
+  background: var(--win-face);
+}
+
+.inset-panel {
+  background: #ffffff;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 8px;
+}
+
+.inset-panel-dark {
+  background: #0d1210;
+  color: var(--crt-green);
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 8px;
+  font-family: "Courier New", monospace;
+}
+
+.btn-win {
+  padding: 4px 12px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  outline: none;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-win:active {
+  border-top: 2px solid var(--win-dark-shadow);
+  border-left: 2px solid var(--win-dark-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 5px 11px 3px 13px;
+}
+
+.btn-win.danger {
+  color: #990000;
+}
+
+/* ==========================================================================
+   START MENU
+   ========================================================================== */
+#start-menu {
+  position: fixed;
+  bottom: 30px;
+  left: 2px;
+  width: 220px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+  display: none;
+  flex-direction: column;
+  z-index: 100000;
+}
+
+#start-menu.open,
+#start-menu.active {
+  display: flex !important;
+}
+
+.start-sidebar {
+  background: linear-gradient(180deg, #000080, #004080);
+  color: #fff;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding: 8px 4px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 14px;
+}
+
+.start-container {
+  display: flex;
+}
+
+.start-items {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.start-item {
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.start-item:hover {
+  background: #000080;
+  color: #fff;
+}
+
+.start-divider {
+  height: 1px;
+  border-top: 1px solid var(--win-shadow);
+  border-bottom: 1px solid var(--win-light);
+  margin: 3px 2px;
+}
+
+/* ==========================================================================
+   BUNKERMAIL (OUTLOOK EXPRESS STYLE)
+   ========================================================================== */
+.mail-layout {
+  display: flex;
+  height: 100%;
+  border: 1px solid var(--win-shadow);
+}
+
+.mail-sidebar {
+  width: 140px;
+  background: #fff;
+  border-right: 2px solid var(--win-shadow);
+  padding: 4px;
+  font-family: inherit;
+}
+
+.mail-folder-item {
+  padding: 4px 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mail-folder-item.active {
+  background: #000080;
+  color: #fff;
+}
+
+.mail-content-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mail-table-container {
+  height: 160px;
+  background: #fff;
+  overflow-y: auto;
+  border-bottom: 2px solid var(--win-shadow);
+}
+
+.mail-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.mail-table th {
+  background: #e0e0e0;
+  border: 1px solid #999;
+  padding: 3px 6px;
+  text-align: left;
+}
+
+.mail-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.mail-table tr.unread {
+  font-weight: bold;
+}
+
+.mail-table tr.selected {
+  background: #000080;
+  color: #fff;
+}
+
+.mail-preview-pane {
+  flex: 1;
+  background: #ffffea;
+  padding: 10px;
+  overflow-y: auto;
+  font-family: "Lucida Console", monospace;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   USER PROFILE / ADMINISTRATOR WINDOW
+   ========================================================================== */
+.profile-card {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  background: #ffffff;
+  padding: 10px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+}
+
+
+
+.profile-avatar {
+  width: 70px;
+  height: 80px;
+  background: #333;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.balance-counter-large {
+  font-size: 20px;
+  font-family: monospace;
+  font-weight: bold;
+  color: #006600;
+}
+
+.balance-counter-large.debt {
+  color: #cc0000;
+}
+
+/* ==========================================================================
+   TOR RADIO (BLACK MARKET) WINDOW
+   ========================================================================== */
+.radio-tuner-box {
+  background: #0a140f;
+  color: var(--crt-green);
+  padding: 10px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  font-family: monospace;
+  margin-bottom: 10px;
+}
+
+.radio-dial {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.tor-market-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px;
+  margin-bottom: 6px;
+  background: #fff;
+  border: 1px solid #999;
+}
+
+/* ==========================================================================
+   CALCULATOR WINDOW (WIN95 STYLE)
+   ========================================================================== */
+.calc-display {
+  background: #ffffff;
+  height: 28px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 2px 6px;
+  text-align: right;
+  font-family: "Lucida Console", monospace;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  line-height: 24px;
+}
+
+.calc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.calc-btn {
+  height: 26px;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+/* ==========================================================================
+   WORDPAD (BUNKERPAD) WINDOW
+   ========================================================================== */
+.wordpad-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: #e4e4e4;
+  border-bottom: 1px solid var(--win-shadow);
+  align-items: center;
+}
+
+.wordpad-body {
+  height: 240px;
+  background: #ffffff;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  padding: 10px;
+  outline: none;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   COMIC INTRO SLIDESHOW OVERLAY
+   ========================================================================== */
+#comic-intro-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  z-index: 999990;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#comic-intro-overlay.active {
+  display: flex;
+}
+
+.comic-frame-card {
+  width: 90vw;
+  max-width: 1020px;
+  background: #08120b;
+  border: 4px ridge #385942;
+  box-shadow: 0 0 45px rgba(0, 0, 0, 0.95);
+  padding: 20px;
+  color: var(--crt-green);
+  font-family: "Courier New", monospace;
+  display: flex;
+  flex-direction: column;
+}
+
+.comic-illustration-box {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 54vh;
+  background: #030805;
+  border: 2px solid #33ff66;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.comic-illustration-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: contrast(1.15) brightness(0.95);
+}
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.comic-title {
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  color: #ffb000;
+}
+
+.comic-text {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  min-height: 55px;
+}
+
+.comic-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed rgba(51, 255, 102, 0.4);
+  padding-top: 12px;
+}
+
+/* ==========================================================================
+   TACTICAL MAP WINDOW
+   ========================================================================== */
+.map-layout {
+  display: flex;
+  gap: 8px;
+  height: 100%;
+}
+
+.map-viewport-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-canvas-wrapper {
+  flex: 1;
+  position: relative;
+  background: #050d08;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  overflow: hidden;
+  min-height: 280px;
+  cursor: grab;
+}
+
+.map-canvas-wrapper.panning {
+  cursor: grabbing;
+}
+
+.map-toolbar {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 50;
+  background: rgba(12, 22, 17, 0.85);
+  padding: 3px;
+  border: 1px solid #33ff66;
+}
+
+.map-tool-btn {
+  background: #102418;
+  color: #33ff66;
+  border: 1px solid #33ff66;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 7px;
+  cursor: pointer;
+}
+
+.map-tool-btn:hover {
+  background: #33ff66;
+  color: #000;
+}
+
+#map-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+}
+
+.map-telemetry-sidebar {
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sector-telemetry-box {
+  flex: 1;
+  background: #000;
+  color: var(--crt-green);
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  padding: 8px;
+  overflow-y: auto;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+}
+
+/* Tactical Map CRT Node Styles (Phosphor Glow & Status Colors) */
+.sector-node {
+  cursor: pointer;
+  transition: transform 0.15s ease-out;
+}
+
+.sector-node:hover {
+  filter: drop-shadow(0 0 8px #00ff66);
+}
+
+.sector-node rect {
+  fill: #0a1e12;
+  stroke: #00ff66;
+  stroke-width: 2px;
+  rx: 3px;
+}
+
+.sector-node.normal rect {
+  fill: #082414;
+  stroke: #00ff66;
+  stroke-width: 2px;
+}
+
+.sector-node.warning rect {
+  fill: #291e05;
+  stroke: #ffcc00;
+  stroke-width: 2px;
+}
+
+.sector-node.critical rect {
+  fill: #2d0808;
+  stroke: #ff3333;
+  stroke-width: 2.5px;
+  animation: node-pulse 1s infinite alternate;
+}
+
+@keyframes node-pulse {
+  0% { stroke-color: #ff3333; filter: drop-shadow(0 0 2px #ff3333); }
+  100% { stroke-color: #ff8888; filter: drop-shadow(0 0 10px #ff3333); }
+}
+
+.sector-node.dead rect {
+  fill: #141414;
+  stroke: #666666;
+  stroke-width: 1.5px;
+  stroke-dasharray: 4,4;
+}
+
+.sector-node.selected rect {
+  fill: #0f3d1f;
+  stroke: #ffffff;
+  stroke-width: 3px;
+  filter: drop-shadow(0 0 10px #00ff66);
+}
+
+.sector-node-badge {
+  fill: #00ff66;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.sector-node.warning .sector-node-badge {
+  fill: #ffcc00;
+}
+
+.sector-node.critical .sector-node-badge {
+  fill: #ff3333;
+}
+
+.sector-node.dead .sector-node-badge {
+  fill: #777777;
+}
+
+.sector-node.selected .sector-node-badge {
+  fill: #ffffff;
+}
+
+.sector-node-label {
+  fill: #00ff66;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  font-weight: 900;
+  text-anchor: middle;
+  text-shadow: 0 0 4px rgba(0, 255, 102, 0.75);
+  pointer-events: none;
+}
+
+.sector-node.warning .sector-node-label {
+  fill: #ffdd44;
+  text-shadow: 0 0 4px rgba(255, 221, 68, 0.75);
+}
+
+.sector-node.critical .sector-node-label {
+  fill: #ff5555;
+  text-shadow: 0 0 4px rgba(255, 85, 85, 0.75);
+}
+
+.sector-node.dead .sector-node-label {
+  fill: #888888;
+  text-shadow: none;
+}
+
+.sector-node-sub {
+  fill: #afffcf;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  font-weight: bold;
+  text-anchor: middle;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+}
+
+.sector-node.dead .sector-node-sub {
+  fill: #666666;
+}
+
+
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding-bottom: 2px;
+  border-bottom: 1px dashed rgba(51, 255, 102, 0.2);
+}
+
+.telemetry-row.warn {
+  color: var(--crt-amber);
+}
+
+.telemetry-row.crit {
+  color: var(--crt-red);
+  font-weight: bold;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.3; }
+}
+
+.map-node {
+  cursor: pointer;
+}
+
+.map-node:hover .core-circle {
+  stroke: #ffffff !important;
+  stroke-width: 2px !important;
+}
+
+.map-node-label-bg {
+  fill: rgba(5, 13, 8, 0.88);
+  stroke: rgba(51, 255, 102, 0.4);
+  stroke-width: 0.8;
+}
+
+.map-node-label {
+  fill: #e0ffe8;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   DISPATCH (INBOX) WINDOW
+   ========================================================================== */
+.dispatch-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+.dispatch-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e4e4e4;
+  padding: 4px 8px;
+  border: 1px solid var(--win-shadow);
+}
+
+.dispatch-text-box {
+  flex: 1;
+  background: #ffffea;
+  color: #1a1a1a;
+  padding: 12px;
+  font-family: "Lucida Console", "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  overflow-y: auto;
+  box-shadow: inset 1px 1px 4px rgba(0,0,0,0.15);
+}
+
+.dispatch-telemetry-findings {
+  background: #0d1210;
+  color: var(--crt-green);
+  font-family: monospace;
+  font-size: 11px;
+  padding: 8px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+}
+
+
+
+.dispatch-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* Animated Vintage Soviet Rubber Stamp Overlay */
+.dispatch-stamp {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  width: 340px;
+  height: 135px;
+  transform: translate(-50%, -50%) rotate(-12deg) scale(1.5);
+  pointer-events: none;
+  opacity: 0;
+  transition: transform 0.12s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.1s ease-out;
+  z-index: 500;
+  color: transparent;
+  user-select: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  mix-blend-mode: multiply;
+  filter: contrast(1.15) drop-shadow(1px 2px 3px rgba(30, 20, 10, 0.35));
+}
+
+.dispatch-stamp.approved {
+  background-image: url('img/stamp_approved.png');
+}
+
+.dispatch-stamp.rejected {
+  background-image: url('img/stamp_rejected.png');
+}
+
+.dispatch-stamp.active {
+  opacity: 0.95;
+  transform: translate(-50%, -50%) rotate(var(--stamp-angle, -11deg)) scale(1);
+}
+
+
+/* ==========================================================================
+   RESOURCE DEPOT WINDOW
+   ========================================================================== */
+.depot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.depot-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+}
+
+.depot-card .depot-info {
+  flex: 1;
+}
+
+.depot-card .depot-name {
+  font-weight: bold;
+}
+
+.depot-card .depot-count {
+  font-size: 18px;
+  font-family: monospace;
+  font-weight: bold;
+  color: #000080;
+}
+
+/* ==========================================================================
+   DAILY SUMMARY / TELETYPE LOG
+   ========================================================================== */
+.teletype-paper {
+  background: #fdfae7;
+  color: #2b2b2b;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  padding: 16px;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  height: 280px;
+  overflow-y: auto;
+  line-height: 1.5;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================================
+   ACHIEVEMENTS GALLERY
+   ========================================================================== */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 8px;
+  max-height: 380px;
+  overflow-y: auto;
+  padding: 4px;
+}
+
+.ach-card {
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  background: #f0f0f0;
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  align-items: center;
+}
+
+.ach-card.locked {
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+
+.ach-card .ach-icon-box {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d8d8d8;
+  border: 1px solid #999;
+}
+
+.ach-card .ach-details {
+  flex: 1;
+}
+
+.ach-card .ach-title {
+  font-weight: bold;
+  font-size: 12px;
+  color: #000;
+  margin-bottom: 2px;
+}
+
+.ach-card .ach-desc {
+  font-size: 10px;
+  color: #555;
+}
+
+/* ==========================================================================
+   STEAM-STYLE TOAST NOTIFICATION
+   ========================================================================== */
+#achievement-toast {
+  position: fixed;
+  bottom: -150px;
+  right: 20px;
+  min-width: 320px;
+  max-width: 440px;
+  width: auto;
+  min-height: 72px;
+  background: linear-gradient(135deg, #1c222c 0%, #10141a 100%);
+  border: 2px solid #ffcc00;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.85), 0 0 12px rgba(255, 204, 0, 0.45);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  z-index: 1000000;
+  transition: bottom 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+}
+
+#achievement-toast.show {
+  bottom: 45px;
+}
+
+.toast-badge {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  background: radial-gradient(circle, #ffe680 0%, #c49f2b 100%);
+  border: 2px solid #fff;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+}
+
+.toast-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.toast-header {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #ffcc00;
+  letter-spacing: 1.2px;
+  font-weight: bold;
+  margin-bottom: 3px;
+}
+
+.toast-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 3px;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.toast-desc {
+  font-size: 11px;
+  color: #c5d4e4;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+/* ==========================================================================
+   FULL WINDOWS 95 LOCK SCREEN (WALLPAPER + LOGON BOX)
+   ========================================================================== */
+#lock-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #092c2c;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 12px 12px;
+  z-index: 95000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#lock-screen.active {
+  display: flex;
+}
+
+.lock-screen-watermark {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  font-family: monospace;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.25);
+  font-weight: bold;
+  text-align: right;
+  letter-spacing: 2px;
+  pointer-events: none;
+}
+
+.login-window {
+  width: 390px;
+  background: var(--win-face);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.7);
+  z-index: 95001;
+}
+
+.login-header {
+  height: 22px;
+  padding: 2px 4px;
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: #fff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+}
+
+.login-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--win-shadow);
+  padding-bottom: 12px;
+}
+
+.login-banner-logo {
+  width: 48px;
+  height: 48px;
+  background: #000080;
+  border: 2px inset #dfdfdf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.login-field label {
+  font-weight: bold;
+}
+
+.login-input {
+  width: 200px;
+  height: 22px;
+  padding: 2px 4px;
+  background: #fff;
+  border-top: 2px solid var(--win-shadow);
+  border-left: 2px solid var(--win-shadow);
+  border-right: 2px solid var(--win-light);
+  border-bottom: 2px solid var(--win-light);
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+}
+
+.login-input[readonly] {
+  background: #dfdfdf;
+  color: #222;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ==========================================================================
+   CRT POWER-OFF SLEEP & WAKE ANIMATION
+   ========================================================================== */
+#screen-power-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #33ff66;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+}
+
+#screen-power-overlay.active {
+  display: flex;
+}
+
+.screen-collapsing {
+  animation: crtCollapse 0.45s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
+}
+
+.screen-expanding {
+  animation: crtExpand 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards !important;
+}
+
+@keyframes crtCollapse {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  45% { transform: scale(1, 0.003); filter: brightness(4); opacity: 1; }
+  85% { transform: scale(0.008, 0.003); filter: brightness(8); opacity: 1; }
+  100% { transform: scale(0, 0); filter: brightness(0); opacity: 0; }
+}
+
+@keyframes crtExpand {
+  0% { transform: scale(0.005, 0.003); filter: brightness(8); opacity: 1; }
+  50% { transform: scale(1, 0.003); filter: brightness(4); opacity: 1; }
+  100% { transform: scale(1, 1); filter: brightness(1); opacity: 1; }
+}
+
+/* ==========================================================================
+   INTERACTIVE TUTORIAL ASSISTANT (DAY 1)
+   ========================================================================== */
+.tutorial-highlight {
+  outline: 3px dashed #ffea00 !important;
+  box-shadow: 0 0 18px rgba(255, 234, 0, 0.8) !important;
+  animation: tutorialPulse 1.2s infinite alternate !important;
+}
+
+@keyframes tutorialPulse {
+  0% { outline-color: #ffea00; }
+  100% { outline-color: #33ff66; }
+}
+
+#tutorial-assistant-card {
+  position: fixed;
+  bottom: 45px;
+  left: 20px;
+  width: 360px;
+  background: #ffffe0;
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-dark-shadow);
+  border-bottom: 2px solid var(--win-dark-shadow);
+  box-shadow: 3px 3px 12px rgba(0,0,0,0.6);
+  z-index: 80000;
+  display: none;
+  flex-direction: column;
+}
+
+#tutorial-assistant-card.active {
+  display: flex;
+}
+
+.assistant-header {
+  background: linear-gradient(90deg, #806000, #c49f2b);
+  color: #fff;
+  font-weight: bold;
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.assistant-body {
+  padding: 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: #1a1a1a;
+}
+
+/* ==========================================================================
+   CINEMATIC SOVIET BUNKER MAIN MENU (DESK, LAMP FLICKER & CRT KINESCOPE)
+   ========================================================================== */
+#main-menu-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000000;
+  z-index: 999990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+#main-menu-overlay.hidden {
+  display: none !important;
+}
+
+#menu-bunker-scene {
+  position: relative;
+  width: 100vw;
+  height: 55.86vw; /* 1024x572 точное соотношение */
+  max-height: 100vh;
+  max-width: 179vh;
+  background: #000000;
+  box-shadow: 0 0 60px rgba(0, 0, 0, 0.98);
+  overflow: hidden;
+}
+
+/* СЛОЙ 1 (z-index: 1 / Задний слой): Терминал BunkerOS под вырезом кинескопа */
+#crt-screen-viewport {
+  position: absolute;
+  left: 21.48%;
+  top: 11.36%;
+  width: 47.75%;
+  height: 61.89%;
+  background: #040f08;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+/* СЛОЙ 2 (z-index: 2 / Передний слой): Маска 100% со всеми деталями (лампа, стол, рамка кинескопа) */
+#menu-bunker-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: url('img/menu_bunker_mask.png') center center / 100% 100% no-repeat;
+  z-index: 2;
+}
+
+/* Скрываем старые дублирующие световые оверлеи, так как лампа и тени уже в маске */
+#menu-lamp-light,
+#menu-table-shadow {
+  display: none !important;
+}
+
+/* Эффекты стекла внутри кинескопа */
+.crt-glass-curvature {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 45% 36%,
+    rgba(255, 255, 255, 0.04) 0%,
+    transparent 55%
+  );
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.9);
+  z-index: 5;
+}
+
+.crt-scanline-raster {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.35) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 6;
+  opacity: 0.8;
+}
+
+.crt-beam-roll {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(51, 255, 102, 0.04) 50%,
+    transparent 100%
+  );
+  height: 35%;
+  animation: crtBeamSweep 6s linear infinite;
+  z-index: 7;
+}
+
+@keyframes crtBeamSweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+
+/* Содержимое терминала */
+#crt-terminal-display {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 38px 20px 10px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #33ff66;
+  font-family: 'Courier New', 'Lucida Console', Monaco, monospace;
+  text-shadow: 0 0 6px rgba(51, 255, 102, 0.88), 0 0 14px rgba(51, 255, 102, 0.5);
+  box-sizing: border-box;
+  animation: crtJitter50Hz 0.12s infinite;
+  z-index: 4;
+}
+
+@keyframes crtJitter50Hz {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(0.3px, -0.2px); }
+  50% { transform: translate(-0.2px, 0.3px); }
+  75% { transform: translate(0.1px, 0.1px); }
+  100% { transform: translate(0, 0); }
+}
+
+.terminal-header {
+  text-align: center;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+.terminal-banner {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+.terminal-subline {
+  font-size: 11px;
+  color: #6ebb80;
+  font-weight: bold;
+  margin-top: 2px;
+}
+.terminal-divider {
+  font-size: 11px;
+  color: rgba(51, 255, 102, 0.5);
+  overflow: hidden;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+/* Menu list - Shifted right and shortened so selection box never bleeds */
+.bunker-menu-options {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 6px auto 6px 42px; /* Shifted right by 32px so red box never clips into left border */
+  width: 100%;
+  max-width: 330px;
+}
+
+.bunker-menu-item {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #33ff66;
+  font-family: 'Courier New', 'Lucida Console', Monaco, monospace;
+  font-size: 19px; /* BIGGER FONT FOR MAXIMUM READABILITY */
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  text-align: left;
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.08s ease;
+  outline: none;
+  max-width: 370px; /* Shortened width to prevent overflow past right frame */
+  box-sizing: border-box;
+}
+
+.bunker-menu-item .menu-pointer {
+  opacity: 0;
+  width: 14px;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  transition: opacity 0.08s ease;
+}
+
+.bunker-menu-item .menu-num {
+  font-size: 18px;
+  font-weight: bold;
+  color: #7aff9e;
+}
+
+.bunker-menu-item .menu-label {
+  font-size: 19px;
+  font-weight: 900;
+}
+
+.bunker-menu-item.selected,
+.bunker-menu-item:hover {
+  background: rgba(51, 255, 102, 0.24);
+  border-color: rgba(51, 255, 102, 0.7);
+  box-shadow: 0 0 10px rgba(51, 255, 102, 0.35);
+  text-shadow: 0 0 8px #33ff66, 0 0 16px #33ff66;
+  color: #ffffff;
+}
+
+.bunker-menu-item.selected .menu-pointer,
+.bunker-menu-item:hover .menu-pointer {
+  opacity: 1;
+}
+
+.bunker-menu-item:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  border-color: transparent !important;
+  background: transparent !important;
+}
+
+.bunker-menu-item.danger-item:hover,
+.bunker-menu-item.danger-item.selected {
+  background: rgba(255, 51, 51, 0.28);
+  border-color: rgba(255, 51, 51, 0.75);
+  box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+  color: #ff7777;
+  text-shadow: 0 0 10px #ff3333;
+}
+
+.menu-badge {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: bold;
+  color: #a5f0c4;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 1px 6px;
+  border: 1px solid rgba(51, 255, 102, 0.4);
+}
+
+.terminal-warning-note {
+  font-size: 9.5px;
+  line-height: 1.4;
+  color: #6ebb80;
+  font-weight: bold;
+  text-align: center;
+  border-top: 1px dashed rgba(51, 255, 102, 0.35);
+  padding-top: 6px;
+  margin: 8px auto 0 auto;
+  width: 88%;
+}
+
+.terminal-footer {
+  display: none !important;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: bold;
+  color: #6ebb80;
+  border-top: 1px solid rgba(51, 255, 102, 0.35);
+  padding-top: 3px;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+/* Subviews on CRT */
+.terminal-scrollbox {
+  max-height: 210px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 8px 12px;
+  border: 1px solid rgba(51, 255, 102, 0.45);
+  margin-right: 15px;
+}
+
+.subview-header {
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  color: #aaffcc;
+  letter-spacing: 0.5px;
+}
+
+.bios-back-btn {
+  font-size: 14px;
+  font-weight: 900;
+  padding: 5px 12px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(51, 255, 102, 0.6);
+  background: rgba(51, 255, 102, 0.12);
+  color: #33ff66;
+  cursor: pointer;
+  display: inline-block;
+  outline: none;
+}
+.bios-back-btn:hover {
+  background: rgba(51, 255, 102, 0.28);
+  color: #fff;
+}
+
+.terminal-settings-box,
+.terminal-credits-box {
+  background: rgba(0, 20, 10, 0.85);
+  padding: 10px 14px;
+  border: 1px solid rgba(51, 255, 102, 0.45);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin-right: 15px;
+}
+
+.terminal-setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+/* Lamp Natural Organic Keyframe Flicker */
+@keyframes lampNaturalFlicker {
+  0%, 100% { opacity: 0.95; }
+  12% { opacity: 0.92; }
+  14% { opacity: 0.65; }
+  15% { opacity: 0.94; }
+  42% { opacity: 0.96; }
+  43% { opacity: 0.40; }
+  43.5% { opacity: 0.85; }
+  44% { opacity: 0.35; }
+  45% { opacity: 0.98; }
+  78% { opacity: 0.94; }
+  79% { opacity: 0.72; }
+  80% { opacity: 0.95; }
+}
+
+.bios-subview {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bios-subview.active {
+  display: flex;
+}
+
+.bios-back-btn {
+  margin-bottom: 12px;
+  background: #102418;
+  color: #33ff66;
+  border: 1px solid #33ff66;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.bios-back-btn:hover {
+  background: #33ff66;
+  color: #000;
+}
+
+/* ==========================================================================
+   DESKTOP ICON DRAGGING & GRID
+   ========================================================================== */
+.desktop-icon.draggable {
+  position: absolute;
+  user-select: none;
+  touch-action: none;
+}
+
+.desktop-icon.dragging {
+  opacity: 0.65;
+  z-index: 9999 !important;
+  cursor: grabbing !important;
+  transform: scale(1.05);
+}
+
+.desktop-icon.folder-target {
+  outline: 2px dashed #ffff00;
+  background-color: rgba(255, 255, 0, 0.25);
+}
+
+/* Icon context menu */
+#icon-context-menu {
+  position: fixed;
+  background: var(--win-bg);
+  border-top: 2px solid var(--win-light);
+  border-left: 2px solid var(--win-light);
+  border-right: 2px solid var(--win-shadow);
+  border-bottom: 2px solid var(--win-shadow);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 999999;
+  display: none;
+  flex-direction: column;
+  min-width: 140px;
+  padding: 2px;
+}
+
+/* ==========================================================================
+   EMERGENCY ALARM OVERLAY (RANDOM CRISIS EVENTS)
+   ========================================================================== */
+#emergency-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(80, 0, 0, 0.45);
+  z-index: 999920;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: crtRedAlarmPulse 0.7s infinite alternate ease-in-out;
+}
+
+@keyframes crtRedAlarmPulse {
+  0% {
+    background: rgba(60, 0, 0, 0.35);
+  }
+  100% {
+    background: rgba(140, 15, 15, 0.55);
+  }
+}
+
+.emergency-console {
+  width: 580px;
+  background: #1c1d21;
+  border-top: 3px solid #555860;
+  border-left: 3px solid #555860;
+  border-right: 3px solid #0d0e10;
+  border-bottom: 3px solid #0d0e10;
+  box-shadow: 4px 6px 24px rgba(0, 0, 0, 0.85);
+  color: #dfdfdf;
+  font-family: 'Courier New', Courier, monospace;
+  position: relative;
+  overflow: hidden;
+}
+
+.emergency-hazard-strip {
+  height: 10px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    #cc9900,
+    #cc9900 12px,
+    #1a1a1a 12px,
+    #1a1a1a 24px
+  );
+  border-bottom: 1px solid #000;
+}
+
+.emergency-hazard-strip.bottom-strip {
+  border-bottom: none;
+  border-top: 1px solid #000;
+}
+
+.emergency-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #25272e;
+  border-bottom: 2px solid #111;
+}
+
+.emergency-emblem-box {
+  width: 38px;
+  height: 38px;
+  background: #15161a;
+  border: 1px solid #3d414d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Classic 7-Segment Amber Nixie / VFD Tube Digital Timer */
+.vfd-tube-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.vfd-label {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.vfd-display {
+  background: #090c0a;
+  border-top: 2px solid #040504;
+  border-left: 2px solid #040504;
+  border-right: 2px solid #2e3530;
+  border-bottom: 2px solid #2e3530;
+  padding: 3px 8px;
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.vfd-ghost {
+  position: absolute;
+  left: 8px;
+  color: rgba(255, 140, 0, 0.12);
+  font-family: 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  pointer-events: none;
+}
+
+.vfd-digits {
+  color: #ff9d00;
+  font-family: 'Courier New', monospace;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 0 0 6px rgba(255, 150, 0, 0.5);
+  min-width: 32px;
+  text-align: right;
+  z-index: 2;
+}
+
+.vfd-sec {
+  font-size: 11px;
+  color: #cc8000;
+  font-weight: bold;
+  letter-spacing: 1px;
+  z-index: 2;
+}
+
+.emergency-body {
+  padding: 14px 16px 16px;
+  background: #18191d;
+}
+
+.emergency-desc-panel {
+  background: #0f1013;
+  border: 1px solid #2d303a;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #f0eae1;
+  margin-bottom: 14px;
+  border-left: 3px solid #cc3333;
+}
+
+.emergency-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Industrial Tactile Pushbutton Switches */
+.btn-emergency-choice {
+  background: #2a2c33;
+  color: #f0f0f0;
+  border-top: 2px solid #4a4e5a;
+  border-left: 2px solid #4a4e5a;
+  border-right: 2px solid #111215;
+  border-bottom: 2px solid #111215;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.05s ease;
+  user-select: none;
+}
+
+.btn-emergency-choice:hover {
+  background: #353842;
+  border-color: #606575 #111215 #111215 #606575;
+  color: #ffffff;
+}
+
+.btn-emergency-choice:active {
+  background: #1e2025;
+  border-top: 2px solid #111215;
+  border-left: 2px solid #111215;
+  border-right: 2px solid #4a4e5a;
+  border-bottom: 2px solid #4a4e5a;
+  transform: translate(1px, 1px);
+}
+
+/* ==========================================================================
+   BUNKERBANK WINDOW (WIN95 STYLE)
+   ========================================================================== */
+.bank-balance-card {
+  background: #e8f5e9;
+  border: 2px inset #999;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bank-transfer-form {
+  background: #fff;
+  border: 2px inset #999;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bank-input-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+
+.bank-input-group input {
+  padding: 3px 6px;
+  border: 2px inset #aaa;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: bold;
+  width: 140px;
+}
+
+.bank-fee-note {
+  font-size: 11px;
+  color: #666;
+  padding: 4px 0;
+  border-top: 1px dashed #ccc;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   APP MARKET (BUNKER-MARKET)
+   ========================================================================== */
+.market-app-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  background: #fff;
+  border: 1px solid #bbb;
+  margin-bottom: 8px;
+}
+
+.market-app-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.market-app-details {
+  flex: 1;
+}
+
+.market-app-title {
+  font-weight: bold;
+  font-size: 12px;
+  color: #000080;
+}
+
+.market-app-desc {
+  font-size: 10px;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   GAZETTE NEWSPAPER VIEWER (RETRO PAPER STYLE)
+   ========================================================================== */
+.gazette-paper {
+  background: #f7f1e1;
+  color: #1a1714;
+  padding: 24px;
+  border: 1px solid #c4b998;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
+  font-family: "Georgia", "Times New Roman", serif;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.gazette-header {
+  border-bottom: 3px double #2b2b2b;
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.gazette-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: bold;
+  border-bottom: 1px solid #444;
+  padding-bottom: 4px;
+  margin-bottom: 6px;
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+}
+
+.gazette-title {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  font-family: "Arial Black", Impact, sans-serif;
+  margin: 4px 0;
+  color: #111;
+}
+
+.gazette-motto {
+  font-size: 11px;
+  font-style: italic;
+  color: #555;
+}
+
+.gazette-headline {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1.25;
+  margin: 12px 0 6px 0;
+  text-align: center;
+  color: #8b0000;
+  text-transform: uppercase;
+}
+
+.gazette-subhead {
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 14px;
+  color: #444;
+}
+
+.gazette-body-columns {
+  column-count: 2;
+  column-gap: 20px;
+  column-rule: 1px solid #bbb;
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+/* Telemetry warning highlight patch from app analyzer */
+.telemetry-highlight-anomaly {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  padding: 2px 4px;
+  font-weight: bold;
+}
+
+/* Folder Content Items & Explorer */
+.folder-item-card {
+  width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 6px 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 2px;
+  transition: background 0.1s;
+}
+
+.folder-item-card:hover {
+  background: #e8f0fe;
+  border-color: #7090b0;
+}
+
+.folder-item-card .folder-item-svg {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  filter: drop-shadow(1px 1px 0 #000);
+}
+
+.folder-item-card .folder-item-label {
+  font-size: 11px;
+  color: #000;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.folder-item-extract-btn {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1;
+  padding: 0 3px;
+  background: #e0e0e0;
+  border: 1px solid #777;
+  cursor: pointer;
+  display: none;
+}
+
+.folder-item-card:hover .folder-item-extract-btn {
+  display: block;
+}
+
+.folder-item-extract-btn:hover {
+  background: #ffddaa;
+  border-color: #cc6600;
+  color: #b00;
+}
+
+/* CRT Monitor Preview in Wallpaper / Display Properties */
+.wallpaper-monitor-housing {
+  width: 180px;
+  background: #2a2a2e;
+  border-top: 3px solid #5a5a60;
+  border-left: 3px solid #5a5a60;
+  border-right: 3px solid #111;
+  border-bottom: 3px solid #111;
+  padding: 10px 10px 12px;
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wallpaper-monitor-screen {
+  width: 150px;
+  height: 95px;
+  background: #008080;
+  border: 2px inset #111;
+  border-radius: 4px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.wallpaper-monitor-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.wallpaper-monitor-stand {
+  width: 50px;
+  height: 10px;
+  background: #333;
+  border: 1px solid #111;
+  margin-top: 4px;
+}
+
+.wallpaper-option-item {
+  padding: 6px 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  font-size: 11px;
+}
+
+.wallpaper-option-item:hover {
+  background: #e8f0fe;
+}
+
+.wallpaper-option-item.selected {
+  background: #000080 !important;
+  color: #fff !important;
+}
+
+/* ==========================================================================
+   DEMONIC 666 / 66.6 SCREEN TREMOR & NATIVE EMERGENCY WINDOW
+   ========================================================================== */
+@keyframes demonicScreenTremor {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-1.5px, 1px); }
+  40% { transform: translate(1px, -1.5px); }
+  60% { transform: translate(-1px, -1px); }
+  80% { transform: translate(1.5px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+
+body.demonic-shake-active #screen-container,
+body.demonic-shake-active #desktop {
+  animation: demonicScreenTremor 0.08s infinite ease-in-out !important;
+}
+
+.emergency-window-dialog {
+  box-shadow: 4px 6px 28px rgba(0, 0, 0, 0.7);
+  border: 2px solid var(--win-light);
+  border-right-color: var(--win-dark);
+  border-bottom-color: var(--win-dark);
+}
+
+.emergency-window-dialog .btn-emergency-choice {
+  background: #c0c0c0;
+  color: #000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: left;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.emergency-window-dialog .btn-emergency-choice:hover {
+  background: #d4d4d4;
+}
+
+.emergency-window-dialog .btn-emergency-choice:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  background: #b0b0b0;
+  padding: 7px 9px 5px 11px;
+}
+
+
+/* =========================================================================
+   MEGA-UPDATE v2.0 UI EXTENSIONS
+   ========================================================================= */
+
+/* Dispatch Allocation Controls */
+.dispatch-allocation-section {
+  background: #ece9d8;
+  border: 1px solid #7f9db9;
+  padding: 8px 10px;
+  margin: 6px 0;
+}
+
+.dispatch-demand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.dispatch-spinner-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.spinner-group {
+  background: #ffffff;
+  border: 1px solid #7f9db9;
+  padding: 4px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.spinner-controls {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.spin-btn {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.spin-val {
+  min-width: 18px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: bold;
+  color: #000080;
+}
+
+/* Map Sector Metrics & Direct Supply Allocation */
+.sector-meters-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4px;
+  margin: 6px 0;
+  font-family: monospace;
+  font-size: 10px;
+}
+
+.metric-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.metric-bar-container {
+  flex: 1;
+  height: 10px;
+  background: #111;
+  border: 1px solid #33ff66;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-bar-fill {
+  height: 100%;
+  background: #33ff66;
+  transition: width 0.3s ease;
+}
+
+.metric-bar-fill.warning {
+  background: #ffcc00;
+}
+
+.metric-bar-fill.danger {
+  background: #ff3333;
+}
+
+.sector-supply-box {
+  background: rgba(0, 20, 10, 0.9);
+  border: 1px solid var(--crt-green);
+  padding: 6px;
+  margin-top: 8px;
+}
+
+.sector-supply-header {
+  color: #fff;
+  font-weight: bold;
+  font-size: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(51, 255, 102, 0.4);
+  padding-bottom: 2px;
+}
+
+.sector-supply-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sector-supply-spin {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: #000;
+  border: 1px solid #33ff66;
+  padding: 1px 3px;
+  font-size: 10px;
+  color: #33ff66;
+}
+
+.sector-supply-spin button {
+  background: #113311;
+  color: #33ff66;
+  border: 1px solid #33ff66;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.sector-supply-spin span {
+  min-width: 14px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Profile Ratings */
+.profile-ratings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 6px 0;
+  padding: 6px;
+  background: #e8e8e8;
+  border: 1px solid #808080;
+}
+
+.rating-badge-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.rating-bar-wrap {
+  width: 120px;
+  height: 10px;
+  background: #fff;
+  border: 1px solid #7f9db9;
+  overflow: hidden;
+  position: relative;
+}
+
+.rating-bar-fill {
+  height: 100%;
+  background: #000080;
+  transition: width 0.3s ease;
+}
+
+.rating-bar-fill.gos { background: #000080; }
+.rating-bar-fill.ksr { background: #b22222; }
+.rating-bar-fill.family { background: #2e8b57; }
+
+/* Interactive Mail Replies */
+.mail-replies-container {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed #808080;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mail-reply-btn {
+  background: #c0c0c0;
+  color: #000;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.mail-reply-btn:hover {
+  background: #dcdcdc;
+}
+
+.mail-reply-btn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  background: #b0b0b0;
+}
+
+/* Shift End Notification Badge */
+.shift-status-badge {
+  background: #113311;
+  color: #33ff66;
+  border: 1px solid #33ff66;
+  padding: 3px 8px;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
+  animation: pulsePlan 2s infinite ease-in-out;
+}
+
+@keyframes pulsePlan {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; border-color: #ffffff; }
+}
+
+/* Windows Desktop Marquee Selection Box */
+#desktop-marquee-box {
+  position: absolute;
+  border: 1px dotted rgba(0, 102, 255, 0.95);
+  background: rgba(0, 102, 255, 0.22);
+  pointer-events: none;
+  z-index: 1000;
+  display: none;
+}
+
+
+/* ==========================================================================
+   DYNAMIC WINDOW SCALING & ACCESSIBILITY (LARGE SCALE ON EXPAND)
+   ========================================================================== */
+.window.large-scale,
+.window.maximized {
+  font-size: 13px;
+}
+
+.window.large-scale .disp-body-text,
+.window.maximized .disp-body-text {
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.window.large-scale .disp-telemetry-box,
+.window.maximized .disp-telemetry-box {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.window.large-scale .sector-details-card,
+.window.maximized .sector-details-card {
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+}
+
+.window.large-scale button.btn-win,
+.window.maximized button.btn-win {
+  font-size: 12px !important;
+  padding: 4px 12px !important;
+}
+
+.window.large-scale .depot-stock-row,
+.window.maximized .depot-stock-row {
+  font-size: 13px !important;
+  padding: 6px !important;
+}
+
+/* ==========================================================================
+   OMEGA PROTOCOL: MYSTICAL SCREEN NEGATIVE INVERSION
+   ========================================================================== */
+body.omega-negative-active {
+  filter: invert(1) hue-rotate(180deg) contrast(1.18) !important;
+  transition: filter 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+/* ==========================================================================
+   MAP INFRASTRUCTURE CONDUITS & TOGGLE SWITCHES
+   ========================================================================== */
+.map-conduit-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.conduit-flow-heat {
+  stroke: #ff3322;
+  stroke-dasharray: 6 4;
+  animation: conduitAnim 1.2s linear infinite;
+}
+
+.conduit-flow-power {
+  stroke: #ffcc00;
+  stroke-dasharray: 6 4;
+  animation: conduitAnim 1s linear infinite;
+}
+
+.conduit-flow-hydro {
+  stroke: #33aaff;
+  stroke-dasharray: 6 4;
+  animation: conduitAnim 1.4s linear infinite;
+}
+
+@keyframes conduitAnim {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+.map-conduits-panel {
+  background: #181f1a;
+  border-top: 2px groove #3a5540;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: 'VT323', monospace;
+  font-size: 12px;
+}
+
+.conduit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #0f1511;
+  padding: 3px 6px;
+  border: 1px inset #2a3a2c;
+}
+
+.conduit-switch-btn {
+  font-family: 'VT323', monospace;
+  font-size: 11px;
+  background: #2b302c;
+  color: #aaffcc;
+  border: 2px outset #556658;
+  cursor: pointer;
+  padding: 2px 8px;
+  transition: all 0.15s ease;
+}
+
+.conduit-switch-btn:hover {
+  background: #3b453d;
+  color: #ffffff;
+}
+
+.conduit-switch-btn.active {
+  background: #115522;
+  color: #33ff66;
+  border: 2px inset #00aa33;
+  box-shadow: 0 0 6px rgba(51, 255, 102, 0.6);
+}
+
+/* ==========================================================================
+   AUTHENTIC SOVIET ARREST WARRANT DOCUMENT (NO NEON GLOW)
+   ========================================================================== */
+#debtor-arrest-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(8, 8, 10, 0.94);
+  z-index: 999999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.soviet-arrest-folder {
+  width: 680px;
+  max-width: 95vw;
+  background: #e8dcbf url('img/paper_texture.jpg');
+  background-size: cover;
+  color: #1a1a1a;
+  border: 2px solid #8c7853;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.9), inset 0 0 60px rgba(120, 95, 55, 0.35);
+  padding: 28px 36px;
+  font-family: 'Courier New', Courier, monospace;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.arrest-paperclip {
+  position: absolute;
+  top: -12px;
+  right: 48px;
+  width: 24px;
+  height: 52px;
+  border: 3px solid #777;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+  transform: rotate(5deg);
+  pointer-events: none;
+}
+
+.arrest-stamp-purple {
+  position: absolute;
+  bottom: 50px;
+  right: 50px;
+  border: 3px double #4a148c;
+  color: #4a148c;
+  padding: 8px 16px;
+  font-weight: bold;
+  font-size: 13px;
+  text-align: center;
+  transform: rotate(-12deg);
+  opacity: 0.88;
+  pointer-events: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.arrest-mugshot-box {
+  float: right;
+  width: 110px;
+  height: 140px;
+  border: 2px solid #333;
+  background: #222;
+  margin-left: 18px;
+  margin-bottom: 12px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: relative;
+}
+
+.arrest-mugshot-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.3) brightness(0.9);
+}
+
+/* ==========================================================================
+   MINI-GAME: ПНЕВМОЗОНД-98 (SOVIET FLAPPY BIRD)
+   ========================================================================== */
+#flappy-canvas {
+  background: #08120a;
+  display: block;
+  image-rendering: pixelated;
+  border: 2px inset #3a4a3e;
+  margin: 0 auto;
+}

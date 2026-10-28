@@ -1,0 +1,16 @@
+{
+  "name": "doomsday-dispatch",
+  "productName": "Doomsday Dispatch",
+  "version": "1.0.0",
+  "description": "Doomsday Dispatch - BunkerOS v3.11 Retro Bunker Simulator",
+  "main": "main.js",
+  "author": "Doomsday Dispatch Team",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . \"Doomsday Dispatch\" --platform=win32 --arch=x64 --out=dist --icon=favicon.ico --overwrite"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^45.0.0"
+  }
+}

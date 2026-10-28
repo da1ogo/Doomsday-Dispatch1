@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.zip
+*.exe
+*.dll
+*.pak
+*.dat
+*.bin
+locales/
+resources/
+restore_temp/
+asar_extracted/
+*.log
+.gemini/

@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doomsday Dispatch</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="alternate icon" href="favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- CRT Screen Effect Layer -->
+  <div id="crt-overlay"></div>
+
+  <!-- CRT Sleep / Power-Off Beam Overlay -->
+  <div id="screen-power-overlay">
+    <div style="text-align: center;">
+      <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px;">ДЕЖУРНЫЙ РЕЖИМ ПИТАНИЯ ТЕРМИНАЛА</div>
+      <div style="color: #669977; font-size: 11px;">НОЧНАЯ РЕЦИРКУЛЯЦИЯ СИСТЕМ... ЖДИТЕ ВКЛЮЧЕНИЯ...</div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       COMIC INTRO SLIDESHOW OVERLAY (BEFORE DAY 1)
+       ======================================================================== -->
+  <div id="comic-intro-overlay">
+    <div class="comic-frame-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span id="comic-frame-tag" style="color: #33ff66; font-size: 11px; font-weight: bold;">[АРХИВ: ДЕНЬ 0]</span>
+        <span id="comic-slide-counter" style="color: #88c0a0; font-size: 10px;">1 из 4</span>
+      </div>
+
+      <div class="comic-illustration-box" id="comic-illustration">
+        <img id="comic-slide-img" src="img/comic_1.jpg" alt="Кадр комикса" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+
+      <div class="comic-title" id="comic-title">1989 ГОД. СБОЙ АВТОМАТИКИ</div>
+      <div class="comic-text" id="comic-text">
+        Система раннего предупреждения дала ложный сигнал...
+      </div>
+
+      <div class="comic-actions">
+        <button class="btn-win" id="btn-comic-skip" style="color: #666;">[ ПРОПУСТИТЬ ВСТУПЛЕНИЕ ]</button>
+        <button class="btn-win" id="btn-comic-next" style="color: #000080; font-size: 12px; padding: 4px 18px; font-weight: bold;">
+          ДАЛЕЕ &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Steam-style Achievement Toast Notification -->
+  <div id="achievement-toast">
+    <div class="toast-badge" id="toast-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28">
+        <circle cx="14" cy="14" r="12" fill="#ffd700" stroke="#b8860b" stroke-width="2"/>
+        <polygon points="14,4 17,11 24,11 18,16 20,23 14,19 8,23 10,16 4,11 11,11" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="toast-content">
+      <div class="toast-header">ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО</div>
+      <div class="toast-title" id="toast-title">Название ачивки</div>
+      <div class="toast-desc" id="toast-desc">Описание условий достижения</div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       FULL WINDOWS 95 LOCK SCREEN (WALLPAPER + LOGON BOX)
+       ======================================================================== -->
+  <div id="lock-screen">
+    <div class="lock-screen-watermark">
+      BUNKER-OS v3.11<br>
+      СИСТЕМА ГОСПЛАНА СССР
+    </div>
+
+    <div class="login-window">
+      <div class="login-header">
+        <span>Вход в систему BunkerOS v3.11</span>
+      </div>
+      <div class="login-body">
+        <div class="login-banner">
+          <div class="login-banner-logo">
+            <svg width="34" height="34" viewBox="0 0 32 32">
+              <rect x="2" y="2" width="28" height="24" fill="#c0c0c0" stroke="#000" stroke-width="2"/>
+              <rect x="5" y="5" width="22" height="16" fill="#000080"/>
+              <polygon points="8,10 14,7 24,12 18,17" fill="#ffff00"/>
+              <rect x="10" y="26" width="12" height="4" fill="#808080"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-weight: bold; font-size: 13px; color: #000080;">BunkerOS Enterprise</div>
+            <div style="font-size: 10px; color: #555;">Авторизация оператора терминала</div>
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label for="login-username">Пользователь:</label>
+          <input type="text" id="login-username" class="login-input" value="admin" readonly>
+        </div>
+
+        <div class="login-field">
+          <label for="login-password">Пароль:</label>
+          <input type="password" id="login-password" class="login-input" placeholder="(пароль не требуется)" autofocus>
+        </div>
+
+        <div style="font-size: 10px; color: #555; margin-top: 4px;">
+          * Для входа в рабочую среду нажмите кнопку «OK»
+        </div>
+
+        <div class="login-actions">
+          <button class="btn-win" id="btn-login-ok" style="min-width: 75px;">OK</button>
+          <button class="btn-win" id="btn-login-cancel">В меню</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       WINDOWS SHUTDOWN CONFIRMATION DIALOG
+       ======================================================================== -->
+  <div id="shutdown-modal-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 86000; display: none; align-items: center; justify-content: center;">
+    <div class="window" style="width: 380px; position: static;">
+      <div class="window-header">
+        <div class="window-title">Завершение рабочей смены</div>
+      </div>
+      <div class="window-content" style="padding: 14px;">
+        <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 14px;">
+          <svg width="36" height="36" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r="14" fill="#000080" stroke="#fff" stroke-width="2"/>
+            <path d="M 16 6 L 16 16" stroke="#ffff00" stroke-width="3" stroke-linecap="round"/>
+            <path d="M 10 10 A 9 9 0 1 0 22 10" fill="none" stroke="#ffff00" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+          <div style="font-size: 11px; line-height: 1.45;">
+            Вы уверены, что хотите завершить текущую смену и перевести терминал в спящий ночной режим?
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button class="btn-win" id="btn-shutdown-confirm" style="min-width: 75px;">Да</button>
+          <button class="btn-win" id="btn-shutdown-cancel">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       INTERACTIVE TUTORIAL ASSISTANT (DAY 1)
+       ======================================================================== -->
+  <div id="tutorial-assistant-card">
+    <div class="assistant-header">
+      <span>ИНСТРУКТОР СМЕНЫ [ОБУЧЕНИЕ]</span>
+      <button class="win-btn" id="btn-close-assistant" style="width: 14px; height: 12px; font-size: 8px;">X</button>
+    </div>
+    <div class="assistant-body">
+      <div id="assistant-step-text" style="margin-bottom: 10px;">
+        Текст шага обучения...
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span id="assistant-step-counter" style="font-size: 10px; color: #666; font-family: monospace;">Шаг 1 из 4</span>
+        <button class="btn-win" id="btn-assistant-next" style="color: #000080; font-weight: bold;">
+          ДАЛЕЕ &gt;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MAIN MENU (BIOS / Boot Terminal with Internal Sub-Views)
+       ======================================================================== -->
+<!-- ======================================================================
+       CINEMATIC SOVIET BUNKER MAIN MENU SCENE
+       ====================================================================== -->
+  <div id="main-menu-overlay">
+    <div id="menu-bunker-scene">
+        <!-- СЛОЙ 2 (z-index: 2): Передняя маска с вырезом монитора -->
+        <div id="menu-bunker-overlay"></div>
+      <!-- Layer 2: CRT Curved Screen Viewport (Z-index 10: Behind bezel and lamp) -->
+      <div id="crt-screen-viewport">
+        <!-- CRT Screen Distortion / Glass Curvature / Scanlines -->
+        <div class="crt-glass-curvature"></div>
+        <div class="crt-scanline-raster"></div>
+        <div class="crt-beam-roll"></div>
+
+        <!-- Green Phosphor Terminal Content -->
+        <div id="crt-terminal-display">
+          
+          <!-- Terminal Header -->
+          <div class="terminal-header">
+            <div class="terminal-banner">ГОСПЛАН СССР // БУНКЕР СВЯЗИ «ОМЕГА»</div>
+            <div class="terminal-subline">ТЕРМИНАЛ: ДИСП-74Б | ЧАСТОТА: 50 Гц | СМЕНА №1</div>
+            <div class="terminal-divider">═════════════════════════════════════════════════</div>
+          </div>
+
+          <!-- Subview 1: Main Menu -->
+          <div id="menu-view-main" class="bios-subview active">
+            <div class="bunker-menu-options" id="bunker-menu-list">
+              <button class="bunker-menu-item selected" id="btn-new-game" data-index="0">
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[1]</span>
+                <span class="menu-label">НАЧАТЬ НОВУЮ СМЕНУ</span>
+              </button>
+              <button class="bunker-menu-item" id="btn-continue-game" data-index="1" disabled>
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[2]</span>
+                <span class="menu-label">ПРОДОЛЖИТЬ СМЕНУ</span>
+                <span class="menu-badge" id="continue-info">НЕТ СОХРАНЕНИЯ</span>
+              </button>
+              <button class="bunker-menu-item" id="btn-nav-achievements" data-index="2">
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[3]</span>
+                <span class="menu-label">РЕЕСТР ДОСТИЖЕНИЙ</span>
+                <span class="menu-badge" id="menu-ach-count">0 / 18</span>
+              </button>
+              <button class="bunker-menu-item" id="btn-nav-settings" data-index="3">
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[4]</span>
+                <span class="menu-label">ПАРАМЕТРЫ ТЕРМИНАЛА</span>
+              </button>
+              <button class="bunker-menu-item" id="btn-nav-credits" data-index="4">
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[5]</span>
+                <span class="menu-label">РАЗРАБОТЧИКИ И ДИРЕКТИВЫ</span>
+              </button>
+              <button class="bunker-menu-item danger-item" id="btn-exit-game" data-index="5">
+                <span class="menu-pointer">&gt; </span>
+                <span class="menu-num">[6]</span>
+                <span class="menu-label">ВЫКЛЮЧИТЬ ПИТАНИЕ (ВЫХОД)</span>
+              </button>
+            </div>
+
+            <div class="terminal-warning-note">
+              ВНИМАНИЕ: ВСЕ РЕШЕНИЯ ЗАПИСЫВАЮТСЯ В НЕСГОРАЕМЫЙ АРХИВ ГОСПЛАНА.<br>
+              ХАЛАТНОСТЬ И САБОТАЖ КАРАЮТСЯ ТРИБУНАЛОМ ВОЕННОГО ВРЕМЕНИ.
+            </div>
+          </div>
+
+          <!-- Subview 2: Achievements -->
+          <div id="menu-view-achievements" class="bios-subview">
+            <button class="bios-back-btn" data-back-to="menu-view-main">&lt; [ESC] ВЕРНУТЬСЯ В МЕНЮ</button>
+            <div class="subview-header">РЕЕСТР ДОСТИЖЕНИЙ ГОСПЛАНА:</div>
+            <div id="menu-achievements-list" class="achievements-grid terminal-scrollbox"></div>
+          </div>
+
+          <!-- Subview 3: Settings -->
+          <div id="menu-view-settings" class="bios-subview">
+            <button class="bios-back-btn" data-back-to="menu-view-main">&lt; [ESC] ВЕРНУТЬСЯ В МЕНЮ</button>
+            <div class="subview-header">ПАРАМЕТРЫ ТЕРМИНАЛА BUNKEROS:</div>
+            <div class="terminal-settings-box">
+              <label class="terminal-setting-row">
+                <span>Эмуляция кинескопа (CRT Scanlines &amp; Bloom):</span>
+                <input type="checkbox" id="menu-check-crt" checked>
+              </label>
+              <label class="terminal-setting-row">
+                <span>Звуковой чипсет (Web Audio procedural SFX):</span>
+                <input type="checkbox" id="menu-check-sound" checked>
+              </label>
+              <label class="terminal-setting-row">
+                <span>Громкость динамика:</span>
+                <input type="range" id="menu-range-volume" min="0" max="100" value="70">
+              </label>
+              <div style="margin-top: 10px; border-top: 1px dashed rgba(51,255,102,0.3); padding-top: 8px;">
+                <button class="bios-btn" id="menu-btn-reset-save" style="color: #ff3333; border-color: #ff3333; font-size: 11px;">
+                  [!] СБРОСИТЬ КАМПАНИЮ (СОХРАНЯЯ ДОСТИЖЕНИЯ)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subview 4: Credits -->
+          <div id="menu-view-credits" class="bios-subview">
+            <button class="bios-back-btn" data-back-to="menu-view-main">&lt; [ESC] ВЕРНУТЬСЯ В МЕНЮ</button>
+            <div class="subview-header">ДИРЕКТИВЫ И АВТОРЫ:</div>
+            <div class="terminal-credits-box">
+              <strong>ПРОЕКТ:</strong> «Doomsday Dispatch» (BunkerOS v3.11)<br>
+              <strong>ЖАНР:</strong> Симулятор кризисного диспетчера / Nuclear Management<br>
+              <strong>ЗВУК:</strong> Процедурный синтез Web Audio API &amp; Ambient Hum<br>
+              <strong>СЕТТИНГ:</strong> СССР 1998, Засекреченный бункер «Омега»<br><br>
+              <em>«Каждый спасенный сектор приближает победу. Каждая ошибка карается трибуналом.»</em>
+            </div>
+          </div>
+
+          <!-- Terminal Footer -->
+          <div class="terminal-footer">
+            <span>[W / S / ↑ / ↓] — НАВИГАЦИЯ</span>
+            <span>[ENTER / КЛИК] — ВЫБОР</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Layer 3: Photorealistic Soviet Monitor Bezel Frame (Z-index 20) -->
+      <div id="menu-monitor-bezel"></div>
+
+      <!-- Layer 4: Photorealistic Desk Lamp Fixture (Z-index 30) -->
+      <div id="menu-lamp-fixture"></div>
+
+      <!-- Layer 5: Dynamic Desk Lamp Glow Overlay (Z-index 40) -->
+      <div id="menu-lamp-light"></div>
+
+      <!-- Layer 6: Synchronous Table Ambient Shadow (Z-index 41) -->
+      <div id="menu-table-shadow"></div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       DESKTOP ENVIRONMENT
+       ======================================================================== -->
+  <div id="desktop">
+    <!-- Desktop Shortcut Icons -->
+    <div class="desktop-icons">
+      <!-- 1. Map Icon -->
+      <div class="desktop-icon" id="icon-map" title="Тактическая карта сектора">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="2" y="2" width="28" height="22" rx="2" fill="#808080" stroke="#000" stroke-width="1.5"/>
+            <rect x="4" y="4" width="24" height="18" fill="#001408"/>
+            <circle cx="10" cy="10" r="2.5" fill="#33ff66"/>
+            <circle cx="22" cy="14" r="2.5" fill="#33ff66"/>
+            <line x1="10" y1="10" x2="22" y2="14" stroke="#33ff66" stroke-width="1" stroke-dasharray="2,2"/>
+            <rect x="11" y="24" width="10" height="4" fill="#606060"/>
+            <rect x="8" y="28" width="16" height="2" fill="#404040"/>
+          </svg>
+        </div>
+        <div class="icon-label">Карта_Секторов.exe</div>
+      </div>
+
+      <!-- 2. Dispatches Icon -->
+      <div class="desktop-icon" id="icon-inbox" title="Входящие депеши и радиограммы">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <path d="M 6 3 L 20 3 L 26 9 L 26 29 L 6 29 Z" fill="#ffffff" stroke="#000" stroke-width="1.5"/>
+            <path d="M 20 3 L 20 9 L 26 9 Z" fill="#c0c0c0"/>
+            <line x1="9" y1="12" x2="23" y2="12" stroke="#000080" stroke-width="1.5"/>
+            <line x1="9" y1="16" x2="23" y2="16" stroke="#000080" stroke-width="1.5"/>
+            <line x1="9" y1="20" x2="19" y2="20" stroke="#000080" stroke-width="1.5"/>
+            <circle cx="21" cy="24" r="3.5" fill="#cc0000"/>
+          </svg>
+        </div>
+        <div class="icon-label">Депеши.doc</div>
+      </div>
+
+      <!-- 3. Depot Icon -->
+      <div class="desktop-icon" id="icon-depot" title="Пневмораспределитель ресурсов">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="6" width="24" height="20" fill="#a06020" stroke="#000" stroke-width="1.5"/>
+            <line x1="4" y1="6" x2="28" y2="26" stroke="#502800" stroke-width="1.5"/>
+            <line x1="4" y1="26" x2="28" y2="6" stroke="#502800" stroke-width="1.5"/>
+            <rect x="3" y="5" width="5" height="5" fill="#808080"/>
+            <rect x="24" y="5" width="5" height="5" fill="#808080"/>
+            <rect x="3" y="22" width="5" height="5" fill="#808080"/>
+            <rect x="24" y="22" width="5" height="5" fill="#808080"/>
+          </svg>
+        </div>
+        <div class="icon-label">Склад_Резерва.sys</div>
+      </div>
+
+      <!-- 4. BunkerMail Icon -->
+      <div class="desktop-icon" id="icon-mail" title="Почтовый клиент BunkerMail">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="7" width="24" height="18" fill="#ffffea" stroke="#000" stroke-width="1.5"/>
+            <polyline points="4,7 16,18 28,7" fill="none" stroke="#000080" stroke-width="2"/>
+            <circle id="mail-badge-dot" cx="25" cy="8" r="4" fill="#cc0000"/>
+          </svg>
+        </div>
+        <div class="icon-label">Почта_Госплана.exe</div>
+      </div>
+
+      <!-- 5. Administrator Profile Icon -->
+      <div class="desktop-icon" id="icon-profile" title="Личное дело и баланс зарплаты">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="5" y="4" width="22" height="24" rx="2" fill="#c0c0c0" stroke="#000" stroke-width="1.5"/>
+            <circle cx="16" cy="12" r="5" fill="#000080"/>
+            <path d="M 8 24 Q 16 17 24 24" fill="#000080"/>
+          </svg>
+        </div>
+        <div class="icon-label">Личное_Дело.exe</div>
+      </div>
+
+      <!-- 6. Summary Log Icon -->
+      <div class="desktop-icon" id="icon-summary" title="Утренняя сводка потерь">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="8" y="3" width="18" height="26" fill="#ffffea" stroke="#000" stroke-width="1.5"/>
+            <rect x="5" y="6" width="4" height="3" fill="#000"/>
+            <rect x="5" y="12" width="4" height="3" fill="#000"/>
+            <rect x="5" y="18" width="4" height="3" fill="#000"/>
+            <line x1="12" y1="8" x2="22" y2="8" stroke="#cc0000" stroke-width="1.5"/>
+            <line x1="12" y1="13" x2="22" y2="13" stroke="#555" stroke-width="1"/>
+            <line x1="12" y1="17" x2="22" y2="17" stroke="#555" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="icon-label">Сводка_Потерь.log</div>
+      </div>
+
+      <!-- 7. BunkerBank Icon (NEW) -->
+      <div class="desktop-icon" id="icon-bank" title="БункерБанк: переводы средств семье и контактам">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="5" width="24" height="22" rx="3" fill="#1b4d3e" stroke="#000" stroke-width="1.5"/>
+            <circle cx="16" cy="16" r="6" fill="#ffd700" stroke="#b8860b" stroke-width="1.5"/>
+            <text x="16" y="20" font-family="'Courier New', monospace" font-size="11" font-weight="900" fill="#000" text-anchor="middle">₽</text>
+            <rect x="22" y="14" width="4" height="4" fill="#888"/>
+          </svg>
+        </div>
+        <div class="icon-label" style="color: #afffcf;">БункерБанк.exe</div>
+      </div>
+
+      <!-- 8. BunkerMarket Icon (NEW) -->
+      <div class="desktop-icon" id="icon-market" title="Бункер-Маркет: покупка служебных утилит">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="4" width="24" height="24" rx="2" fill="#2b3a4a" stroke="#000" stroke-width="1.5"/>
+            <rect x="7" y="6" width="18" height="10" fill="#fff" stroke="#000" stroke-width="1"/>
+            <rect x="10" y="8" width="4" height="6" fill="#000"/>
+            <polygon points="12,24 22,24 24,18 10,18" fill="#ffd700" stroke="#000" stroke-width="1"/>
+            <circle cx="13" cy="26" r="1.5" fill="#000"/>
+            <circle cx="21" cy="26" r="1.5" fill="#000"/>
+          </svg>
+        </div>
+        <div class="icon-label">БункерМаркет.exe</div>
+      </div>
+
+      <!-- 9. Gazette Icon (NEW) -->
+      <div class="desktop-icon" id="icon-gazette" title="Свежий выпуск газеты «Бункерный Вестник»">
+        <div class="icon-img-svg" style="position: relative;">
+          <svg viewBox="0 0 32 32">
+            <rect x="5" y="4" width="22" height="24" fill="#f7f1e1" stroke="#000" stroke-width="1.5"/>
+            <line x1="8" y1="8" x2="24" y2="8" stroke="#8b0000" stroke-width="2"/>
+            <line x1="8" y1="12" x2="15" y2="12" stroke="#333" stroke-width="1.5"/>
+            <line x1="8" y1="15" x2="15" y2="15" stroke="#555" stroke-width="1"/>
+            <line x1="8" y1="18" x2="15" y2="18" stroke="#555" stroke-width="1"/>
+            <rect x="17" y="11" width="7" height="9" fill="#c4bcad" stroke="#333" stroke-width="1"/>
+            <line x1="8" y1="23" x2="24" y2="23" stroke="#555" stroke-width="1"/>
+          </svg>
+          <div id="gazette-unread-dot" style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: red; border-radius: 50%; border: 1px solid #fff; display: none;"></div>
+        </div>
+        <div class="icon-label">Вестник.doc</div>
+      </div>
+
+      <!-- 10. Calculator Icon -->
+      <div class="desktop-icon" id="icon-calc" title="Калькулятор">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="6" y="3" width="20" height="26" rx="2" fill="#d0d0d0" stroke="#000" stroke-width="1.5"/>
+            <rect x="9" y="6" width="14" height="5" fill="#99cc99" stroke="#000" stroke-width="1"/>
+            <circle cx="11" cy="15" r="1.5" fill="#333"/>
+            <circle cx="16" cy="15" r="1.5" fill="#333"/>
+            <circle cx="21" cy="15" r="1.5" fill="#333"/>
+            <circle cx="11" cy="20" r="1.5" fill="#333"/>
+            <circle cx="16" cy="20" r="1.5" fill="#333"/>
+            <circle cx="21" cy="20" r="1.5" fill="#333"/>
+          </svg>
+        </div>
+        <div class="icon-label">Калькулятор.exe</div>
+      </div>
+
+      <!-- 11. BunkerPad (WordPad) Icon -->
+      <div class="desktop-icon" id="icon-wordpad" title="Текстовый редактор BunkerPad">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="5" y="4" width="22" height="24" fill="#ffffff" stroke="#000" stroke-width="1.5"/>
+            <line x1="9" y1="8" x2="23" y2="8" stroke="#000080" stroke-width="2"/>
+            <line x1="9" y1="12" x2="23" y2="12" stroke="#555" stroke-width="1"/>
+            <line x1="9" y1="16" x2="23" y2="16" stroke="#555" stroke-width="1"/>
+            <line x1="9" y1="20" x2="18" y2="20" stroke="#555" stroke-width="1"/>
+            <polygon points="18,22 24,16 26,18 20,24" fill="#ffb000"/>
+          </svg>
+        </div>
+        <div class="icon-label">BunkerPad.exe</div>
+      </div>
+
+      <!-- 12. Tutorial Help Icon -->
+      <div class="desktop-icon" id="icon-tutorial" title="Памятка: выявление обмана и диверсий">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="5" y="4" width="22" height="24" fill="#0055aa" stroke="#000" stroke-width="1.5"/>
+            <rect x="7" y="6" width="18" height="20" fill="#ffffea"/>
+            <text x="16" y="22" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#cc8800" text-anchor="middle">?</text>
+          </svg>
+        </div>
+        <div class="icon-label">Обучение.hlp</div>
+      </div>
+
+      <!-- 13. TOR Radio Black Market (Revealed when VPN is ON) -->
+      <div class="desktop-icon" id="icon-tor" style="display: none;" title="Радиоприемник С.Н.О.Р.">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="7" width="24" height="18" rx="2" fill="#111" stroke="#ff3333" stroke-width="1.5"/>
+            <circle cx="11" cy="16" r="4" fill="#ff3333"/>
+            <rect x="18" y="12" width="7" height="3" fill="#ffcc00"/>
+            <line x1="16" y1="7" x2="26" y2="2" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="icon-label" style="color: #ff9999;">С.Н.О.Р.exe</div>
+      </div>
+
+      <!-- 14. Secret DOS Batch file -->
+      <div class="desktop-icon" id="icon-secret" title="Неизвестный системный файл">
+        <div class="icon-img-svg">
+          <svg viewBox="0 0 32 32">
+            <rect x="4" y="5" width="24" height="22" fill="#000000" stroke="#808080" stroke-width="1.5"/>
+            <rect x="4" y="5" width="24" height="5" fill="#000080"/>
+            <text x="7" y="20" font-family="monospace" font-size="11" font-weight="bold" fill="#33ff66">&gt;_</text>
+          </svg>
+        </div>
+        <div class="icon-label">Секретно_Архив.bat</div>
+      </div>
+    </div>
+
+    <!-- Desktop Context Menu (PKM on empty desktop) -->
+    <div id="desktop-context-menu">
+      <div class="context-item" id="ctx-new-folder">
+        <span>📁</span> <span>Создать папку</span>
+      </div>
+      <div class="context-item" id="ctx-refresh">
+        <span>🔄</span> <span>Обновить экран</span>
+      </div>
+      <div class="context-item" id="ctx-change-wallpaper">
+        <span>🖼️</span> <span>Обновить обои стола...</span>
+      </div>
+      <div class="context-divider"></div>
+      <div class="context-item" id="ctx-properties">
+        <span>⚙️</span> <span>Свойства системы</span>
+      </div>
+    </div>
+
+    <!-- Desktop Icon Context Menu (PKM on any icon) -->
+    <div id="icon-context-menu">
+      <div class="context-item" id="ctx-icon-open">
+        <span>📂</span> <span><strong>Открыть</strong></span>
+      </div>
+      <div class="context-item" id="ctx-icon-rename">
+        <span>✏️</span> <span>Переименовать</span>
+      </div>
+      <div class="context-item" id="ctx-icon-delete">
+        <span>🗑️</span> <span>Удалить с диска</span>
+      </div>
+      <div class="context-divider"></div>
+      <div class="context-item" id="ctx-icon-props">
+        <span>ℹ️</span> <span>Свойства файла</span>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: TACTICAL MAP
+         ====================================================================== -->
+    <div class="window" id="win-map" style="top: 25px; left: 110px; width: 720px; height: 460px;">
+      <div class="window-header">
+        <div class="window-title">
+          <svg width="14" height="14" viewBox="0 0 32 32" style="vertical-align: middle;">
+            <rect x="2" y="2" width="28" height="22" fill="#808080"/>
+            <rect x="4" y="4" width="24" height="18" fill="#001408"/>
+            <circle cx="10" cy="10" r="3" fill="#33ff66"/>
+          </svg>
+          [ТАКТИЧЕСКИЙ МОНИТОР] СЕТЬ ВЫЖИВАНИЯ СЕКТОРА «ОМЕГА»
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-map">_</button>
+          <button class="win-btn win-close" data-win="win-map">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 4px;">
+        <div class="map-layout">
+          <div class="map-viewport-container">
+            <div class="map-canvas-wrapper" id="map-viewport">
+              <div class="map-toolbar">
+                <button class="map-tool-btn" id="map-zoom-in" title="Приблизить">[ + ]</button>
+                <button class="map-tool-btn" id="map-zoom-out" title="Отдалить">[ - ]</button>
+                <button class="map-tool-btn" id="map-zoom-reset" title="Сбросить масштаб">[ 1:1 ]</button>
+                <span style="color: #33ff66; font-size: 10px; padding: 2px 4px; font-family: monospace;">(Тяните мышью для перемещения)</span>
+              </div>
+
+              <svg id="map-svg" viewBox="0 0 800 500">
+                <defs>
+                  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(51, 255, 102, 0.08)" stroke-width="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                <g id="map-transform-group" transform="matrix(1 0 0 1 0 0)">
+                  <path d="M 180 380 L 200 160 L 420 70 L 620 140 L 630 360 L 410 250 Z" 
+                        fill="none" stroke="rgba(51, 255, 102, 0.3)" stroke-width="1.5" stroke-dasharray="4,4" />
+                  <path d="M 410 250 L 180 380 M 410 250 L 200 160 M 410 250 L 620 140 M 410 250 L 630 360" 
+                        fill="none" stroke="rgba(51, 255, 102, 0.35)" stroke-width="1.2" />
+                  <g id="svg-nodes-group"></g>
+                </g>
+              </svg>
+            </div>
+            <div style="font-size: 10px; color: #555; margin-top: 4px; display: flex; justify-content: space-between;">
+              <span>Кликните по сектору для вывода телеметрии</span>
+              <span id="map-summary-stat">Статус: Все системы в норме</span>
+            </div>
+          </div>
+
+          <div class="map-telemetry-sidebar">
+            <div class="sector-telemetry-box" id="telemetry-box">
+              <div style="color: #fff; font-weight: bold; margin-bottom: 4px; border-bottom: 1px solid var(--crt-green);">
+                ТАКТИЧЕСКИЙ ШТАБ СЕКТОРА
+              </div>
+              <div id="telemetry-content">
+                Выберите узел на карте...
+              </div>
+
+              <!-- 5 Dynamic Live Metrics -->
+              <div class="sector-meters-grid" id="sector-live-meters" style="display: none;">
+                <div class="metric-bar-row">
+                  <span>🌡️ Тепло:</span>
+                  <div class="metric-bar-container"><div class="metric-bar-fill" id="meter-heat" style="width: 80%;"></div></div>
+                  <span id="meter-val-heat">80%</span>
+                </div>
+                <div class="metric-bar-row">
+                  <span>🍞 Сытость:</span>
+                  <div class="metric-bar-container"><div class="metric-bar-fill" id="meter-food" style="width: 75%;"></div></div>
+                  <span id="meter-val-food">75%</span>
+                </div>
+                <div class="metric-bar-row">
+                  <span>💧 Вода:</span>
+                  <div class="metric-bar-container"><div class="metric-bar-fill" id="meter-water" style="width: 80%;"></div></div>
+                  <span id="meter-val-water">80%</span>
+                </div>
+                <div class="metric-bar-row">
+                  <span>☣️ Санитария:</span>
+                  <div class="metric-bar-container"><div class="metric-bar-fill" id="meter-sanitation" style="width: 70%;"></div></div>
+                  <span id="meter-val-sanitation">70%</span>
+                </div>
+                <div class="metric-bar-row">
+                  <span>🔥 Бунт:</span>
+                  <div class="metric-bar-container"><div class="metric-bar-fill danger" id="meter-riot" style="width: 15%;"></div></div>
+                  <span id="meter-val-riot">15%</span>
+                </div>
+              </div>
+
+              <!-- Direct Supply Allocation Panel -->
+              <div class="sector-supply-box" id="sector-supply-panel" style="display: none;">
+                <div class="sector-supply-header">ПРЯМАЯ ОТГРУЗКА РЕСУРСОВ:</div>
+                <div class="sector-supply-row">
+                  <div class="sector-supply-spin">
+                    <span>⛽</span>
+                    <button class="map-spin-btn" data-res="fuel" data-act="dec">-</button>
+                    <span id="map-alloc-fuel">0</span>
+                    <button class="map-spin-btn" data-res="fuel" data-act="inc">+</button>
+                  </div>
+                  <div class="sector-supply-spin">
+                    <span>🍞</span>
+                    <button class="map-spin-btn" data-res="food" data-act="dec">-</button>
+                    <span id="map-alloc-food">0</span>
+                    <button class="map-spin-btn" data-res="food" data-act="inc">+</button>
+                  </div>
+                  <div class="sector-supply-spin">
+                    <span>💊</span>
+                    <button class="map-spin-btn" data-res="meds" data-act="dec">-</button>
+                    <span id="map-alloc-meds">0</span>
+                    <button class="map-spin-btn" data-res="meds" data-act="inc">+</button>
+                  </div>
+                  <div class="sector-supply-spin">
+                    <span>🔫</span>
+                    <button class="map-spin-btn" data-res="ammo" data-act="dec">-</button>
+                    <span id="map-alloc-ammo">0</span>
+                    <button class="map-spin-btn" data-res="ammo" data-act="inc">+</button>
+                  </div>
+                  <div class="sector-supply-spin">
+                    <span>💧</span>
+                    <button class="map-spin-btn" data-res="water" data-act="dec">-</button>
+                    <span id="map-alloc-water">0</span>
+                    <button class="map-spin-btn" data-res="water" data-act="inc">+</button>
+                  </div>
+                </div>
+                <button class="btn-win" id="btn-map-dispatch-supply" style="width: 100%; color: #006600; font-weight: bold; font-size: 10px; padding: 4px;">
+                  [ ОТГРУЗИТЬ В СЕКТОР ]
+                </button>
+              </div>
+
+              <!-- Infrastructure Conduits & Switches -->
+              <div class="map-conduits-panel">
+                <div style="font-weight: bold; color: #ffcc00; font-size: 11px; margin-bottom: 2px;">
+                  ⚙️ ИНФРАСТРУКТУРНЫЕ МАГИСТРАЛИ:
+                </div>
+                <div class="conduit-row">
+                  <span style="color: #ff6666; font-size: 11px;">🔥 ТЕПЛОТРАССА:</span>
+                  <button class="conduit-switch-btn active" id="btn-conduit-heat" data-mode="mine">
+                    В ШАХТУ [РЕЖИМ А]
+                  </button>
+                </div>
+                <div class="conduit-row">
+                  <span style="color: #ffea00; font-size: 11px;">⚡ ЭНЕРГОСЕТЬ:</span>
+                  <button class="conduit-switch-btn active" id="btn-conduit-power" data-mode="water">
+                    ВОДООЧИСТКА [РЕЖИМ А]
+                  </button>
+                </div>
+                <div class="conduit-row">
+                  <span style="color: #66ccff; font-size: 11px;">💧 ГИДРОСЕТЬ:</span>
+                  <button class="conduit-switch-btn active" id="btn-conduit-hydro" data-mode="hydro">
+                    ГИДРОПОНИКА [РЕЖИМ А]
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: INBOX / DISPATCHES
+         ====================================================================== -->
+    <div class="window" id="win-inbox" style="top: 50px; left: 240px; width: 620px; height: 480px;">
+      <div class="window-header">
+        <div class="window-title">
+          <svg width="14" height="14" viewBox="0 0 32 32" style="vertical-align: middle;">
+            <path d="M 6 3 L 20 3 L 26 9 L 26 29 L 6 29 Z" fill="#fff"/>
+          </svg>
+          [ДЕПЕША] ВХОДЯЩИЙ РАДИОТРАФИК
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-inbox">_</button>
+          <button class="win-btn win-close" data-win="win-inbox">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="dispatch-layout" style="position: relative;">
+          <div id="dispatch-stamp-overlay" class="dispatch-stamp"></div>
+          <div class="dispatch-header-bar">
+            <div>
+              <strong>ОТ:</strong> <span id="disp-sender">—</span> | 
+              <strong>ПРИОРИТЕТ:</strong> <span id="disp-priority" style="color: red; font-weight: bold;">—</span>
+            </div>
+            <div>
+              <strong>ДЕПЕША:</strong> <span id="disp-counter">1 / 1</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080;" id="disp-topic">
+              Тема сообщения
+            </div>
+            <button class="btn-win" id="btn-open-tutorial-inline" style="color: #000080; font-size: 10px; padding: 2px 6px;">
+              [?] Инструкция
+            </button>
+          </div>
+
+          <div class="dispatch-text-box" id="disp-text">
+            Загрузка входящего радиосообщения...
+          </div>
+
+          <div class="dispatch-telemetry-findings">
+            <div style="color: #ffb000; font-weight: bold; margin-bottom: 4px;">
+              [АНАЛИЗАТОР СИСТЕМЫ] СВЕРКА С ТЕЛЕМЕТРИЕЙ НА КАРТЕ:
+            </div>
+            <div id="disp-telemetry-hints">
+              Сопоставление данных с датчиками на карте...
+            </div>
+          </div>
+
+          <div class="dispatch-allocation-section">
+            <div class="dispatch-demand-header">
+              <span style="font-weight: bold; color: #000080;">ТРЕБОВАНИЕ ЗАЯВИТЕЛЯ:</span>
+              <span id="disp-demand-summary" style="font-weight: bold; color: #990000;">Загрузка требований...</span>
+            </div>
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px;">Назначьте выдачу со склада регуляторами [-] [+]:</div>
+            <div class="dispatch-spinner-row">
+              <div class="spinner-group">
+                <span class="spinner-label">⛽ Топливо</span>
+                <div class="spinner-controls">
+                  <button class="btn-win spin-btn" data-res="fuel" data-action="dec">-</button>
+                  <span class="spin-val" id="disp-alloc-fuel">0</span>
+                  <button class="btn-win spin-btn" data-res="fuel" data-action="inc">+</button>
+                </div>
+              </div>
+              <div class="spinner-group">
+                <span class="spinner-label">🍞 Пайки</span>
+                <div class="spinner-controls">
+                  <button class="btn-win spin-btn" data-res="food" data-action="dec">-</button>
+                  <span class="spin-val" id="disp-alloc-food">0</span>
+                  <button class="btn-win spin-btn" data-res="food" data-action="inc">+</button>
+                </div>
+              </div>
+              <div class="spinner-group">
+                <span class="spinner-label">💊 Медпаки</span>
+                <div class="spinner-controls">
+                  <button class="btn-win spin-btn" data-res="meds" data-action="dec">-</button>
+                  <span class="spin-val" id="disp-alloc-meds">0</span>
+                  <button class="btn-win spin-btn" data-res="meds" data-action="inc">+</button>
+                </div>
+              </div>
+              <div class="spinner-group">
+                <span class="spinner-label">🔫 Патроны</span>
+                <div class="spinner-controls">
+                  <button class="btn-win spin-btn" data-res="ammo" data-action="dec">-</button>
+                  <span class="spin-val" id="disp-alloc-ammo">0</span>
+                  <button class="btn-win spin-btn" data-res="ammo" data-action="inc">+</button>
+                </div>
+              </div>
+              <div class="spinner-group">
+                <span class="spinner-label">💧 Дистиллят</span>
+                <div class="spinner-controls">
+                  <button class="btn-win spin-btn" data-res="water" data-action="dec">-</button>
+                  <span class="spin-val" id="disp-alloc-water">0</span>
+                  <button class="btn-win spin-btn" data-res="water" data-action="inc">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dispatch-actions">
+            <button class="btn-win" id="btn-next-dispatch" style="margin-right: auto;">
+              СЛЕДУЮЩАЯ ДЕПЕША &gt;
+            </button>
+            <button class="btn-win danger" id="btn-reject-dispatch" style="font-size: 11px; padding: 5px 12px;">
+              [ ШТАМП: ОТКАЗАТЬ В ПОСТАВКЕ ]
+            </button>
+            <button class="btn-win" id="btn-approve-dispatch" style="color: #006600; font-weight: bold; font-size: 11px; padding: 5px 12px;">
+              [ ШТАМП: ПОДПИСАТЬ НАКЛАДНУЮ И ВЫДАТЬ ]
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: RESOURCE DEPOT & SUPPLY
+         ====================================================================== -->
+    <div class="window" id="win-depot" style="top: 130px; left: 450px; width: 450px; height: 330px;">
+      <div class="window-header">
+        <div class="window-title">
+          <svg width="14" height="14" viewBox="0 0 32 32" style="vertical-align: middle;">
+            <rect x="4" y="6" width="24" height="20" fill="#a06020"/>
+          </svg>
+          [ГОСРЕЗЕРВ] СКЛАД ПНЕВМОСНАБЖЕНИЯ
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-depot">_</button>
+          <button class="win-btn win-close" data-win="win-depot">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div style="margin-bottom: 8px; font-size: 11px; color: #444;">
+          Текущий остаток ресурсов в центральных хранилищах бункера:
+        </div>
+        <div class="depot-grid">
+          <div class="depot-card">
+            <div style="width: 32px; height: 32px; flex-shrink: 0;">
+              <svg viewBox="0 0 32 32">
+                <rect x="6" y="8" width="20" height="20" fill="#ffcc00" stroke="#000" stroke-width="1.5"/>
+                <polygon points="17,10 12,19 16,19 14,26 21,17 17,17" fill="#000"/>
+              </svg>
+            </div>
+            <div class="depot-info">
+              <div class="depot-name">Топливные ячейки</div>
+              <div style="font-size: 9px; color: #666;">Энергия и обогрев</div>
+            </div>
+            <div class="depot-count" id="res-fuel">0</div>
+          </div>
+
+          <div class="depot-card">
+            <div style="width: 32px; height: 32px; flex-shrink: 0;">
+              <svg viewBox="0 0 32 32">
+                <rect x="4" y="10" width="24" height="14" rx="4" fill="#d2b48c" stroke="#000" stroke-width="1.5"/>
+                <path d="M 8 10 Q 16 4 24 10 Z" fill="#c49a6c" stroke="#000" stroke-width="1.5"/>
+                <line x1="10" y1="12" x2="10" y2="22" stroke="#8b5a2b" stroke-width="1.5"/>
+                <line x1="16" y1="12" x2="16" y2="22" stroke="#8b5a2b" stroke-width="1.5"/>
+                <line x1="22" y1="12" x2="22" y2="22" stroke="#8b5a2b" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="depot-info">
+              <div class="depot-name">Продовольствие</div>
+              <div style="font-size: 9px; color: #666;">Пайки и калории</div>
+            </div>
+            <div class="depot-count" id="res-food">0</div>
+          </div>
+
+          <div class="depot-card">
+            <div style="width: 32px; height: 32px; flex-shrink: 0;">
+              <svg viewBox="0 0 32 32">
+                <rect x="5" y="8" width="22" height="18" rx="2" fill="#ffffff" stroke="#000" stroke-width="1.5"/>
+                <rect x="14" y="11" width="4" height="12" fill="#cc0000"/>
+                <rect x="10" y="15" width="12" height="4" fill="#cc0000"/>
+              </svg>
+            </div>
+            <div class="depot-info">
+              <div class="depot-name">Медкомплекты</div>
+              <div style="font-size: 9px; color: #666;">Антибиотики и кровь</div>
+            </div>
+            <div class="depot-count" id="res-meds">0</div>
+          </div>
+
+          <div class="depot-card">
+            <div style="width: 32px; height: 32px; flex-shrink: 0;">
+              <svg viewBox="0 0 32 32">
+                <rect x="4" y="8" width="24" height="18" fill="#4a5d38" stroke="#000" stroke-width="1.5"/>
+                <circle cx="16" cy="18" r="3" fill="#d4af37"/>
+              </svg>
+            </div>
+            <div class="depot-info">
+              <div class="depot-name">Ящики патронов</div>
+              <div style="font-size: 9px; color: #666;">Оборона периметра</div>
+            </div>
+            <div class="depot-count" id="res-ammo">0</div>
+          </div>
+
+          <div class="depot-card">
+            <div style="width: 32px; height: 32px; flex-shrink: 0;">
+              <svg viewBox="0 0 32 32">
+                <path d="M 16 4 Q 24 16 24 22 A 8 8 0 0 1 8 22 Q 8 16 16 4 Z" fill="#3399ff" stroke="#000" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="depot-info">
+              <div class="depot-name">Дистиллят воды</div>
+              <div style="font-size: 9px; color: #666;">Охлаждение и жажда</div>
+            </div>
+            <div class="depot-count" id="res-water">0</div>
+          </div>
+        </div>
+
+        <div class="inset-panel" style="font-size: 11px; line-height: 1.4; margin-bottom: 12px;">
+          <strong>СТАТУС ПНЕВМОСЕТИ:</strong> <span style="color: green;">ГОТОВА К ЗАПУСКУ КАПСУЛ</span><br>
+          Потери при пересылке: 0%. Авторизация: Диспетчер 1-й категории.
+        </div>
+
+        <div id="shift-plan-badge" class="shift-status-badge" style="display: none;">
+          [СМЕНА: ПЛАН ВЫПОЛНЕН — ДЕПЕШИ ОБРАБОТАНЫ]
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
+          <button class="btn-win" id="btn-end-day" style="padding: 6px 16px; font-size: 12px; color: #990000;">
+            ЗАВЕРШИТЬ СМЕНУ И ЗАКРЫТЬ ДЕНЬ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: BUNKERMAIL (OUTLOOK EXPRESS STYLE)
+         ====================================================================== -->
+    <div class="window" id="win-mail" style="top: 80px; left: 200px; width: 640px; height: 420px; display: none;">
+      <div class="window-header">
+        <div class="window-title">
+          <svg width="14" height="14" viewBox="0 0 32 32" style="vertical-align: middle;">
+            <rect x="4" y="7" width="24" height="18" fill="#ffffea"/>
+          </svg>
+          [BUNKERMAIL] ПОЧТА ГОСПЛАНА
+        </div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-mail">_</button>
+          <button class="win-btn win-close" data-win="win-mail">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0;">
+        <div class="mail-layout">
+          <div class="mail-sidebar">
+            <div class="mail-folder-item active">
+              <span>📥</span> <span>Входящие (<span id="mail-unread-count">1</span>)</span>
+            </div>
+            <div class="mail-folder-item">
+              <span>📤</span> <span>Отправленные</span>
+            </div>
+            <div class="mail-folder-item">
+              <span>🗑️</span> <span>Удаленные</span>
+            </div>
+          </div>
+          <div class="mail-content-pane">
+            <div class="mail-table-container">
+              <table class="mail-table">
+                <thead>
+                  <tr>
+                    <th>Отправитель</th>
+                    <th>Тема</th>
+                    <th>Дата</th>
+                  </tr>
+                </thead>
+                <tbody id="mail-table-body">
+                  <!-- Injected dynamically -->
+                </tbody>
+              </table>
+            </div>
+            <div class="mail-preview-pane" id="mail-preview-pane">
+              <div id="mail-preview-body">Выберите сообщение для чтения...</div>
+              <div id="mail-interactive-replies" class="mail-replies-container" style="display: none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: ADMINISTRATOR PROFILE / DOSSIER
+         ====================================================================== -->
+    <div class="window" id="win-profile" style="top: 100px; left: 260px; width: 480px; height: 380px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[ДОСЬЕ] ЛИЧНОЕ ДЕЛО ОПЕРАТОРА</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-profile">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="profile-card">
+          <div class="profile-avatar" style="width: 70px; height: 85px; padding: 0; background: #000;">
+            <img src="img/portrait.jpg" alt="ДИСП-74Б" style="width: 100%; height: 100%; object-fit: cover; border: 1px solid #000;">
+          </div>
+          <div class="profile-info">
+            <div style="font-size: 14px; font-weight: bold; color: #000080;">АЛЕКСЕЙ ВОЛКОВ</div>
+            <div><strong>Личный номер:</strong> ДИСП-74Б</div>
+            <div><strong>Должность:</strong> Оператор пневмораспределения</div>
+            <div class="profile-ratings-container">
+              <div class="rating-badge-item">
+                <span>🏛️ ГосАппарат:</span>
+                <div class="rating-bar-wrap"><div class="rating-bar-fill gos" id="bar-rating-gos" style="width: 70%;"></div></div>
+                <span id="profile-rating-gos" style="font-weight: bold; color: #000080;">70%</span>
+              </div>
+              <div class="rating-badge-item">
+                <span>🦊 КСР (Подполье):</span>
+                <div class="rating-bar-wrap"><div class="rating-bar-fill ksr" id="bar-rating-ksr" style="width: 15%;"></div></div>
+                <span id="profile-rating-ksr" style="font-weight: bold; color: #b22222;">15%</span>
+              </div>
+              <div class="rating-badge-item">
+                <span>🏠 Семья:</span>
+                <div class="rating-bar-wrap"><div class="rating-bar-fill family" id="bar-rating-family" style="width: 100%;"></div></div>
+                <span id="profile-rating-family" style="font-weight: bold; color: #2e8b57;">100%</span>
+              </div>
+            </div>
+            <div><strong>Место рождения:</strong> <span id="profile-birthplace" style="font-weight: bold; color: #111;">Определение...</span></div>
+          </div>
+        </div>
+
+        <div class="inset-panel" style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 10px; color: #666;">ТЕКУЩИЙ ЛИЧНЫЙ БАЛАНС:</div>
+            <div class="balance-counter-large" id="profile-balance">1 500 руб.</div>
+          </div>
+          <div style="font-size: 10px; line-height: 1.4; text-align: right;">
+            Базовый оклад: <strong>+700 руб./день</strong><br>
+            Штраф за ошибку: <strong style="color: #990000;">-400 руб.</strong>
+          </div>
+        </div>
+
+        <div style="font-weight: bold; margin-bottom: 4px;">ЖУРНАЛ ФИНАНСОВЫХ ВЗЫСКАНИЙ И ПРЕМИЙ:</div>
+        <div class="inset-panel-dark" id="profile-fines-log" style="height: 120px; font-size: 10px; overflow-y: auto;">
+          &gt; Назначен оклад первого дня: +2000 руб.<br>
+          &gt; Штрафов не зафиксировано.
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: BUNKERBANK (БУНКЕРБАНК v1.0)
+         ====================================================================== -->
+    <div class="window" id="win-bank" style="top: 90px; left: 240px; width: 490px; height: 440px; display: none;">
+      <div class="window-header" style="background: linear-gradient(90deg, #1b4d3e, #2e8b57);">
+        <div class="window-title">💰 БункерБанк v1.0 — Внутрисетевые переводы</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-bank">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="bank-balance-card">
+          <div>
+            <div style="font-size: 10px; color: #555;">ДОСТУПНЫЙ БАЛАНС:</div>
+            <div class="balance-counter-large" id="bank-current-balance">1 500 руб.</div>
+          </div>
+          <div style="text-align: right; font-size: 10px; color: #444;">
+            Ваш служебный жетон: <strong>ДИСП-74Б</strong><br>
+            Комиссия Госбанка: <strong>3%</strong>
+          </div>
+        </div>
+
+        <div class="bank-transfer-form">
+          <div style="font-weight: bold; color: #000080; font-size: 11px; margin-bottom: 4px;">ПЕРЕВОД ПО НОМЕРУ ЖЕТОНА / СЧЕТА:</div>
+          <div class="bank-input-group">
+            <label for="bank-input-account">5-значный номер счета:</label>
+            <input type="text" id="bank-input-account" maxlength="5" placeholder="Напр. 48712">
+          </div>
+          <div class="bank-input-group">
+            <label for="bank-input-amount">Сумма перевода (руб.):</label>
+            <input type="number" id="bank-input-amount" min="10" step="10" placeholder="0">
+          </div>
+          <div class="bank-fee-note">
+            <span>Комиссия за перевод (3%): <strong id="bank-fee-display">0 руб.</strong></span>
+            <span>К списанию: <strong id="bank-total-display" style="color: #990000;">0 руб.</strong></span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+            <span id="bank-transfer-status" style="font-size: 11px; font-weight: bold; color: #cc0000;"></span>
+            <button class="btn-win" id="btn-bank-send" style="padding: 4px 16px; font-weight: bold; color: #004d40;">[ ОТПРАВИТЬ ПЕРЕВОД ]</button>
+          </div>
+        </div>
+
+        <div style="font-weight: bold; margin-bottom: 4px; font-size: 11px;">ЖУРНАЛ БАНКОВСКИХ ТРАНЗАКЦИЙ:</div>
+        <div class="inset-panel-dark" id="bank-history-log" style="height: 120px; font-size: 10px; overflow-y: auto;">
+          &gt; Открытие счета диспетчера ДИСП-74Б. Баланс: 1500 руб.<br>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: APP MARKET (БУНКЕР-МАРКЕТ v2.0)
+         ====================================================================== -->
+    <div class="window" id="win-market" style="top: 110px; left: 280px; width: 480px; height: 420px; display: none;">
+      <div class="window-header" style="background: linear-gradient(90deg, #2b3a4a, #415b76);">
+        <div class="window-title">🛒 Бункер-Маркет — Каталог служебных программ</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-market">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div style="font-size: 11px; color: #444; margin-bottom: 10px; padding: 4px; background: #ffffd0; border: 1px solid #e0c040;">
+          ⚠️ Внимание: Установка стороннего ПО на служебный терминал осуществляется на личный страх и риск оператора.
+        </div>
+        <div id="market-app-list" style="max-height: 310px; overflow-y: auto;">
+          <!-- Dynamically populated from APP_MARKET_DATABASE -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: GAZETTE (БУНКЕРНЫЙ ВЕСТНИК)
+         ====================================================================== -->
+    <div class="window" id="win-gazette" style="top: 60px; left: 200px; width: 620px; height: 500px; display: none;">
+      <div class="window-header" style="background: linear-gradient(90deg, #443322, #775533);">
+        <div class="window-title">📰 Газета «Бункерный Вестник» — Ежедневный выпуск</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-gazette">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 10px; background: #bbb;">
+        <div class="gazette-paper" id="gazette-paper-content">
+          <!-- Dynamically populated from GAZETTE_DATABASE -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: TOR RADIO & BLACK MARKET
+         ====================================================================== -->
+    <div class="window" id="win-tor" style="top: 120px; left: 320px; width: 520px; height: 420px; display: none;">
+      <div class="window-header" style="background: linear-gradient(90deg, #660000, #aa0000);">
+        <div class="window-title">[РАДИО] С.Н.О.Р. (Служба Наблюдения и Оповещения Радиоэфира)</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-tor">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="background: #1a1a1a; color: #fff;">
+        <div class="radio-tuner-box">
+          <div style="display: flex; justify-content: space-between; font-weight: bold;">
+            <span>ЧАСТОТА РАДИОПРИЕМНИКА:</span>
+            <span id="tor-freq-display" style="color: #ff3333; font-size: 14px;">91.2 МГц</span>
+          </div>
+          <input type="range" class="radio-dial" id="tor-freq-slider" min="60.0" max="108.0" step="0.1" value="91.2">
+          <div id="tor-signal-status" style="color: #ffb000; font-size: 10px;">
+            [ШИПЕНИЕ ПОМЕХ...] Вращайте настройку для поиска сигнала в эфире
+          </div>
+        </div>
+
+        <div id="tor-market-locked" style="padding: 20px; text-align: center; color: #666; font-family: monospace;">
+          СИГНАЛ НЕ ПОЙМАН.<br>ВРАЩАЙТЕ НАСТРОЙКУ ЧАСТОТЫ ДЛЯ ПОИСКА ТОРГОВЦЕВ.
+        </div>
+
+        <div id="tor-market-unlocked" style="display: none; max-height: 220px; overflow-y: auto;">
+          <div style="color: #33ff66; font-size: 11px; margin-bottom: 8px; font-family: monospace;">
+            &gt; СИГНАЛ ЗАФИКСИРОВАН: Торговец «Лис» на связи. Выбирай товар, пока патруль не запеленговал.
+          </div>
+          <div id="tor-items-container">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: CALCULATOR (WIN95 STYLE)
+         ====================================================================== -->
+    <div class="window" id="win-calc" style="top: 150px; left: 380px; width: 230px; height: 260px; display: none;">
+      <div class="window-header">
+        <div class="window-title">Калькулятор</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-calc">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="calc-display" id="calc-display">0</div>
+        <div class="calc-grid">
+          <button class="btn-win calc-btn" data-calc="C">C</button>
+          <button class="btn-win calc-btn" data-calc="CE">CE</button>
+          <button class="btn-win calc-btn" data-calc="sqrt">√</button>
+          <button class="btn-win calc-btn" data-calc="/">/</button>
+
+          <button class="btn-win calc-btn" data-calc="7">7</button>
+          <button class="btn-win calc-btn" data-calc="8">8</button>
+          <button class="btn-win calc-btn" data-calc="9">9</button>
+          <button class="btn-win calc-btn" data-calc="*">*</button>
+
+          <button class="btn-win calc-btn" data-calc="4">4</button>
+          <button class="btn-win calc-btn" data-calc="5">5</button>
+          <button class="btn-win calc-btn" data-calc="6">6</button>
+          <button class="btn-win calc-btn" data-calc="-">-</button>
+
+          <button class="btn-win calc-btn" data-calc="1">1</button>
+          <button class="btn-win calc-btn" data-calc="2">2</button>
+          <button class="btn-win calc-btn" data-calc="3">3</button>
+          <button class="btn-win calc-btn" data-calc="+">+</button>
+
+          <button class="btn-win calc-btn" data-calc="0">0</button>
+          <button class="btn-win calc-btn" data-calc="+/-">±</button>
+          <button class="btn-win calc-btn" data-calc=".">.</button>
+          <button class="btn-win calc-btn" data-calc="=" style="background: #e0e0ff;">=</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: BUNKERPAD (WORDPAD CLONE)
+         ====================================================================== -->
+    <!-- ======================================================================
+         WINDOW: WALLPAPER & DISPLAY PROPERTIES
+         ====================================================================== -->
+    <div class="window" id="win-wallpaper" style="top: 90px; left: 240px; width: 490px; height: 430px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[ЭКРАН] Свойства: Фоновый рисунок стола</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-wallpaper">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 12px; display: flex; flex-direction: column; gap: 10px; background: #c0c0c0;">
+        
+        <!-- CRT Monitor Preview Box -->
+        <div style="display: flex; justify-content: center;">
+          <div class="wallpaper-monitor-housing">
+            <div class="wallpaper-monitor-screen" id="wallpaper-preview-screen">
+              <div class="wallpaper-monitor-glass"></div>
+            </div>
+            <div class="wallpaper-monitor-stand"></div>
+          </div>
+        </div>
+
+        <div style="font-weight: bold; font-size: 11px; color: #111;">
+          Выберите фоновый рисунок рабочего стола BunkerOS:
+        </div>
+
+        <div class="inset-panel" style="background: #fff; height: 125px; overflow-y: auto; padding: 4px;" id="wallpaper-list-container">
+          <div class="wallpaper-option-item selected" data-wallpaper="classic">
+            <strong>BunkerOS Классика</strong> (Уставной сизый терминал)
+          </div>
+          <div class="wallpaper-option-item" data-wallpaper="poster">
+            <strong>Агитационный плакат ГО</strong> (Бдительность — щит бункера)
+          </div>
+          <div class="wallpaper-option-item" data-wallpaper="meadow">
+            <strong>Ромашковое поле</strong> (Цветная пленка до войны)
+          </div>
+          <div class="wallpaper-option-item" data-wallpaper="family">
+            <strong>Семья Волкова</strong> (Памятная карточка Алексея с семьей)
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: auto;">
+          <button class="btn-win" id="btn-apply-wallpaper" style="padding: 4px 18px; font-weight: bold;">[ ПРИМЕНИТЬ ]</button>
+          <button class="btn-win" id="btn-cancel-wallpaper" style="padding: 4px 16px;">Отмена</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: НОБ SECURITY WARNING DIALOG
+         ====================================================================== -->
+    <div class="window" id="win-nob-warning" style="top: 140px; left: 220px; width: 450px; display: none; z-index: 99990;">
+      <div class="window-header" style="background: linear-gradient(90deg, #800000, #cc3300); color: #fff;">
+        <div class="window-title">[ВНИМАНИЕ] Неофициальный протокол: НОБ v1.4</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-nob-warning">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 12px; background: #c0c0c0; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <div style="font-size: 30px; line-height: 1;">⚠️</div>
+          <div class="inset-panel" style="flex: 1; padding: 10px; background: #fffffa; font-size: 11px; line-height: 1.45; color: #111;">
+            <strong style="color: #900;">ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ:</strong><br>
+            Вы активировали стороннее программное обеспечение <strong>НОБ</strong> (Неофициальный Обход Блокировок).<br><br>
+            Данный программный модуль не сертифицирован Госпланом СССР. Администрация BunkerOS и разработчики операционной системы не несут ответственности за перехват пакетов, штрафы отдела внутреннего контроля (ОВК) и непредсказуемые последствия в закрытом секторе.<br><br>
+            <em>Действуйте на свой страх и риск. Пользуйтесь с умом!</em>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button class="btn-win" id="btn-nob-ack" style="padding: 4px 18px; font-weight: bold;">[ Принять риски ]</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="window" id="win-wordpad" style="top: 110px; left: 180px; width: 500px; height: 350px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[BUNKERPAD] БЛОКНОТ ДИСПЕТЧЕРА</div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-wordpad">_</button>
+          <button class="win-btn win-close" data-win="win-wordpad">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 0; display: flex; flex-direction: column;">
+        <div class="wordpad-toolbar">
+          <select id="wp-font-family" style="font-size: 11px; height: 21px; max-width: 140px;">
+            <option value="'Courier New', Courier, monospace" selected>Курьер (Машинопись)</option>
+            <option value="'Times New Roman', Times, serif">Газетный (Times)</option>
+            <option value="'VT323', monospace">Терминал (ГОСТ)</option>
+          </select>
+          <button class="btn-win" id="btn-wp-bold" style="font-weight: bold; width: 22px; padding: 2px;">B</button>
+          <button class="btn-win" id="btn-wp-italic" style="font-style: italic; width: 22px; padding: 2px;">I</button>
+          <button class="btn-win" id="btn-wp-underline" style="text-decoration: underline; width: 22px; padding: 2px;">U</button>
+          <select id="wp-font-size" style="font-size: 11px; height: 21px;">
+            <option value="11px">11 пт</option>
+            <option value="13px" selected>13 пт</option>
+            <option value="16px">16 пт</option>
+            <option value="20px">20 пт</option>
+          </select>
+          <button class="btn-win" id="btn-wp-pagenum" title="Вставить разделитель страницы" style="font-size: 11px; padding: 2px 6px;"># Стр.</button>
+          <button class="btn-win" id="btn-wp-save" style="margin-left: auto;">Сохранить черновик</button>
+        </div>
+        <div class="wordpad-body" id="wordpad-editor" contenteditable="true" style="flex: 1; overflow-y: auto; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 13px;">
+          Заметки диспетчера Алексея Волкова...
+        </div>
+        <div style="background: #c0c0c0; border-top: 1px solid #808080; padding: 2px 8px; font-size: 10px; color: #222; display: flex; justify-content: space-between; font-family: monospace;">
+          <span id="wp-page-status">Страница: 1 из 1</span>
+          <span id="wp-char-status">Символов: 38</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: CUSTOM FOLDER EXPLORER
+         ====================================================================== -->
+    <div class="window" id="win-folder" style="top: 140px; left: 300px; width: 450px; height: 320px; display: none;">
+      <div class="window-header">
+        <div class="window-title" id="folder-title">📁 ПРОВОДНИК: Новая папка</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-folder">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="background: #ffffff; padding: 8px; display: flex; flex-direction: column; overflow: hidden;">
+        <div id="folder-items-grid" style="flex: 1; display: flex; flex-wrap: wrap; gap: 10px; padding: 8px; background: #fafafa; border: 2px inset #dfdfdf; overflow-y: auto; align-content: flex-start; min-height: 180px;"></div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 11px; color: #555;">
+          <span id="folder-content-msg">Папка пуста. Перетащите сюда ярлык с рабочего стола.</span>
+          <span style="font-size: 10px; color: #888;">[Клик — запуск, ↗ — на рабочий стол]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: TUTORIAL / INSPECTOR HANDBOOK
+         ====================================================================== -->
+    <div class="window" id="win-tutorial" style="top: 50px; left: 160px; width: 620px; height: 490px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[ИНСТРУКЦИЯ] СЛУЖЕБНЫЙ РЕГЛАМЕНТ ДИСПЕТЧЕРА ГОСПЛАНА</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-tutorial">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 8px; display: flex; flex-direction: column; overflow: hidden; background: #c0c0c0;">
+                <div class="inset-panel" style="flex: 1; overflow-y: auto; background: #fffffa; padding: 12px; font-size: 11px; line-height: 1.5; color: #111;">
+          
+          <div style="text-align: center; border-bottom: 2px solid #800000; padding-bottom: 6px; margin-bottom: 12px;">
+            <div style="font-size: 14px; font-weight: 900; color: #800000; letter-spacing: 1px;">
+              ГЛАВНОЕ УПРАВЛЕНИЕ БУНКЕРНЫХ ПОСЕЛЕНИЙ СССР
+            </div>
+            <div style="font-size: 10px; color: #555; text-transform: uppercase;">
+              Служебный регламент оператора пневмосети • Экземпляр №41
+            </div>
+          </div>
+
+          <!-- Глава 1: Телетайп и депеши -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 1. ТЕЛЕТАЙП И ВХОДЯЩИЕ ДЕПЕШИ
+            </div>
+            <p style="margin: 0;">
+              В окно <strong>«Депеши»</strong> поступают оперативные запросы от шести аванпостов комплекса. Обращайте внимание на приоритет (СТАНДАРТ, ВЫСОКИЙ, СРОЧНО) и сектор-отправитель. Депеши поступают с естественной радиопаузой в течение смены.
+            </p>
+          </div>
+
+          <!-- Глава 2: Анализ датчиков и телеметрии -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 2. АНАЛИЗ ДАТЧИКОВ И ТЕЛЕМЕТРИИ
+            </div>
+            <p style="margin: 0;">
+              <strong>Никогда не верьте тексту на слово!</strong> Всегда сверяйте показания датчиков внизу бланка:
+              <br>• Если заявляют о лютом морозе, а термодатчик фиксирует +20°C — это фальшивка!
+              <br>• При уровне паров алкоголя &gt;1.5 ‰ депеша сфабрикована нетрезвым персоналом.
+              <br>• Необоснованная выдача ресурсов мошенникам карается штрафом при утренней проверке.
+            </p>
+          </div>
+
+          <!-- Глава 3: Накладная и регуляторы [-] [+] -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 3. НАКЛАДНАЯ И РЕГУЛЯТОРЫ [-] [+]
+            </div>
+            <p style="margin: 0;">
+              Ресурсы со склада списываются строго регуляторами <strong>[-]</strong> и <strong>[+]</strong>.
+              <br>• Кнопка «Подписать накладную» активна <strong>только</strong> при добавлении хотя бы 1 единицы ресурса.
+              <br>• Подписать пустой бланк невозможно. Если запрос ложный — жмите <strong>«Отказать»</strong>.
+            </p>
+          </div>
+
+          <!-- Глава 4: Тактическая карта бункера -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 4. ТАКТИЧЕСКАЯ КАРТА БУНКЕРА
+            </div>
+            <p style="margin: 0;">
+              Карта отображает 6 секторов комплекса «Омега». Клик по сектору открывает 5 ключевых шкал: Тепло, Сытость, Санитария, Вода и Риск бунта. Через панель отгрузки на карте можно направить ресурсы со склада напрямую в сектор.
+            </p>
+          </div>
+
+          <!-- Глава 5: Магистрали и тумблеры -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 5. ИНФРАСТРУКТУРНЫЕ МАГИСТРАЛИ И ТУМБЛЕРЫ
+            </div>
+            <p style="margin: 0;">
+              На карте расположены 3 переключателя магистралей:
+              <br>• <strong>Теплотрасса:</strong> перенаправление пара между Шахтой и Жилым Блоком.
+              <br>• <strong>Энергосеть:</strong> переключение мощности между Водоочисткой и Радаром.
+              <br>• <strong>Гидросеть:</strong> распределение воды между Теплицами и кранами граждан.
+              <br>Тумблеры позволяют спасать замерзающие и жаждущие сектора <em>без расхода складских запасов</em>.
+            </p>
+          </div>
+
+          <!-- Глава 6: Склад Госрезерва и завершение дня -->
+          <div style="margin-bottom: 12px;">
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 6. СКЛАД ГОСРЕЗЕРВА И ЗАВЕРШЕНИЕ ДНЯ
+            </div>
+            <p style="margin: 0;">
+              В окне <strong>«Склад Госрезерва»</strong> ведется учет запасов (Топливо, Пайки, Медпаки, Патроны, Вода). Каждое утро центральные базы доставляют пополнение. Когда план депеш смены выполнен, нажмите кнопку <strong>«[ Завершить смену и закрыть день ]»</strong>.
+            </p>
+          </div>
+
+          <!-- Глава 7: Экономика и зарплата -->
+          <div>
+            <div style="font-weight: bold; font-size: 12px; color: #000080; border-left: 3px solid #000080; padding-left: 6px; margin-bottom: 4px;">
+              ГЛАВА 7. ЭКОНОМИКА И ЗАРПЛАТА
+            </div>
+            <p style="margin: 0;">
+              • Каждое утро диспетчеру начисляется оклад (+700 руб.).
+              <br>• В утренней сводке вычитаются штрафы за допущенные за смену ошибки.
+              <br>• <strong>Критический лимит долга:</strong> если баланс падает до <strong>-2400 руб.</strong>, Военный Трибунал немедленно арестовывает оператора за саботаж (игра окончена).
+            </p>
+          </div>
+
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px;">
+          
+          <button class="btn-win" id="btn-close-tutorial" style="padding: 4px 18px; font-weight: bold;">[ ОЗНАКОМЛЕН. К РАБОТЕ ]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: DAILY SUMMARY / CASUALTY TELETYPE
+         ====================================================================== -->
+    <div class="window" id="win-summary" style="top: 80px; left: 160px; width: 580px; height: 430px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[ТЕЛЕТАЙП] УТРЕННЯЯ СВОДКА ПОТЕРЬ</div>
+        <div class="window-controls">
+          <button class="win-btn win-min" data-win="win-summary">_</button>
+          <button class="win-btn win-close" data-win="win-summary">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div style="font-weight: bold; margin-bottom: 6px; color: #000080;">
+          РАСПЕЧАТКА НОЧНЫХ ПРОИСШЕСТВИЙ И ПОСЛЕДСТВИЙ ВАШИХ РЕШЕНИЙ:
+        </div>
+        <div class="teletype-paper" id="summary-text-log">
+          Печать утренней сводки...
+        </div>
+        <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-weight: bold; font-size: 12px;" id="summary-dead-counter">
+            Погибло за ночь: 0 чел.
+          </div>
+          <button class="btn-win" id="btn-close-summary" style="font-size: 12px; padding: 4px 20px;">
+            ПОДТВЕРДИТЬ И НАЧАТЬ СМЕНУ
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: SECRET BAT
+         ====================================================================== -->
+    <div class="window" id="win-secret" style="top: 160px; left: 300px; width: 380px; height: 260px; display: none;">
+      <div class="window-header">
+        <div class="window-title">[BAT] АРХИВ_ПРЕДШЕСТВЕННИКА.BAT</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-secret">X</button>
+        </div>
+      </div>
+      <div class="window-content">
+        <div class="inset-panel-dark" style="height: 180px; font-size: 11px; overflow-y: auto;">
+          &gt; ЗАПУСК СИСТЕМНОГО ДЕКОДЕРА...<br>
+          &gt; ОБНАРУЖЕНЫ ЗАПИСИ ИНСПЕКТОРА №6...<br><br>
+          <span style="color: #ffb000;">
+          "Если ты читаешь это — ты следующий за этим пультом. Не верь сводкам из Водоочистителя. Спирт там варят прямо в отстойниках. И ради всего святого, не перекрывай вентиляцию шахтерам..."
+          </span><br><br>
+          &gt; ПОЛУЧЕН ДОСТУП К СЕКРЕТНОЙ ПАСХАЛКЕ.<br>
+          &gt; ДОСТИЖЕНИЕ РАЗБЛОКИРОВАНО.
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- End #desktop -->
+
+  <!-- ========================================================================
+       TASKBAR & START MENU
+       ======================================================================== -->
+  <div id="taskbar">
+    <button class="btn-start" id="btn-start-toggle">
+      <svg width="14" height="14" viewBox="0 0 16 16" style="vertical-align: middle;">
+        <rect x="1" y="1" width="6" height="6" fill="#cc0000"/>
+        <rect x="9" y="1" width="6" height="6" fill="#00aa00"/>
+        <rect x="1" y="9" width="6" height="6" fill="#0000cc"/>
+        <rect x="9" y="9" width="6" height="6" fill="#ffcc00"/>
+      </svg>
+      <span>БУНКЕР</span>
+    </button>
+
+    <div class="taskbar-tasks" id="taskbar-tasks-container"></div>
+
+    <div class="taskbar-tray">
+      <!-- Tray Volume Popup -->
+      <div id="tray-volume-popup">
+        <input type="range" id="tray-vol-slider" min="0" max="100" value="70">
+        <span style="font-size: 9px; margin-top: 4px;" id="tray-vol-num">70%</span>
+      </div>
+
+      <!-- НОБ: Неофициальный Обход Блокировок -->
+      <div class="tray-btn" id="btn-tray-vpn" title="НОБ: Неофициальный Обход Блокировок (Переключить)">
+        <span id="vpn-status-text" style="color: #888; font-family: monospace; font-weight: bold;">[НОБ:ВЫКЛ]</span>
+      </div>
+
+      <!-- Volume Icon Button -->
+      <div class="tray-btn" id="btn-tray-vol" title="Регулятор громкости">
+        <span>🔊</span>
+      </div>
+
+      <div style="height: 14px; width: 1px; background: #999;"></div>
+
+      <!-- Real Date in Tray -->
+      <div class="tray-stat" title="Текущая дата смены">
+        <span style="font-weight: bold; font-family: monospace;" id="tray-date">14.11.1998</span>
+      </div>
+
+      <div style="height: 14px; width: 1px; background: #999;"></div>
+
+      <div class="tray-stat" id="tray-clock">08:00</div>
+    </div>
+  </div>
+
+  <!-- Start Menu Popup -->
+  <div id="start-menu">
+    <div class="start-container">
+      <div class="start-sidebar">BUNKER-OS 3.11</div>
+      <div class="start-items">
+        <div class="start-item" id="start-item-map">
+          <span>🗺️</span> <span>Тактическая карта</span>
+        </div>
+        <div class="start-item" id="start-item-inbox">
+          <span>✉️</span> <span>Входящие депеши</span>
+        </div>
+        <div class="start-item" id="start-item-depot">
+          <span>📦</span> <span>Склад пневмосети</span>
+        </div>
+        <div class="start-item" id="start-item-mail">
+          <span>📬</span> <span>Почта BunkerMail</span>
+        </div>
+        <div class="start-item" id="start-item-profile">
+          <span>👤</span> <span>Личное дело Волкова</span>
+        </div>
+        <div class="start-item" id="start-item-bank">
+          <span>💰</span> <span>БункерБанк</span>
+        </div>
+        <div class="start-item" id="start-item-market">
+          <span>🛒</span> <span>Бункер-Маркет</span>
+        </div>
+        <div class="start-item" id="start-item-calc">
+          <span>🧮</span> <span>Калькулятор</span>
+        </div>
+        <div class="start-item" id="start-item-wordpad">
+          <span>📝</span> <span>Редактор BunkerPad</span>
+        </div>
+
+        <div class="start-divider"></div>
+        <div class="start-item" id="start-item-menu">
+          <span>🚪</span> <span>Выход в главное меню</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       EMERGENCY SIREN CRISIS OVERLAY
+       ======================================================================== -->
+  <div id="emergency-overlay">
+    <div class="window emergency-window-dialog" style="width: 530px; display: flex; flex-direction: column;">
+      <div class="window-header" style="background: linear-gradient(90deg, #800000, #b22222); color: #fff;">
+        <div class="window-title" style="display: flex; align-items: center; gap: 6px;">
+          <span>⚠️</span>
+          <span id="emergency-title">[ОПОВЕЩЕНИЕ ГО] КРИТИЧЕСКАЯ НЕШТАТНАЯ СИТУАЦИЯ</span>
+        </div>
+        <div style="font-family: monospace; font-size: 11px; font-weight: bold; background: #000; color: #ff3333; padding: 2px 8px; border: 1px inset #808080;">
+          ТАЙМЕР: <span id="emergency-timer">15</span> СЕК
+        </div>
+      </div>
+      <div class="window-content" style="padding: 10px; background: #c0c0c0; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: flex-start;">
+          <div style="width: 44px; height: 44px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: #fffffa; border: 2px inset #999;">
+            <svg width="32" height="32" viewBox="0 0 24 24">
+              <polygon points="12,2 22,20 2,20" fill="#ffd700" stroke="#b8860b" stroke-width="1.5"/>
+              <line x1="12" y1="8" x2="12" y2="14" stroke="#000" stroke-width="2"/>
+              <circle cx="12" cy="17" r="1.2" fill="#000"/>
+            </svg>
+          </div>
+          <div class="inset-panel" id="emergency-desc" style="flex: 1; padding: 8px 10px; background: #fffffa; color: #111; font-size: 12px; line-height: 1.4; min-height: 52px; font-family: 'Consolas', 'Courier New', monospace;">
+            Датчики зафиксировали критическую нештатную ситуацию!
+          </div>
+        </div>
+
+        <div style="font-weight: bold; font-size: 11px; color: #222; text-transform: uppercase;">
+          Выберите регламентное действие оператора:
+        </div>
+
+        <div id="emergency-options" style="display: flex; flex-direction: column; gap: 6px;">
+          <!-- populated dynamically with retro buttons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       COMENDATURA INSPECTION MODAL DIALOG
+       ======================================================================== -->
+  <div id="inspection-modal" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 999950; display: none; align-items: center; justify-content: center;">
+    <div class="window inspection-window" id="inspection-window-box" style="width: 460px; display: flex !important; flex-direction: column;">
+      <div class="window-header" style="background: linear-gradient(90deg, #800000, #b30000);">
+        <div class="window-title">[КОНТРОЛЬ] ВНЕПЛАНОВАЯ ПРОВЕРКА КОМЕНДАТУРЫ СБ</div>
+      </div>
+      <div class="window-content">
+        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+          <div style="width: 54px; height: 64px; background: #1a1a1a; border: 1px solid #333; display: flex; align-items: center; justify-content: center;">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="#cc2222">
+              <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1ZM12 11.99H19C18.47 16.11 15.72 19.78 12 20.93V12H5V6.3L12 3.19V11.99Z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="font-weight: bold; color: #800000;">Инспектор Громов (Отдел Внутреннего Контроля):</div>
+            <div id="inspection-speech" style="font-size: 11px; margin-top: 4px; line-height: 1.3;">
+              «Диспетчер Волков, сверяем журналы расхода ресурсов, баланс и шифровки связи...»
+            </div>
+          </div>
+        </div>
+        <div id="inspection-result-box" class="inset-panel" style="padding: 8px; font-size: 11px; margin-bottom: 12px; background: #fff;">
+          Проверка завершена без замечаний.
+        </div>
+        <div style="text-align: right;">
+          <button class="btn-win" id="btn-inspection-ack" style="padding: 4px 20px; font-weight: bold;">[ ПРИНЯТЬ К СВЕДЕНИЮ ]</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="sound.js"></script>
+  <script src="database.js"></script>
+  <script src="game.js"></script>
+
+    <!-- ======================================================================
+         WINDOW: MINIGAME «ПНЕВМОЗОНД-98» (FLAPPY BIRD)
+         ====================================================================== -->
+    <div class="window" id="win-flappy" style="top: 80px; left: 320px; width: 340px; height: 460px; display: none; z-index: 99990;">
+      <div class="window-header" style="background: linear-gradient(90deg, #103310, #1b661b);">
+        <div class="window-title">🎮 Пневмозонд-98 (Тренажер Реакции)</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-flappy">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="background: #0d1a10; color: #aaffcc; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+        <div style="width: 100%; display: flex; justify-content: space-between; font-family: 'VT323', monospace; font-size: 15px; margin-bottom: 6px;">
+          <span>ДИСТАНЦИЯ: <strong id="flappy-score" style="color: #ffff00;">0 м</strong></span>
+          <span>РЕКОРД: <strong id="flappy-best" style="color: #33ff66;">0 м</strong></span>
+        </div>
+        <canvas id="flappy-canvas" width="300" height="340"></canvas>
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+          <span style="font-size: 10px; color: #88c0a0;">Клик мышью или ПРОБЕЛ</span>
+          <button class="btn-win" id="btn-flappy-restart" style="font-size: 11px; padding: 3px 12px; font-weight: bold;">[ СТАРТ / СБРОС ]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         WINDOW: OMEGA PROTOCOL TERMINAL (CLASSIFIED ARCHIVES 1989)
+         ====================================================================== -->
+    <div class="window" id="win-omega" style="top: 70px; left: 180px; width: 640px; height: 460px; display: none; z-index: 99995;">
+      <div class="window-header" style="background: linear-gradient(90deg, #102a10, #00ff66);">
+        <div class="window-title">☣️ [ТЕРМИНАЛ ОМЕГА-ПРОТОКОЛ] АРХИВ ЦК КПСС 1989</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" data-win="win-omega">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="background: #020c05; color: #33ff66; font-family: 'Courier New', monospace; padding: 12px; font-size: 12px; display: flex; flex-direction: column; justify-content: space-between; height: calc(100% - 30px); box-sizing: border-box;">
+        <div id="omega-terminal-text" style="line-height: 1.5; white-space: pre-wrap; overflow-y: auto; flex: 1; border: 1px dashed rgba(51,255,102,0.3); padding: 8px; margin-bottom: 10px;"></div>
+        <div style="background: #051408; border: 1px solid #00aa33; padding: 8px; display: flex; flex-direction: column; gap: 6px;">
+          <div style="font-size: 11px; font-weight: bold; color: #ffff00; text-align: center;">[ ВЫБОР ДЕЙСТВИЯ ОПЕРАТОРА ОМЕГА-ПРОТОКОЛА ]</div>
+          <div style="display: flex; gap: 6px; justify-content: center;">
+            <button class="btn-win" id="btn-omega-reroute" style="background: #113311; color: #33ff66; font-size: 10px; padding: 5px 8px; font-weight: bold;">
+              [ 1. ПЕРЕХВАТ СТРЕЛКИ «КОВЧЕГА» ]
+            </button>
+            <button class="btn-win" id="btn-omega-leak" style="background: #332200; color: #ffcc00; font-size: 10px; padding: 5px 8px; font-weight: bold;">
+              [ 2. СЛИВ АРХИВА В БУНКЕРНУЮ СЕТЬ ]
+            </button>
+            <button class="btn-win" id="btn-omega-purge" style="background: #330000; color: #ff6666; font-size: 10px; padding: 5px 8px; font-weight: bold;">
+              [ 3. УНИЧТОЖЕНИЕ ДАННЫХ И СЛЕДОВ ]
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ======================================================================
+         NATIVE RETRO WIN95 MESSAGEBOX (ZERO BROWSER POPUPS)
+         ====================================================================== -->
+    <div class="window" id="win-msgbox" style="top: 160px; left: 260px; width: 380px; display: none; z-index: 99999;">
+      <div class="window-header">
+        <div class="window-title" id="msgbox-title">BunkerOS v3.11</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" id="msgbox-btn-x">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 14px; display: flex; gap: 12px; align-items: flex-start;">
+        <div id="msgbox-icon" style="font-size: 24px; flex-shrink: 0;">ℹ️</div>
+        <div style="flex: 1;">
+          <div id="msgbox-text" style="font-size: 11px; line-height: 1.4; margin-bottom: 12px; white-space: pre-wrap;"></div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button class="btn-win" id="msgbox-btn-ok" style="min-width: 65px; padding: 3px 12px;">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

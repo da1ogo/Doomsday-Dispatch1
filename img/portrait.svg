@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="400" height="480">
+  <defs>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise"/>
+      <feColorMatrix type="matrix" values="0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0.33 0.33 0.33 0 0  0 0 0 0.25 0" in="noise" result="grainAlpha"/>
+      <feBlend mode="multiply" in="SourceGraphic" in2="grainAlpha"/>
+    </filter>
+  </defs>
+
+  <!-- Background: Harsh dark bunker concrete -->
+  <rect width="100%" height="100%" fill="#121314"/>
+  <rect x="15" y="15" width="370" height="450" fill="#1c1e1f" stroke="#33373b" stroke-width="2"/>
+  
+  <!-- Height measure grid lines (Mugshot backdrop) -->
+  <line x1="25" y1="90" x2="375" y2="90" stroke="#2a2e30" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="35" y="85" fill="#4a5256" font-family="monospace" font-size="11">185 CM</text>
+  <line x1="25" y1="140" x2="375" y2="140" stroke="#2a2e30" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="35" y="135" fill="#4a5256" font-family="monospace" font-size="11">175 CM</text>
+  <line x1="25" y1="190" x2="375" y2="190" stroke="#2a2e30" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <text x="35" y="185" fill="#4a5256" font-family="monospace" font-size="11">165 CM</text>
+  <line x1="25" y1="240" x2="375" y2="240" stroke="#2a2e30" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- Shadow silhouette -->
+  <path d="M 80 460 C 80 340 130 300 200 300 C 270 300 320 340 320 460 Z" fill="#08090a"/>
+
+  <!-- Shoulders & Heavy Canvas Boiler Suit -->
+  <path d="M 60 465 L 110 330 L 160 300 L 240 300 L 290 330 L 340 465 Z" fill="#222528" stroke="#0d0e10" stroke-width="3"/>
+  <path d="M 160 300 L 200 360 L 240 300 Z" fill="#17181a" stroke="#000" stroke-width="2"/>
+
+  <!-- Neck -->
+  <rect x="175" y="240" width="50" height="70" fill="#8d8984"/>
+  <path d="M 175 250 Q 200 280 225 250 L 225 310 L 175 310 Z" fill="#696561"/>
+
+  <!-- Head Base -->
+  <ellipse cx="200" cy="195" rx="55" ry="72" fill="#9e9993" stroke="#111" stroke-width="2"/>
+  
+  <!-- Jaw & Cheek Shadowing (Sunken cheeks, fatigue) -->
+  <path d="M 152 185 C 150 230 170 260 200 264 C 230 260 250 230 248 185 Z" fill="#8f8a84"/>
+  <path d="M 160 205 Q 175 220 185 245" stroke="#5a5652" stroke-width="2.5" fill="none"/>
+  <path d="M 240 205 Q 225 220 215 245" stroke="#5a5652" stroke-width="2.5" fill="none"/>
+
+  <!-- Ears -->
+  <ellipse cx="143" cy="195" rx="9" ry="18" fill="#86817c" stroke="#222" stroke-width="1.5"/>
+  <ellipse cx="257" cy="195" rx="9" ry="18" fill="#7a7570" stroke="#222" stroke-width="1.5"/>
+
+  <!-- Stubble / Beard Shadow -->
+  <path d="M 165 215 C 165 255 180 262 200 262 C 220 262 235 255 235 215 C 225 230 210 235 200 235 C 190 235 175 230 165 215 Z" fill="#54504b" opacity="0.7"/>
+
+  <!-- Nose -->
+  <path d="M 198 165 L 195 205 L 187 212 L 213 212 L 205 205 Z" fill="#78736e"/>
+  <line x1="198" y1="165" x2="195" y2="205" stroke="#4a4642" stroke-width="2"/>
+  <ellipse cx="192" cy="211" rx="3.5" ry="2" fill="#2d2a27"/>
+  <ellipse cx="208" cy="211" rx="3.5" ry="2" fill="#2d2a27"/>
+
+  <!-- Eyes & Heavy Bags (Dark Circles) -->
+  <ellipse cx="178" cy="178" rx="13" ry="5" fill="#403c39"/>
+  <ellipse cx="222" cy="178" rx="13" ry="5" fill="#403c39"/>
+  <ellipse cx="178" cy="172" rx="9" ry="4" fill="#d2ccc4"/>
+  <circle cx="178" cy="172" r="3.5" fill="#1b1c1e"/>
+  <circle cx="176" cy="170" r="1" fill="#fff"/>
+  <ellipse cx="222" cy="172" rx="9" ry="4" fill="#d2ccc4"/>
+  <circle cx="222" cy="172" r="3.5" fill="#1b1c1e"/>
+  <circle cx="220" cy="170" r="1" fill="#fff"/>
+  <!-- Eyebrows -->
+  <path d="M 163 162 Q 178 158 191 163" stroke="#2b2826" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+  <path d="M 237 162 Q 222 158 209 163" stroke="#2b2826" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+
+  <!-- Mouth (Stern, Tired) -->
+  <line x1="184" y1="236" x2="216" y2="236" stroke="#36322f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M 183 236 L 180 240 M 217 236 L 220 240" stroke="#36322f" stroke-width="1.5"/>
+
+  <!-- Hair (Short dark, disheveled) -->
+  <path d="M 143 180 C 140 120 170 110 200 110 C 230 110 260 120 257 180 C 250 145 240 135 220 135 C 205 135 195 142 185 137 C 170 137 155 145 143 180 Z" fill="#201e1d" stroke="#0a0a0b" stroke-width="2"/>
+
+  <!-- Coarse Fabric Stitched ID Badge -->
+  <rect x="90" y="380" width="130" height="48" fill="#d0c8b8" stroke="#111" stroke-width="2" stroke-dasharray="4,2"/>
+  <rect x="94" y="384" width="122" height="40" fill="#ebe4d5"/>
+  <text x="155" y="402" fill="#8b0000" font-family="'Courier New', monospace" font-size="11" font-weight="bold" text-anchor="middle">ГОСПЛАН СССР</text>
+  <text x="155" y="418" fill="#000" font-family="'Courier New', monospace" font-size="14" font-weight="900" text-anchor="middle" letter-spacing="1.5">ДИСП-74Б</text>
+
+  <!-- Bureaucratic Red Ink Stamp Over Corner -->
+  <g transform="rotate(-12 300 370)">
+    <rect x="235" y="355" width="125" height="42" fill="none" stroke="#b32424" stroke-width="2.5" stroke-dasharray="8,2" opacity="0.85"/>
+    <text x="297" y="372" fill="#b32424" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle" opacity="0.9">ПРОВЕРЕНО СБ</text>
+    <text x="297" y="388" fill="#b32424" font-family="monospace" font-size="9" text-anchor="middle" opacity="0.85">14.11.1998 ГОДЕН</text>
+  </g>
+
+  <!-- Vignette / Gritty Frame Border -->
+  <rect x="15" y="15" width="370" height="450" fill="none" stroke="#000" stroke-width="8"/>
+</svg>
