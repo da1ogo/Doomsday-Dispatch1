@@ -437,7 +437,7 @@ class BunkerGame {
         name: "Алексей Волков",
         id: "ДИСП-74Б",
         balance: 1500,
-        salary: 2000,
+        salary: 700,
         fineAmount: 800,
         rating: 92,
         fines: [],
@@ -892,7 +892,7 @@ class BunkerGame {
       name: "Алексей Волков",
       id: "ДИСП-74Б",
       balance: 1500,
-      salary: 2000,
+      salary: 700,
       fineAmount: 800,
       rating: 92,
       fines: [],
@@ -4159,14 +4159,24 @@ class BunkerGame {
     if (this.dayDispatchesQueue.length === 0) return;
 
     const nextDisp = this.dayDispatchesQueue.shift();
+    const hadNoDispatches = (this.dispatches.length === 0);
     this.dispatches.push(nextDisp);
-    this.currentDispatchIdx = this.dispatches.length - 1;
 
     window.soundEngine.playTeletype();
     this.flashTaskbarDispatch();
-    this.logEvent(`[ВХОДЯЩАЯ ДЕПЕША]: Поступил правительственный пакет от [${nextDisp.sender}]!`);
+    this.logEvent(`[ВХОДЯЩАЯ ДЕПЕША]: В очередь телетайпа поступил пакет от [${nextDisp.sender}]!`);
 
-    this.renderCurrentDispatch();
+    // Если экран был пустой (ожидание) — открываем пришедшую депешу.
+    // Если игрок УЖЕ читает депешу — НЕ переключаем и не сбиваем чтение!
+    if (hadNoDispatches) {
+      this.currentDispatchIdx = 0;
+      this.renderCurrentDispatch();
+    } else {
+      const counterEl = document.getElementById("disp-counter");
+      if (counterEl) {
+        counterEl.textContent = `${this.currentDispatchIdx + 1} / ${this.dispatches.length}`;
+      }
+    }
 
     // Schedule subsequent dispatch from the queue
     if (this.dayDispatchesQueue.length > 0) {
@@ -4783,15 +4793,18 @@ class BunkerGame {
 
       // Resource replenishment
       let newFuel = 2;
+      let newFood = 2;
       let newMeds = 1;
       let newAmmo = 2;
       let newWater = 1;
 
       if (this.getSector("sec_mine")?.status !== "dead") newFuel += 1;
       if (this.getSector("sec_water")?.status !== "dead") newWater += 1;
-      if (this.getSector("sec_hydro")?.status !== "dead") newMeds += 1;
+      if (this.getSector("sec_hydro")?.status !== "dead") newFood += 1;
+      if (this.getSector("sec_med")?.status !== "dead") newMeds += 1;
 
       this.resources.fuel += newFuel;
+      this.resources.food += newFood;
       this.resources.meds += newMeds;
       this.resources.ammo += newAmmo;
       this.resources.water += newWater;
@@ -4799,7 +4812,7 @@ class BunkerGame {
       const summaryTitle = `УТРЕННИЙ ТЕЛЕТАЙП — ${GAME_DATES[this.day - 1]}`;
       const nightLogs = [...this.dailyLogs];
       this.dailyLogs = [];
-      nightLogs.unshift(`[ФИНАНСЫ]: Выплачен суточный оклад: +2000 руб.`);
+      nightLogs.unshift(`[ЗАРПЛАТА]: Начислен суточный оклад: +${this.playerProfile.salary || 700} руб.`);
       if (morningFineLogs.length > 0) {
         morningFineLogs.forEach(fLine => nightLogs.unshift(fLine));
         nightLogs.unshift(`[ОВК ИТОГ ПО ШТРАФАМ]: Удержано за ошибки распределения: -${totalFinesAmount} руб. Итоговый баланс: ${this.playerProfile.balance} руб.`);
