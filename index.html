@@ -119,6 +119,29 @@
   <!-- ========================================================================
        WINDOWS SHUTDOWN CONFIRMATION DIALOG
        ======================================================================== -->
+
+  <!-- Windows 95 Retro Modal: Create Folder (Replaces broken browser prompt) -->
+  <div id="modal-new-folder" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 89000; display: none; align-items: center; justify-content: center;">
+    <div class="window" style="width: 320px; position: static; box-shadow: 3px 3px 12px rgba(0,0,0,0.6);">
+      <div class="window-header">
+        <div class="window-title">📁 Создать папку</div>
+        <div class="window-controls">
+          <button class="win-btn win-close" id="btn-folder-modal-close">X</button>
+        </div>
+      </div>
+      <div class="window-content" style="padding: 12px; display: flex; flex-direction: column; gap: 10px;">
+        <label for="input-new-folder-name" style="font-size: 11px; font-weight: bold; color: #111;">
+          Введите имя новой папки:
+        </label>
+        <input type="text" id="input-new-folder-name" maxlength="24" style="width: 100%; box-sizing: border-box; padding: 4px 6px; font-size: 12px; font-family: monospace; border: 2px inset #fff; background: #fff;">
+        <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px;">
+          <button class="btn-win" id="btn-folder-modal-ok" style="min-width: 65px; font-weight: bold;">OK</button>
+          <button class="btn-win" id="btn-folder-modal-cancel" style="min-width: 65px;">Отмена</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="shutdown-modal-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 86000; display: none; align-items: center; justify-content: center;">
     <div class="window" style="width: 380px; position: static;">
       <div class="window-header">
@@ -147,9 +170,14 @@
        INTERACTIVE TUTORIAL ASSISTANT (DAY 1)
        ======================================================================== -->
   <div id="tutorial-assistant-card">
-    <div class="assistant-header">
-      <span>ИНСТРУКТОР СМЕНЫ [ОБУЧЕНИЕ]</span>
-      <button class="win-btn" id="btn-close-assistant" style="width: 14px; height: 12px; font-size: 8px;">X</button>
+    <div class="assistant-header" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px;">
+      <span style="font-weight: bold; font-size: 11px;">СЛУЖЕБНЫЙ ПОМОЩНИК [ОБУЧЕНИЕ]</span>
+      <div style="display: flex; gap: 4px; align-items: center;">
+        <button class="win-btn" id="btn-ast-bold" title="Вкл/Выкл жирный шрифт" style="font-size: 10px; font-weight: 900; width: 22px; height: 18px; padding: 0;">B</button>
+        <button class="win-btn" id="btn-ast-font-dec" title="Уменьшить шрифт" style="font-size: 10px; font-weight: bold; width: 24px; height: 18px; padding: 0;">A-</button>
+        <button class="win-btn" id="btn-ast-font-inc" title="Увеличить шрифт" style="font-size: 10px; font-weight: bold; width: 24px; height: 18px; padding: 0;">A+</button>
+        <button class="win-btn" id="btn-close-assistant" style="width: 18px; height: 18px; font-size: 10px; font-weight: bold; margin-left: 4px;">X</button>
+      </div>
     </div>
     <div class="assistant-body">
       <div id="assistant-step-text" style="margin-bottom: 10px;">
@@ -1347,12 +1375,14 @@
     <div class="window" id="win-tutorial" style="top: 50px; left: 160px; width: 620px; height: 490px; display: none;">
       <div class="window-header">
         <div class="window-title">[ИНСТРУКЦИЯ] СЛУЖЕБНЫЙ РЕГЛАМЕНТ ДИСПЕТЧЕРА ГОСПЛАНА</div>
-        <div class="window-controls">
+        <div class="window-controls" style="display: flex; gap: 3px; align-items: center;">
+          <button class="win-btn" id="btn-tut-font-dec" title="Уменьшить шрифт" style="font-size: 10px; font-weight: bold; width: 26px; height: 18px; padding: 0;">A-</button>
+          <button class="win-btn" id="btn-tut-font-inc" title="Увеличить шрифт" style="font-size: 10px; font-weight: bold; width: 26px; height: 18px; padding: 0;">A+</button>
           <button class="win-btn win-close" data-win="win-tutorial">X</button>
         </div>
       </div>
       <div class="window-content" style="padding: 8px; display: flex; flex-direction: column; overflow: hidden; background: #c0c0c0;">
-                <div class="inset-panel" style="flex: 1; overflow-y: auto; background: #fffffa; padding: 12px; font-size: 11px; line-height: 1.5; color: #111;">
+                <div class="inset-panel" id="tut-content-panel" style="flex: 1; overflow-y: auto; background: #fffffa; padding: 12px; font-size: 12px; line-height: 1.55; color: #111;">
           
           <div style="text-align: center; border-bottom: 2px solid #800000; padding-bottom: 6px; margin-bottom: 12px;">
             <div style="font-size: 14px; font-weight: 900; color: #800000; letter-spacing: 1px;">

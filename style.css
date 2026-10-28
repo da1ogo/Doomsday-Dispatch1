@@ -1526,7 +1526,8 @@ body, html {
   position: fixed;
   bottom: 45px;
   left: 20px;
-  width: 360px;
+  width: 480px;
+  max-width: 90vw;
   background: #ffffe0;
   border-top: 2px solid var(--win-light);
   border-left: 2px solid var(--win-light);
@@ -2986,4 +2987,53 @@ body.omega-negative-active {
   image-rendering: pixelated;
   border: 2px inset #3a4a3e;
   margin: 0 auto;
+}
+
+#assistant-step-text {
+  font-size: var(--ast-font-size, 12px);
+  line-height: 1.55;
+  color: #111;
+  font-weight: var(--ast-font-weight, normal);
+  transition: font-size 0.1s ease;
+}
+
+#assistant-step-text.bold-active {
+  font-weight: 900 !important;
+}
+
+/* АВТОМАТИЧЕСКОЕ РАСТЯГИВАНИЕ СОДЕРЖИМОГО ОКОН ПРИ РЕСАЙЗЕ */
+.window {
+  display: flex;
+  flex-direction: column;
+}
+
+.window .window-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.window .inset-panel,
+.window .inbox-layout,
+.window .storage-layout,
+.window .dossier-layout {
+  flex: 1 1 auto;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Динамическое масштабирование шрифта внутри растянутого окна */
+.window.large-scale .window-content {
+  font-size: 13px !important;
+}
+.window.large-scale .btn-win {
+  font-size: 12px !important;
+  padding: 6px 14px !important;
+}
+.window.large-scale .disp-title,
+.window.large-scale .storage-title {
+  font-size: 15px !important;
 }

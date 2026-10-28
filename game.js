@@ -1542,6 +1542,38 @@ class BunkerGame {
         return;
       }
 
+      // 2.5 Transfer / Bribe to Housing Commandant (Майор Громов, счет 55102) - 3500 руб.
+      if (acc === "55102") {
+        if (amt < 3500) {
+          statusDisplay.textContent = "Майор Громов: «Меньше 3500 руб. даже не суйся! Переселение стоит 3500 ровно».";
+          window.soundEngine.playErrorChord();
+          return;
+        }
+        if (this.flags.familyRelocated) {
+          statusDisplay.textContent = "Семья уже успешно переселена на Инженерный ярус 2!";
+          window.soundEngine.playWarning();
+          return;
+        }
+
+        this.playerProfile.balance -= total;
+        this.flags.familyRelocated = true;
+        this.modifyRating("family", 40);
+        this.playerProfile.bankHistory.unshift(
+          `${GAME_DATES[this.day - 1]} 13:40 -> Комендатура (счет 55102, Майор Громов): -${amt} руб. (Взятка за перевод на Ярус 2)`
+        );
+        window.soundEngine.playCash();
+        statusDisplay.style.color = "#006600";
+        statusDisplay.textContent = `[УСПЕХ]: Майор Громов выделил ордер! Семья переведена на сухой Инженерный ярус 2 (+40% к семье)!`;
+        this.logEvent(`[ЖИЛИЩНЫЙ ОРДЕР]: Ваша семья покинула сырой подвал Блока №4! Настя идет на поправку, Миша в безопасности.`);
+
+        inputAmt.value = "";
+        recalc();
+        this.updateProfileUI();
+        this.updateBankUI();
+        this.saveGame();
+        return;
+      }
+
       // 3. Transfer to Rebels (Свободный Ярус, 91003)
       if (acc === "91003") {
         this.playerProfile.balance -= total;
@@ -2164,7 +2196,23 @@ class BunkerGame {
   // STATE VPN & TOR RADIO BLACK MARKET (SECRET FREQUENCY 94.4!)
   // =========================================================================
   generateDailyTorMarket() {
+    if (this.mysteryAbsentDays === undefined) this.mysteryAbsentDays = 0;
+
+    const mysteryItem = TOR_MARKET_DATABASE.find(i => i.id === "tor_mystery_omega");
+    const isMysteryPurchased = mysteryItem && mysteryItem.purchased;
+
+    // Шанс появления ???: 25% каждый день, 100% гарантия если не появлялся 3 дня подряд (на 4-й день)
+    let includeMystery = false;
+    if (!isMysteryPurchased && mysteryItem) {
+      this.mysteryAbsentDays++;
+      if (this.mysteryAbsentDays >= 4 || Math.random() < 0.25) {
+        includeMystery = true;
+        this.mysteryAbsentDays = 0; // Сброс счетчика при появлении
+      }
+    }
+
     const pool = TOR_MARKET_DATABASE.filter(item => {
+      if (item.id === "tor_mystery_omega") return false; // Обрабатываем отдельно по спец-шансу
       if (item.purchased && (item.type === "family_cure" || item.type === "omega_protocol" || item.type === "ksr_booster" || item.type === "escape_pass")) {
         return false;
       }
@@ -2172,9 +2220,13 @@ class BunkerGame {
     });
 
     const selected = [];
+    if (includeMystery && mysteryItem) {
+      selected.push(mysteryItem);
+    }
+
     const antibiotics = TOR_MARKET_DATABASE.find(i => i.id === "tor_antibiotics");
     // Days 1, 2, 3: Antibiotics guaranteed if not purchased
-    if (this.day <= 3 && antibiotics && !antibiotics.purchased) {
+    if (this.day <= 3 && antibiotics && !antibiotics.purchased && !selected.some(s => s.id === antibiotics.id)) {
       selected.push(antibiotics);
     }
 
@@ -2697,12 +2749,48 @@ class BunkerGame {
       if (iconMenu && !iconMenu.contains(e.target)) iconMenu.style.display = "none";
     });
 
-    document.getElementById("ctx-new-folder").addEventListener("click", () => {
-      menu.style.display = "none";
-      const name = prompt("Введите имя новой папки:", `Папка_${this.desktopFolders.length + 1}`) || "Новая_папка";
+    const modalFolder = document.getElementById("modal-new-folder");
+    const inputFolderName = document.getElementById("input-new-folder-name");
+    const btnFolderOk = document.getElementById("btn-folder-modal-ok");
+    const btnFolderCancel = document.getElementById("btn-folder-modal-cancel");
+    const btnFolderClose = document.getElementById("btn-folder-modal-close");
+
+    const closeFolderModal = () => {
+      if (modalFolder) modalFolder.style.display = "none";
+    };
+
+    const confirmFolderCreate = () => {
+      const name = (inputFolderName.value || "").trim() || `Папка_${this.desktopFolders.length + 1}`;
       this.desktopFolders.push({ id: `folder_${Date.now()}`, name, items: [] });
       this.renderDesktopFolders();
       this.saveGame();
+      window.soundEngine.playClick();
+      closeFolderModal();
+    };
+
+    if (btnFolderOk) btnFolderOk.onclick = confirmFolderCreate;
+    if (btnFolderCancel) btnFolderCancel.onclick = closeFolderModal;
+    if (btnFolderClose) btnFolderClose.onclick = closeFolderModal;
+
+    if (inputFolderName) {
+      inputFolderName.onkeydown = (e) => {
+        if (e.key === "Enter") confirmFolderCreate();
+        if (e.key === "Escape") closeFolderModal();
+      };
+    }
+
+    document.getElementById("ctx-new-folder").addEventListener("click", () => {
+      menu.style.display = "none";
+      if (modalFolder) {
+        modalFolder.style.display = "flex";
+        if (inputFolderName) {
+          inputFolderName.value = `Папка_${this.desktopFolders.length + 1}`;
+          setTimeout(() => {
+            inputFolderName.focus();
+            inputFolderName.select();
+          }, 50);
+        }
+      }
     });
 
     document.getElementById("ctx-refresh").addEventListener("click", () => {
@@ -2857,6 +2945,14 @@ class BunkerGame {
 
     if (btnVpn) {
       btnVpn.addEventListener("click", () => {
+        // БЛОКИРОВКА В ДЕНЬ 1: Протокол НОБ опломбирован до Смены №2
+        if (this.day === 1) {
+          window.soundEngine.playErrorChord();
+          this.showMessageBox("ОШИБКА ДОСТУПА 403:\nПротокол НОБ (Нештатный Обходной Блок) законсервирован на регламентное ТО.\nДоступ будет открыт дежурному диспетчеру со Смены №2.");
+          this.logEvent("[ОШИБКА СИСТЕМЫ]: Переключатель НОБ заблокирован регламентом ЦК до Дня 2.");
+          return;
+        }
+
         this.vpnActive = !this.vpnActive;
         window.soundEngine.playClick();
         if (this.vpnActive) {
@@ -2869,7 +2965,6 @@ class BunkerGame {
           vpnText.style.color = "#888";
           if (iconTor) iconTor.style.display = "none";
         }
-        if (this.updateTorRadioDisplay) this.updateTorRadioDisplay();
         if (this.updateTorRadioDisplay) this.updateTorRadioDisplay();
         this.saveGame();
       });
@@ -3292,21 +3387,78 @@ class BunkerGame {
   // WINDOW RESIZE SCALING & ACCESSIBILITY
   // =========================================================================
   setupWindowResizeScaling() {
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const win = entry.target;
-        if (win.offsetWidth > 620 || win.offsetHeight > 520) {
-          win.classList.add("large-scale");
-        } else {
-          win.classList.remove("large-scale");
-        }
+    // 1. Привязка кнопок масштабирования шрифта в памятке / обучении [A-] [A+]
+    const btnFontDec = document.getElementById("btn-tut-font-dec");
+    const btnFontInc = document.getElementById("btn-tut-font-inc");
+    const tutPanel = document.getElementById("tut-content-panel");
+    let currentTutFontSize = 12;
+
+    if (btnFontDec && tutPanel) {
+      btnFontDec.addEventListener("click", () => {
+        currentTutFontSize = Math.max(9, currentTutFontSize - 1);
+        tutPanel.style.fontSize = `${currentTutFontSize}px`;
+        window.soundEngine.playClick();
+      });
+    }
+
+    if (btnFontInc && tutPanel) {
+      btnFontInc.addEventListener("click", () => {
+        currentTutFontSize = Math.min(18, currentTutFontSize + 1);
+        tutPanel.style.fontSize = `${currentTutFontSize}px`;
+        window.soundEngine.playClick();
+      });
+    }
+
+    // 2. Добавление интерактивного уголка изменения размера (.win-resize-handle) ко всем окнам
+    document.querySelectorAll(".window").forEach(win => {
+      if (!win.querySelector(".win-resize-handle")) {
+        const handle = document.createElement("div");
+        handle.className = "win-resize-handle";
+        handle.title = "Потяните, чтобы изменить размер окна";
+        win.appendChild(handle);
+
+        handle.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          this.bringToFront(win);
+
+          const startX = e.clientX;
+          const startY = e.clientY;
+          const startW = win.offsetWidth;
+          const startH = win.offsetHeight;
+
+          const onMouseMove = (moveEvt) => {
+            const newW = Math.max(340, startW + (moveEvt.clientX - startX));
+            const newH = Math.max(220, startH + (moveEvt.clientY - startY));
+            win.style.width = `${newW}px`;
+            win.style.height = `${newH}px`;
+          };
+
+          const onMouseUp = () => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+          };
+
+          document.addEventListener("mousemove", onMouseMove);
+          document.addEventListener("mouseup", onMouseUp);
+        });
       }
     });
 
-    document.querySelectorAll(".window").forEach(win => {
-      observer.observe(win);
-    });
+    // 3. Автоматический класс крупного шрифта при увеличении
+    if (typeof ResizeObserver !== "undefined") {
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const win = entry.target;
+          if (win.offsetWidth > 650 || win.offsetHeight > 520) {
+            win.classList.add("large-scale");
+          } else {
+            win.classList.remove("large-scale");
+          }
+        }
+      });
+      document.querySelectorAll(".window").forEach(win => observer.observe(win));
+    }
   }
 
   // =========================================================================
@@ -4099,6 +4251,31 @@ class BunkerGame {
     document.getElementById("disp-topic").textContent = disp.topic;
     document.getElementById("disp-text").textContent = disp.text;
 
+    const btnBribeDisp = document.getElementById("btn-bribe-dispatch");
+    const bribeAmountEl = document.getElementById("bribe-btn-amount");
+    if (btnBribeDisp) {
+      if (disp.bribeOffer) {
+        btnBribeDisp.style.display = "inline-block";
+        if (bribeAmountEl) bribeAmountEl.textContent = disp.bribeOffer.amount || 500;
+        // Добавляем пометку в текст депеши о найденном конверте
+        const hintsBox = document.getElementById("disp-telemetry-hints");
+        if (hintsBox) {
+          const bribeNoteDiv = document.createElement("div");
+          bribeNoteDiv.style.marginTop = "8px";
+          bribeNoteDiv.style.padding = "6px 8px";
+          bribeNoteDiv.style.background = "#fff8db";
+          bribeNoteDiv.style.border = "1px solid #c99700";
+          bribeNoteDiv.style.color = "#7a4e00";
+          bribeNoteDiv.style.fontWeight = "bold";
+          bribeNoteDiv.style.fontSize = "11px";
+          bribeNoteDiv.innerHTML = `✉️ <strong>СЕРЫЙ КОНВЕРТ:</strong> ${disp.bribeOffer.note || "В конверте наличные деньги."}`;
+          hintsBox.appendChild(bribeNoteDiv);
+        }
+      } else {
+        btnBribeDisp.style.display = "none";
+      }
+    }
+
     const hintsContainer = document.getElementById("disp-telemetry-hints");
     hintsContainer.innerHTML = "";
     if (disp.telemetryFacts) {
@@ -4248,7 +4425,14 @@ class BunkerGame {
 
     if (btnApprove) {
       btnApprove.addEventListener("click", () => {
-        this.approveCurrentDispatch();
+        this.approveCurrentDispatch(false);
+      });
+    }
+
+    const btnBribe = document.getElementById("btn-bribe-dispatch");
+    if (btnBribe) {
+      btnBribe.addEventListener("click", () => {
+        this.approveCurrentDispatch(true);
       });
     }
 
@@ -4259,7 +4443,7 @@ class BunkerGame {
     }
   }
 
-  approveCurrentDispatch() {
+  approveCurrentDispatch(isBribe = false) {
     const disp = this.dispatches[this.currentDispatchIdx];
     if (!disp) return;
 
@@ -4269,7 +4453,7 @@ class BunkerGame {
     // Strictly forbidden to approve without allocating at least 1 item!
     if (totalAlloc <= 0) {
       window.soundEngine.playErrorChord();
-      this.logEvent("[ПРЕДУПРЕЖДЕНИЕ]: Добавьте хотя бы один ресурс в накладную регуляторами [-] [+]!");
+      this.logEvent("[ПРЕДУПРЕЖДЕНИЕ]: Выделите хотя бы одну единицу в накладной регулятором [-] [+]!");
       return;
     }
 
@@ -4277,7 +4461,7 @@ class BunkerGame {
     for (const [res, qty] of Object.entries(alloc)) {
       if ((this.resources[res] ?? 0) < qty) {
         window.soundEngine.playErrorChord();
-        this.logEvent(`[ОШИБКА СКЛАДА]: Недостаточно ${res} на складе пневмосети!`);
+        this.logEvent(`[ОШИБКА СКЛАДА]: Недостаточно ${res} на складе диспетчера!`);
         return;
       }
     }
@@ -4289,9 +4473,19 @@ class BunkerGame {
 
     window.soundEngine.playApproveStamp();
 
-    // Check if allocation matches fraud or legitimate demand
-    if (disp.isFraud) {
-      this.queuePendingFine(`Выдача ценных ресурсов по ложной заявке [${disp.sender}]`, 400);
+    // Bribe handling vs Standard Fraud handling
+    if (isBribe && disp.bribeOffer) {
+      const bribeAmount = disp.bribeOffer.amount || 500;
+      this.playerProfile.balance += bribeAmount;
+      if (!this.bribesTakenToday) this.bribesTakenToday = 0;
+      this.bribesTakenToday++;
+      this.playerProfile.bankHistory.unshift(
+        `${GAME_DATES[this.day - 1]} ${new Date().toLocaleTimeString().slice(0, 5)} [ВЗЯТКА В КОНВЕРТЕ]: +${bribeAmount} руб. (${disp.sender})`
+      );
+      this.logEvent(`[КОРРУПЦИЯ]: Вы взяли серый конверт (+${bribeAmount} руб.) и подписали накладную!`);
+      // При получении взятки стандартный штраф за ложную депешу НЕ накладывается!
+    } else if (disp.isFraud) {
+      this.queuePendingFine(`Ущерб фонду бункера по ложной депеше [${disp.sender}]`, 400);
       this.modifyRating("gos", -10);
     } else {
       this.stats.dispatchesApprovedToday++;
@@ -4401,6 +4595,19 @@ class BunkerGame {
 
     if (btnEndDay) {
       btnEndDay.addEventListener("click", () => {
+        // ПРОВЕРКА: Дежурный диспетчер обязан обработать ВСЕ депеши смены!
+        if (this.dispatches && this.dispatches.length > 0) {
+          window.soundEngine.playErrorChord();
+          this.showMessageBox(
+            `ОТКАЗ В ЗАВЕРШЕНИИ СМЕНЫ:\n\n` +
+            `По регламенту Госплана СССР диспетчер обязан вынести вердикт по ВСЕМ входящим депешам!\n` +
+            `Нерассмотренных депеш в очереди телетайпа: ${this.dispatches.length}.\n\n` +
+            `Самовольное прекращение дежурства приравнивается к саботажу!`
+          );
+          this.logEvent(`[НАРУШЕНИЕ РЕГЛАМЕНТА]: Попытка покинуть смену до рассмотрения всех депеш (осталось: ${this.dispatches.length})!`);
+          return;
+        }
+
         if (overlay) overlay.style.display = "flex";
       });
     }
@@ -4522,6 +4729,42 @@ class BunkerGame {
           morningFineLogs.push(`[ВЗЫСКАНИЕ ОВК]: Штраф -${fine.amount} руб. за ${fine.reason}`);
         }
         this.pendingFines = [];
+      }
+
+      // ----------------------------------------------------
+      // ПРОВЕРКА ОВК (ОСОБЫЙ ОТДЕЛ): АУДИТ ВЗЯТОК ЗА ПРОШЛЫЙ ДЕНЬ
+      // ----------------------------------------------------
+      if (this.bribesTakenToday && this.bribesTakenToday > 0) {
+        const rating = this.playerProfile.ratingGos || this.playerProfile.rating || 50;
+        let detectionChance = 0.05;
+        if (rating <= 30) detectionChance = 0.60;
+        else if (rating <= 40) detectionChance = 0.40;
+        else if (rating <= 50) detectionChance = 0.25;
+        else if (rating <= 60) detectionChance = 0.15;
+        else detectionChance = 0.05;
+
+        // Проверяем каждую взятку
+        let detected = false;
+        for (let b = 0; b < this.bribesTakenToday; b++) {
+          if (Math.random() < detectionChance) {
+            detected = true;
+            break;
+          }
+        }
+
+        if (detected) {
+          const bribePenalty = 1200;
+          this.playerProfile.balance -= bribePenalty;
+          this.modifyRating("gos", -20);
+          this.playerProfile.bankHistory.unshift(
+            `${GAME_DATES[this.day - 1]} 08:15 [ШТРАФ ОВК КГБ]: -${bribePenalty} руб. (Незаконное обогащение и взятки)`
+          );
+          morningFineLogs.push(`[ОВК КГБ СССР]: РАСКРЫТО ПОЛУЧЕНИЕ ВЗЯТКИ! Штраф -${bribePenalty} руб., строгий выговор и понижение рейтинга (-20%)!`);
+          this.logEvent(`[ТРЕВОГА ОВК]: Особый отдел вскрыл финансовые махинации! Изъято 1200 руб.`);
+        } else {
+          this.logEvent(`[УДАЧА]: Аудит ОВК прошел без замечаний. Полученные конверты не выявили.`);
+        }
+        this.bribesTakenToday = 0;
       }
 
       // Add new incoming emails for the day (evaluating conditions)
@@ -4648,6 +4891,41 @@ class BunkerGame {
 
     if (btnInline) {
       btnInline.onclick = () => this.openWindow("win-tutorial");
+    }
+
+    // Инициализация кнопок масштабирования и жирности для карточки помощника
+    const btnAstBold = document.getElementById("btn-ast-bold");
+    const btnAstFontDec = document.getElementById("btn-ast-font-dec");
+    const btnAstFontInc = document.getElementById("btn-ast-font-inc");
+    const astText = document.getElementById("assistant-step-text");
+
+    if (btnAstBold && !btnAstBold._bound) {
+      btnAstBold._bound = true;
+      btnAstBold.addEventListener("click", () => {
+        this.astIsBold = !this.astIsBold;
+        astText.classList.toggle("bold-active", this.astIsBold);
+        btnAstBold.style.background = this.astIsBold ? "#000080" : "";
+        btnAstBold.style.color = this.astIsBold ? "#fff" : "";
+        window.soundEngine.playClick();
+      });
+    }
+
+    if (btnAstFontDec && !btnAstFontDec._bound) {
+      btnAstFontDec._bound = true;
+      btnAstFontDec.addEventListener("click", () => {
+        this.astFontSize = Math.max(10, (this.astFontSize || 13) - 1);
+        if (astText) astText.style.fontSize = `${this.astFontSize}px`;
+        window.soundEngine.playClick();
+      });
+    }
+
+    if (btnAstFontInc && !btnAstFontInc._bound) {
+      btnAstFontInc._bound = true;
+      btnAstFontInc.addEventListener("click", () => {
+        this.astFontSize = Math.min(22, (this.astFontSize || 13) + 1);
+        if (astText) astText.style.fontSize = `${this.astFontSize}px`;
+        window.soundEngine.playClick();
+      });
     }
 
     if (!card) return;
