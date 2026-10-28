@@ -1752,14 +1752,15 @@ class BunkerGame {
       <div class="icon-label">${app.name.split(" ")[0]}.exe</div>
     `;
 
-    // Position in available spot
-    const x = 15 + Math.floor(Math.random() * 3) * 84;
-    const y = 200 + Math.floor(Math.random() * 3) * 88;
-    icon.style.left = `${x}px`;
-    icon.style.top = `${y}px`;
-    this.iconPositions[icon.id] = { x, y };
-
     desktop.appendChild(icon);
+
+    // Position in first truly free grid slot (prevent overlapping existing icons)
+    const slot = this.findFreeGridSlot(undefined, undefined, icon.id);
+    icon.style.left = `${slot.x}px`;
+    icon.style.top = `${slot.y}px`;
+    this.iconPositions[icon.id] = { x: slot.x, y: slot.y };
+    this.saveIconPositions();
+
     this.initDraggableIcons();
   }
 
@@ -2499,6 +2500,8 @@ class BunkerGame {
       if (item.id === "tor_antibiotics" || item.type === "family_cure") {
         item.purchased = true;
         this.playerProfile.curedFamily = true;
+        this.flags.familyCured = true;
+        this.flags.nastyaAntibioticsBought = true;
         this.modifyRating("family", 30);
         this.checkAchievement("ach_good_father");
         this.receivedEmails.unshift({
@@ -3322,6 +3325,7 @@ class BunkerGame {
       desktop.appendChild(marquee);
     }
 
+    let isMouseDown = false;
     let isSelecting = false;
     let startX = 0;
     let startY = 0;
@@ -3333,15 +3337,15 @@ class BunkerGame {
       }
       if (e.button !== 0) return; // left click only
 
-      isSelecting = true;
+      isMouseDown = true;
+      isSelecting = false;
       startX = e.clientX;
       startY = e.clientY;
 
-      marquee.style.left = `${startX}px`;
-      marquee.style.top = `${startY}px`;
+      // DO NOT display the marquee box on simple click!
+      marquee.style.display = "none";
       marquee.style.width = "0px";
       marquee.style.height = "0px";
-      marquee.style.display = "block";
 
       if (!e.ctrlKey) {
         document.querySelectorAll(".desktop-icon.selected").forEach(ic => ic.classList.remove("selected"));
@@ -3349,15 +3353,23 @@ class BunkerGame {
     });
 
     window.addEventListener("mousemove", (e) => {
-      if (!isSelecting) return;
+      if (!isMouseDown) return;
 
       const currentX = e.clientX;
       const currentY = e.clientY;
 
-      const left = Math.min(startX, currentX);
-      const top = Math.min(startY, currentY);
       const width = Math.abs(currentX - startX);
       const height = Math.abs(currentY - startY);
+
+      // Only activate marquee box if dragged beyond click threshold (4px)
+      if (!isSelecting) {
+        if (width < 4 && height < 4) return;
+        isSelecting = true;
+        marquee.style.display = "block";
+      }
+
+      const left = Math.min(startX, currentX);
+      const top = Math.min(startY, currentY);
 
       marquee.style.left = `${left}px`;
       marquee.style.top = `${top}px`;
@@ -3373,18 +3385,22 @@ class BunkerGame {
           iconRect.bottom < marqueeRect.top ||
           iconRect.top > marqueeRect.bottom
         );
-        if (intersects && width > 4 && height > 4) {
+        if (intersects) {
           icon.classList.add("selected");
-        } else if (!e.ctrlKey && width > 4 && height > 4) {
+        } else if (!e.ctrlKey) {
           icon.classList.remove("selected");
         }
       });
     });
 
     window.addEventListener("mouseup", () => {
-      if (!isSelecting) return;
-      isSelecting = false;
-      marquee.style.display = "none";
+      isMouseDown = false;
+      if (isSelecting) {
+        isSelecting = false;
+        marquee.style.display = "none";
+        marquee.style.width = "0px";
+        marquee.style.height = "0px";
+      }
     });
   }
 

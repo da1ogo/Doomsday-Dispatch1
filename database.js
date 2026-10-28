@@ -1613,7 +1613,7 @@ const EMAIL_DATABASE = [
     {
     id: "mail_day5_family_cured",
     day: 5,
-    condition: (game) => game.flags.familyCured || game.flags.nastyaAntibioticsBought,
+    condition: (game) => game.flags.familyCured || game.flags.nastyaAntibioticsBought || game.playerProfile?.curedFamily,
     from: "Елена Волкова (Жена) <elena.volkova@civ.bunker>",
     date: "18.11.1998 11:15",
     subject: "Алешенька! Настеньке намного лучше!",
@@ -1635,7 +1635,7 @@ const EMAIL_DATABASE = [
   {
     id: "mail_day5_family_sick",
     day: 5,
-    condition: (game) => !game.flags.familyCured && !game.flags.nastyaAntibioticsBought,
+    condition: (game) => !game.flags.familyCured && !game.flags.nastyaAntibioticsBought && !game.playerProfile?.curedFamily,
     from: "Елена Волкова (Жена) <elena.volkova@civ.bunker>",
     date: "18.11.1998 11:15",
     subject: "Лёша, Насте все хуже... Антибиотиков нет!",
