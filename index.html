@@ -874,6 +874,9 @@
             </button>
             <button class="btn-win danger" id="btn-reject-dispatch" style="font-size: 11px; padding: 5px 12px;">
               [ ШТАМП: ОТКАЗАТЬ В ПОСТАВКЕ ]
+            </button>
+            <button id="btn-bribe-dispatch" class="btn-win" style="display: none; background: #2a2205; color: #ffcc00; font-weight: bold; border: 2px outset #b38600; cursor: pointer; font-size: 11px; padding: 5px 12px; margin: 0 4px;">
+              [ ВЗЯТЬ КОНВЕРТ (+<span id="bribe-btn-amount">500</span> руб.) И ВЫДАТЬ ]
             </button>
             <button class="btn-win" id="btn-approve-dispatch" style="color: #006600; font-weight: bold; font-size: 11px; padding: 5px 12px;">
               [ ШТАМП: ПОДПИСАТЬ НАКЛАДНУЮ И ВЫДАТЬ ]
@@ -922,8 +925,9 @@
               <div style="color: #ffb000; font-weight: bold; font-size: 11px; margin-bottom: 4px;">🌡️ ТЕРМОМЕТРИЯ И ДАВЛЕНИЕ</div>
               <div style="font-size: 11px; line-height: 1.4;">
                 Температура забоя: <strong id="tel-val-temp" style="color: #fff;">--</strong><br>
-                Регламентная норма: <span style="color: #88c0a0;">+16°C .. +24°C</span><br>
-                Давление контура: <strong id="tel-val-pressure" style="color: #fff;">--</strong>
+                Регламентная норма: <span id="tel-norm-temp" style="color: #88c0a0;">+15°C .. +24°C</span><br>
+                Давление контура: <strong id="tel-val-pressure" style="color: #fff;">--</strong><br>
+                Норма давления: <span id="tel-norm-pressure" style="color: #88c0a0;">5.0 .. 6.5 атм</span>
               </div>
             </div>
 
@@ -1524,85 +1528,130 @@
       </div>
       <div class="window-content" style="padding: 8px; display: flex; flex-direction: column; overflow: hidden; background: #c0c0c0;">
                 <div class="inset-panel" id="tut-content-panel" style="flex: 1; overflow-y: auto; background: #fffffa; padding: 12px; font-size: 12px; line-height: 1.55; color: #111;">
-          <!-- =============================================================
-               СВОДНЫЙ СПРАВОЧНИК ДОПУСКОВ ГОСПЛАНА СССР (НОРМАТИВЫ ГОСТ)
-               ============================================================= -->
-          <div style="background: #eef3f7; border: 2px solid #000080; padding: 10px; margin-bottom: 14px;">
-            <div style="text-align: center; font-weight: 900; color: #000080; font-size: 13px; margin-bottom: 4px;">
-              СПРАВОЧНИК ДЕЖУРНОГО ДИСПЕТЧЕРА: ТАБЛИЦА ДОПУСКОВ ГОСТ СССР
-            </div>
-            <div style="font-size: 10.5px; color: #444; text-align: center; margin-bottom: 8px;">
-              Обязательно к сверке при анализе показаний приложения «Телеметрия.exe» перед подписанием накладных
-            </div>
-
-            <!-- Таблица нормативов -->
-            <table style="width: 100%; border-collapse: collapse; font-size: 11px; background: #fff; margin-bottom: 8px;" border="1" bordercolor="#808080">
-              <thead>
-                <tr style="background: #1f4e6b; color: #fff;">
-                  <th style="padding: 4px;">Сектор бункера</th>
-                  <th style="padding: 4px;">Норма t°</th>
-                  <th style="padding: 4px;">Алкоголь</th>
-                  <th style="padding: 4px;">Макс. шум</th>
-                  <th style="padding: 4px;">Давление пара</th>
-                </tr>
-              </thead>
-              <tbody style="text-align: center;">
-                <tr>
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Шахта «Глубокая-7»</td>
-                  <td>+15°C .. +24°C</td>
-                  <td style="color: #990000; font-weight: bold;">до 0.2‰</td>
-                  <td>до 75 дБ</td>
-                  <td>до 6.0 атм</td>
-                </tr>
-                <tr style="background: #f7f9fa;">
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Водоочиститель «Омега»</td>
-                  <td>+10°C .. +16°C</td>
-                  <td style="color: #990000; font-weight: bold;">0.0‰ (СТРОГО)</td>
-                  <td>до 45 дБ</td>
-                  <td>до 8.0 атм</td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Теплицы «Флора-3»</td>
-                  <td>+16°C .. +25°C</td>
-                  <td>до 0.1‰</td>
-                  <td>до 30 дБ</td>
-                  <td>до 4.0 атм</td>
-                </tr>
-                <tr style="background: #f7f9fa;">
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Медпункт / Санчасть</td>
-                  <td>+18°C .. +22°C</td>
-                  <td>до 0.3‰ (мед.)</td>
-                  <td>до 35 дБ</td>
-                  <td>Холодильник: +2..+5°C</td>
-                </tr>
-                <tr>
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Радиовышка «Зенит»</td>
-                  <td>-5°C .. +18°C</td>
-                  <td>до 0.1‰</td>
-                  <td>до 50 дБ</td>
-                  <td>Кунг: +18..+22°C</td>
-                </tr>
-                <tr style="background: #f7f9fa;">
-                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Жилой Блок №4</td>
-                  <td>+18°C .. +22°C</td>
-                  <td>до 0.5‰</td>
-                  <td>до 60 дБ</td>
-                  <td>Вода в баках: &gt;40%</td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- Инструкция по выявлению обмана и саботажа -->
-            <div style="background: #fff8db; border: 1px solid #c99700; padding: 6px 8px; font-size: 10.5px; line-height: 1.45;">
-              <strong style="color: #8a5700;">ПРИЗНАКИ ФАЛЬСИФИКАЦИИ И САБОТАЖА:</strong><br>
-              • <strong>Штурм мутантов / нападение рейдеров:</strong> на тепловизоре периметра <em>обязаны</em> фиксироваться внешние цели (>0). Если на приборе <code>0 тепловых отметок</code> — нападение вымышлено!<br>
-              • <strong>Порча сывороток и вакцин:</strong> медикаменты портятся <em>только</em> при температуре холодильников выше +8°C. Если датчик показывает <code>+3°C</code> при стабильной сети — заявка фиктивна!<br>
-              • <strong>Акустический дебош:</strong> фиксация спектров <code>звон стеклотары / пение</code> в сочетании со спиртом >0.0‰ свидетельствует о пьянстве, а не об аварии.<br>
-              • <strong>Вымерзание оранжерей / перегрев котла:</strong> сверяйте с границами таблицы. Если в теплицах +20°C — угрозы замерзания нет.
-            </div>
-          </div>
-
-          
+          <!-- =============================================================
+               СВОДНЫЙ СПРАВОЧНИК ДОПУСКОВ ГОСПЛАНА СССР (НОРМАТИВЫ ГОСТ)
+               ============================================================= -->
+          <div style="background: #eef3f7; border: 2px solid #000080; padding: 10px; margin-bottom: 14px;">
+            <div style="text-align: center; font-weight: 900; color: #000080; font-size: 13px; margin-bottom: 2px;">
+              ГОСУДАРСТВЕННЫЙ СТАНДАРТ ТЕЛЕМЕТРИИ СЕКТОРОВ
+            </div>
+            <div style="text-align: center; font-weight: bold; color: #800000; font-size: 11px; margin-bottom: 4px;">
+              СЛУЖЕБНЫЙ РЕГЛАМЕНТ ДОПУСКОВ ГОСТ-89-СПЕЦ • ОБЪЕКТ «ПОЛЯРНЫЙ-89»
+            </div>
+            <div style="font-size: 10.5px; color: #444; text-align: center; margin-bottom: 8px;">
+              Обязательный норматив для дежурных инспекторов диспетчерской службы при проверке аварийных накладных
+            </div>
+
+            <!-- Таблица нормативов ГОСТ -->
+            <table style="width: 100%; border-collapse: collapse; font-size: 10.5px; background: #fff; margin-bottom: 10px;" border="1" bordercolor="#808080">
+              <thead>
+                <tr style="background: #1f4e6b; color: #fff;">
+                  <th style="padding: 4px 6px;">Сектор бункера</th>
+                  <th style="padding: 4px;">Код</th>
+                  <th style="padding: 4px;">1. Температура (°C)</th>
+                  <th style="padding: 4px;">2. Давление (атм)</th>
+                  <th style="padding: 4px;">3. Газ (Спирт / CO)</th>
+                  <th style="padding: 4px;">4. Акустика (дБ)</th>
+                  <th style="padding: 4px;">5. Фильтры / Споры</th>
+                  <th style="padding: 4px;">6. Сеть (%)</th>
+                </tr>
+              </thead>
+              <tbody style="text-align: center;">
+                <tr>
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Шахта «Глубокая-7»</td>
+                  <td><code>sec_mine</code></td>
+                  <td><strong>+15°C .. +24°C</strong></td>
+                  <td><strong>5.0 .. 6.5 атм</strong></td>
+                  <td>Спирт: 0.0..0.1‰<br>CO: &lt; 0.03%</td>
+                  <td><strong>45 .. 70 дБ</strong></td>
+                  <td>Фильтры: &lt; 80%<br>Споры: Класс 0..1</td>
+                  <td><strong>85 .. 100%</strong></td>
+                </tr>
+                <tr style="background: #f7f9fa;">
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Водоочиститель «Омега»</td>
+                  <td><code>sec_water</code></td>
+                  <td><strong>+10°C .. +16°C</strong></td>
+                  <td><strong>7.0 .. 8.0 атм</strong></td>
+                  <td><span style="color: #990000; font-weight: bold;">СТРОГО 0.0‰</span><br>CO: &lt; 0.02%</td>
+                  <td><strong>35 .. 55 дБ</strong></td>
+                  <td>Фильтры: &lt; 75%<br>Споры: Класс 0</td>
+                  <td><strong>90 .. 100%</strong></td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Теплицы «Флора-3»</td>
+                  <td><code>sec_hydro</code></td>
+                  <td><strong>+16°C .. +25°C</strong></td>
+                  <td><strong>3.0 .. 4.5 атм</strong></td>
+                  <td>Спирт: 0.0..0.1‰<br>CO: &lt; 0.02%</td>
+                  <td><strong>20 .. 40 дБ</strong></td>
+                  <td>Фильтры: &lt; 70%<br>Споры: Класс 0..1</td>
+                  <td><strong>80 .. 100%</strong></td>
+                </tr>
+                <tr style="background: #f7f9fa;">
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Медсанчасть</td>
+                  <td><code>sec_med</code></td>
+                  <td><strong>+18°C .. +22°C</strong></td>
+                  <td><strong>2.5 .. 3.5 атм</strong></td>
+                  <td>Спирт: 0.0..0.2‰ (мед)<br>CO: &lt; 0.01%</td>
+                  <td><strong>20 .. 35 дБ</strong></td>
+                  <td>Фильтры: &lt; 65%<br>Холод: +2..+5°C</td>
+                  <td><strong>95 .. 100%</strong></td>
+                </tr>
+                <tr>
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Вышка «Зенит»</td>
+                  <td><code>sec_radar</code></td>
+                  <td><strong>-5°C .. +18°C</strong></td>
+                  <td><strong>2.0 .. 3.0 атм</strong></td>
+                  <td>Спирт: 0.0..0.1‰<br>CO: &lt; 0.01%</td>
+                  <td><strong>25 .. 50 дБ</strong></td>
+                  <td>Фильтры: &lt; 70%<br>Кунг: +18..+22°C</td>
+                  <td><strong>85 .. 100%</strong></td>
+                </tr>
+                <tr style="background: #f7f9fa;">
+                  <td style="text-align: left; padding: 3px 6px; font-weight: bold;">Жилой Блок №4</td>
+                  <td><code>sec_block</code></td>
+                  <td><strong>+18°C .. +22°C</strong></td>
+                  <td><strong>2.0 .. 3.0 атм</strong></td>
+                  <td>Спирт: 0.0..0.3‰ (быт)<br>CO: &lt; 0.02%</td>
+                  <td><strong>30 .. 55 дБ</strong></td>
+                  <td>Фильтры: &lt; 70%<br>Баки: &gt; 40%</td>
+                  <td><strong>80 .. 100%</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Расшифровка акустического контроля -->
+            <div style="background: #f0f8ff; border: 1px solid #4682b4; padding: 6px 8px; font-size: 10.5px; line-height: 1.45; margin-bottom: 8px;">
+              <strong style="color: #003366;">🔊 РАСШИФРОВКА АКУСТИЧЕСКОГО КОНТРОЛЯ (ШУМОВОЙ ФОН):</strong><br>
+              • <code>20 .. 30 дБ (Фоновая тишина)</code> — дежурная смена отдыхает или несёт спокойную службу.<br>
+              • <code>35 .. 50 дБ (Разговоры, бытовой шум)</code> — штатная жизнедеятельность, перемещение людей.<br>
+              • <code>55 .. 70 дБ (Рабочий гул забоя / станков)</code> — активная работа буровых станков, вентиляторов, насосов.<br>
+              • <code>75 .. 82 дБ (Крики о помощи / паника)</code> — локальное ЧП, производственная травма, авария.<br>
+              • <code>85 .. 90 дБ (Массовая драка / погром)</code> — групповые беспорядки, саботаж, попытка взлома дверей.<br>
+              • <code>95+ дБ (Выстрелы / взрыв)</code> — боестолкновение, применение огнестрельного оружия, подрыв породы.
+            </div>
+
+            <!-- Признаки аварийной ситуации -->
+            <div style="background: #eafbee; border: 1px solid #2e8b57; padding: 6px 8px; font-size: 10.5px; line-height: 1.45; margin-bottom: 8px;">
+              <strong style="color: #006400;">✅ ПРИЗНАКИ АВАРИЙНОЙ СИТУАЦИИ (ТРЕБУЕТСЯ ВЫДАЧА РЕСУРСА):</strong><br>
+              • <strong>Термометрия:</strong> температура <em>ниже нормы</em> (замерзание штрека/оранжереи) ➔ выдать <strong>Топливо ⛽</strong>. Температура <em>выше нормы</em> (перегрев котла) ➔ выдать <strong>Воду 💧</strong>.<br>
+              • <strong>Давление:</strong> падение <em>ниже нормы</em> (заклинивание приводов) или скачок <em>выше нормы на 1.5+ атм</em> (свищ пара) ➔ выдать <strong>Топливо ⛽</strong>.<br>
+              • <strong>Периметр:</strong> наличие тепловых отметок снаружи (<code>&gt; 0 целей</code>) ➔ выдать <strong>Патроны 📦</strong>.<br>
+              • <strong>Биология:</strong> споры микоза <code>Класс 2</code> или <code>Класс 3</code> ➔ выдать <strong>Медпак 💉</strong>.<br>
+              • <strong>Шкалы Карты:</strong> любая шкала сектора упала в красную зону (&lt; 30% запаса или &gt; 70% бунта) ➔ выдать дефицитный ресурс.
+            </div>
+
+            <!-- Инструкция по выявлению обмана и саботажа -->
+            <div style="background: #fff8db; border: 1px solid #c99700; padding: 6px 8px; font-size: 10.5px; line-height: 1.45;">
+              <strong style="color: #8a5700;">⛔ ПРИЗНАКИ МОШЕННИЧЕСТВА И САБОТАЖА (ОТКАЗ В НАКЛАДНОЙ):</strong><br>
+              • <strong>Алкогольное опьянение заявителя:</strong> пары этанола <code>&gt; 0.5‰</code> (а при <code>2.0 .. 3.2‰</code> — тяжелый запой). Любые крики о поломках от пьяных — <strong>ложь и саботаж</strong>.<br>
+              • <strong>Ложная паника на периметре:</strong> крики о штурме мутантов, а на тепловизоре <code>0 отметок (рубеж чист)</code>.<br>
+              • <strong>Мнимая засуха / голод:</strong> жалобы на мор при зеленой шкале сектора на Тактической карте (&ge; 50%).<br>
+              • <strong>Ложный холод:</strong> жалобы на стужу при нормальной температуре <code>+18°C .. +24°C</code>.<br>
+              • <strong>Порча сывороток:</strong> медикаменты портятся <em>только</em> при температуре рефрижератора выше +8°C. Если датчик показывает <code>+3°C</code> — заявка фиктивна!
+            </div>
+          </div>
+
           <div style="text-align: center; border-bottom: 2px solid #800000; padding-bottom: 6px; margin-bottom: 12px;">
             <div style="font-size: 14px; font-weight: 900; color: #800000; letter-spacing: 1px;">
               ГЛАВНОЕ УПРАВЛЕНИЕ БУНКЕРНЫХ ПОСЕЛЕНИЙ СССР

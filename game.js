@@ -8,9 +8,208 @@
  * Draggable Desktop Icons, Procedural Radio Narrator, Easter Eggs & Achievements
  */
 
+
+const SECTOR_TELEMETRY_STANDARDS = window.SECTOR_TELEMETRY_STANDARDS = {
+  sec_mine: {
+    name: "Шахта «Глубокая-7»",
+    tempNorm: "+15°C .. +24°C",
+    tempMin: 15, tempMax: 24,
+    defaultTemp: "+19°C",
+    pressureNorm: "5.0 .. 6.5 атм",
+    pressureMin: 5.0, pressureMax: 6.5,
+    defaultPressure: "5.6 атм",
+    alcoholNorm: "0.0 .. 0.1 ‰",
+    alcoholMax: 0.1,
+    defaultAlcohol: "0.0‰",
+    coNorm: "< 0.03%",
+    coMax: 0.03,
+    defaultCo: "0.01%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок (Сектор чист)",
+    defaultMotionIn: "14 рабочих на смене",
+    perimStatus: "СПОКОЙНО",
+    audioNorm: "45 .. 70 дБ",
+    audioMin: 45, audioMax: 70,
+    defaultAudio: "62 дБ (Рабочий гул забоя)",
+    defaultSeismic: "0.2 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 34% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "96%",
+    defaultWaterTank: "82%",
+    defaultFridge: "Не задействовано"
+  },
+  sec_water: {
+    name: "Водоочиститель «Омега»",
+    tempNorm: "+10°C .. +16°C",
+    tempMin: 10, tempMax: 16,
+    defaultTemp: "+13°C",
+    pressureNorm: "7.0 .. 8.0 атм",
+    pressureMin: 7.0, pressureMax: 8.0,
+    defaultPressure: "7.4 атм",
+    alcoholNorm: "СТРОГО 0.0 ‰",
+    alcoholMax: 0.0,
+    defaultAlcohol: "0.0‰",
+    coNorm: "< 0.02%",
+    coMax: 0.02,
+    defaultCo: "0.00%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок",
+    defaultMotionIn: "4 техника фильтрации",
+    perimStatus: "Шлюзы герметичны",
+    audioNorm: "35 .. 55 дБ",
+    audioMin: 35, audioMax: 55,
+    defaultAudio: "42 дБ (Гул центрифуг)",
+    defaultSeismic: "0.0 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 28% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "98%",
+    defaultWaterTank: "94%",
+    defaultFridge: "Не задействовано"
+  },
+  sec_hydro: {
+    name: "Теплицы «Флора-3»",
+    tempNorm: "+16°C .. +25°C",
+    tempMin: 16, tempMax: 25,
+    defaultTemp: "+21°C",
+    pressureNorm: "3.0 .. 4.5 атм",
+    pressureMin: 3.0, pressureMax: 4.5,
+    defaultPressure: "3.6 атм",
+    alcoholNorm: "0.0 .. 0.1 ‰",
+    alcoholMax: 0.1,
+    defaultAlcohol: "0.0‰",
+    coNorm: "< 0.02%",
+    coMax: 0.02,
+    defaultCo: "0.01%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок",
+    defaultMotionIn: "8 агрономов",
+    perimStatus: "Шлюзы герметичны",
+    audioNorm: "20 .. 40 дБ",
+    audioMin: 20, audioMax: 40,
+    defaultAudio: "28 дБ (Шелест гидропоники)",
+    defaultSeismic: "0.0 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 22% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "94%",
+    defaultWaterTank: "78%",
+    defaultFridge: "Не задействовано"
+  },
+  sec_med: {
+    name: "Медсанчасть",
+    tempNorm: "+18°C .. +22°C",
+    tempMin: 18, tempMax: 22,
+    defaultTemp: "+20°C",
+    pressureNorm: "2.5 .. 3.5 атм",
+    pressureMin: 2.5, pressureMax: 3.5,
+    defaultPressure: "3.0 атм",
+    alcoholNorm: "0.0 .. 0.2 ‰ (мед.)",
+    alcoholMax: 0.2,
+    defaultAlcohol: "0.1‰",
+    coNorm: "< 0.01%",
+    coMax: 0.01,
+    defaultCo: "0.00%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок",
+    defaultMotionIn: "6 медиков и больных",
+    perimStatus: "Карантинная зона чиста",
+    audioNorm: "20 .. 35 дБ",
+    audioMin: 20, audioMax: 35,
+    defaultAudio: "24 дБ (Фоновая тишина)",
+    defaultSeismic: "0.0 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 18% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "100%",
+    defaultWaterTank: "88%",
+    defaultFridge: "+3°C (Холодильник сывороток)"
+  },
+  sec_radar: {
+    name: "Вышка «Зенит»",
+    tempNorm: "-5°C .. +18°C",
+    tempMin: -5, tempMax: 18,
+    defaultTemp: "+8°C",
+    pressureNorm: "2.0 .. 3.0 атм",
+    pressureMin: 2.0, pressureMax: 3.0,
+    defaultPressure: "2.4 атм",
+    alcoholNorm: "0.0 .. 0.1 ‰",
+    alcoholMax: 0.1,
+    defaultAlcohol: "0.0‰",
+    coNorm: "< 0.01%",
+    coMax: 0.01,
+    defaultCo: "0.00%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок (Сектор чист)",
+    defaultMotionIn: "3 оператора РЛС",
+    perimStatus: "Внешний сектор чист",
+    audioNorm: "25 .. 50 дБ",
+    audioMin: 25, audioMax: 50,
+    defaultAudio: "38 дБ (Гул аппаратуры)",
+    defaultSeismic: "0.1 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 25% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "92%",
+    defaultWaterTank: "65%",
+    defaultFridge: "Не задействовано"
+  },
+  sec_block: {
+    name: "Жилой Блок №4",
+    tempNorm: "+18°C .. +22°C",
+    tempMin: 18, tempMax: 22,
+    defaultTemp: "+20°C",
+    pressureNorm: "2.0 .. 3.0 атм",
+    pressureMin: 2.0, pressureMax: 3.0,
+    defaultPressure: "2.5 атм",
+    alcoholNorm: "0.0 .. 0.3 ‰ (быт.)",
+    alcoholMax: 0.3,
+    defaultAlcohol: "0.1‰",
+    coNorm: "< 0.02%",
+    coMax: 0.02,
+    defaultCo: "0.01%",
+    gasStatus: "В ПРЕДЕЛАХ ГОСТа",
+    defaultMotionOut: "0 тепловых отметок",
+    defaultMotionIn: "68 жителей в блоке",
+    perimStatus: "Шлюз заперт на ночь",
+    audioNorm: "30 .. 55 дБ",
+    audioMin: 30, audioMax: 55,
+    defaultAudio: "44 дБ (Разговоры, бытовой шум)",
+    defaultSeismic: "0.0 балла",
+    seismicStatus: "СТАБИЛЬНО",
+    defaultSpores: "Класс 0",
+    defaultFilter: "Износ 30% (Норма)",
+    bioStatus: "БЕЗ УГРОЗЫ",
+    defaultPower: "90%",
+    defaultWaterTank: "70%",
+    defaultFridge: "Не задействовано"
+  }
+};
+
+function formatAcousticReading(val) {
+  if (!val) return "28 дБ (Фоновая тишина)";
+  const str = String(val).trim();
+  if (str.includes("(") && str.includes(")")) return str;
+  const db = parseFloat(str.replace(/[^0-9.-]/g, "")) || 28;
+  let desc = "Фоновая тишина";
+  if (db <= 30) desc = "Фоновая тишина";
+  else if (db <= 50) desc = "Разговоры, бытовой шум";
+  else if (db <= 70) desc = "Рабочий гул забоя";
+  else if (db <= 82) desc = "Крики о помощи / паника";
+  else if (db <= 92) desc = "Массовая драка / погром";
+  else desc = "Выстрелы / взрыв";
+  return `${db} дБ (${desc})`;
+}
+
 class BunkerGame {
   constructor() {
-    this.day = 1;
+    this.day = 0;
     this.maxDays = 14;
     this.sectors = JSON.parse(JSON.stringify(GAME_SECTORS_INIT));
     this.resources = { ...INITIAL_RESOURCES };
@@ -434,20 +633,28 @@ class BunkerGame {
       const saved = localStorage.getItem("bunkeros_save");
       if (!saved) return false;
       const data = JSON.parse(saved);
-      this.day = data.day || 1;
-      this.sectors = data.sectors || JSON.parse(JSON.stringify(GAME_SECTORS_INIT));
+      this.day = (data.day !== undefined) ? data.day : 0;
+      this.sectors = (data.sectors && data.sectors.length > 0) ? data.sectors : JSON.parse(JSON.stringify(GAME_SECTORS_INIT));
       this.resources = data.resources || { ...INITIAL_RESOURCES };
       this.playerProfile = data.playerProfile || {
         name: "Алексей Волков",
         id: "ДИСП-74Б",
-        balance: 1500,
+        balance: 1000,
         salary: 700,
-        fineAmount: 800,
-        rating: 92,
+        fineAmount: 400,
+        ratingGos: 70,
+        ratingKsr: 15,
+        ratingFamily: 100,
+        rating: 70,
         fines: [],
         familyTransfers: 0,
         bankHistory: []
       };
+      if (this.playerProfile.ratingGos === undefined) this.playerProfile.ratingGos = 70;
+      if (this.playerProfile.ratingKsr === undefined) this.playerProfile.ratingKsr = 15;
+      if (this.playerProfile.ratingFamily === undefined) this.playerProfile.ratingFamily = 100;
+      if (this.playerProfile.rating === undefined) this.playerProfile.rating = this.playerProfile.ratingGos;
+      if (this.playerProfile.fineAmount === undefined) this.playerProfile.fineAmount = 400;
       this.receivedEmails = data.receivedEmails || [];
       this.desktopFolders = data.desktopFolders || [];
       this.pendingFines = data.pendingFines || [];
@@ -457,11 +664,7 @@ class BunkerGame {
       this.stats = data.stats || { correctFraudsDetected: 0, dispatchesApprovedToday: 0 };
       this.vpnActive = !!data.vpnActive;
       this.seenDispatchIds = data.seenDispatchIds || [];
-      this.conduits = data.conduits || { heat: 'mine', power: 'water', hydro: 'hydro' };
-      this.seenDispatchIds = data.seenDispatchIds || [];
-      this.conduits = data.conduits || { heat: 'mine', power: 'water', hydro: 'hydro' };
-      this.seenDispatchIds = data.seenDispatchIds || [];
-      this.conduits = data.conduits || { heat: 'mine', power: 'water', hydro: 'hydro' };
+      this.conduits = data.conduits || { heat: 'auto', energy: 'auto', water: 'auto' };
       return true;
     } catch (e) {
       return false;
@@ -482,7 +685,8 @@ class BunkerGame {
       if (hasSave) {
         try {
           const data = JSON.parse(localStorage.getItem("bunkeros_save"));
-          continueInfo.textContent = `ДЕНЬ ${data.day || 1} [ENTER]`;
+          const dayNum = (data.day !== undefined) ? data.day : 1;
+          continueInfo.textContent = (dayNum === 0) ? "ИНСТРУКТАЖ (ДЕНЬ 0) [ENTER]" : `ДЕНЬ ${dayNum} [ENTER]`;
         } catch (e) {
           continueInfo.textContent = "ЕСТЬ СОХРАНЕНИЕ";
         }
@@ -889,32 +1093,30 @@ class BunkerGame {
   // CAMPAIGN START & DAY ADVANCE
   // =========================================================================
   startNewCampaign() {
-    this.day = 1;
+    this.day = 0;
     this.sectors = JSON.parse(JSON.stringify(GAME_SECTORS_INIT));
     this.resources = { ...INITIAL_RESOURCES };
     this.playerProfile = {
       name: "Алексей Волков",
       id: "ДИСП-74Б",
-      balance: 1500,
+      balance: 1000,
       salary: 700,
-      fineAmount: 800,
-      rating: 92,
+      fineAmount: 400,
+      ratingGos: 70,
+      ratingKsr: 15,
+      ratingFamily: 100,
+      rating: 70,
+      curedFamily: false,
       fines: [],
       familyTransfers: 0,
       bankHistory: [
-        "14.11.1998 07:30 [ОК]: Открытие счета ДИСП-74Б. Баланс: 1500 руб."
+        "13.11.1998 07:30 [ОК]: Открытие счета ДИСП-74Б. Баланс: 1000 руб."
       ],
       installedApps: []
     };
 
-    this.receivedEmails = EMAIL_DATABASE.filter(m => m.day === 1);
+    this.receivedEmails = (typeof EMAIL_DATABASE !== "undefined") ? EMAIL_DATABASE.filter(m => m.day === 0) : [];
     this.desktopFolders = [];
-
-    this.dailyLogs = [
-      "[СИСТЕМА]: BunkerOS v3.11 активирована. Оператор [admin] заступил на смену.",
-      "[СВОДКА]: Все 6 аванпостов находятся на связи. Ресурсы на распределение загружены в пневмосеть.",
-      "[ИНСТРУКЦИЯ]: День 1 посвящен верификации. Сверяйте показания датчиков с текстом радиограмм перед отправкой дефицитных грузов!"
-    ];
     this.totalCasualties = 0;
     this.deadToday = 0;
     this.flags = {};
@@ -924,9 +1126,16 @@ class BunkerGame {
       totalApproved: 0,
       totalRejected: 0
     };
+    this.seenDispatchIds = [];
+
+    this.dailyLogs = [
+      "[СИСТЕМА]: Вводный аттестационный режим. Объект «Полярный-89».",
+      "[ГОСПЛАН СССР]: Перед заступлением на боевое дежурство ознакомьтесь со службами и обработайте 2 учебные депеши.",
+      "[РЕГЛАМЕНТ]: Сверяйте показания датчиков со Справочником ГОСТ. До успешной аттестации выход в эфир заблокирован."
+    ];
 
     this.saveGame();
-    this.loadDayDispatches(this.day);
+    this.loadDayDispatches(0);
     this.renderTacticalMap();
     this.selectSector(this.selectedSectorId);
     this.updateResourceUI();
@@ -940,11 +1149,11 @@ class BunkerGame {
     this.openWindow("win-inbox");
     this.openWindow("win-depot");
 
-    // Launch Step-by-Step Interactive Tutorial on Day 1
+    // Launch Day 0 Tutorial
     this.startDay1InteractiveTutorial();
 
-    // Show initial teletype briefing
-    this.showDailySummary("ДОКЛАД О ЗАСТУПЛЕНИИ НА СМЕНУ — 14.11.1998", this.dailyLogs, 0);
+    // Show initial briefing
+    this.showDailySummary("ВВОДНЫЙ КВАЛИФИКАЦИОННЫЙ ИНСТРУКТАЖ — 13.11.1998", this.dailyLogs, 0);
   }
 
   resumeCampaign() {
@@ -1705,8 +1914,25 @@ class BunkerGame {
     // App specific effects
     if (app.id === "app_telemetry") {
       this.flags.telemetryAnalyzerInstalled = true;
-      this.showMessageBox("«Анализатор телеметрии v1.2» установлен. Входящие депеши теперь подсвечивают подозрительные аномалии!");
-    } else if (app.id === "app_power_key") {
+      this.showMessageBox("«Анализатор телеметрии v1.2» установлен. В пульте телеметрии активирована автоподсветка нарушений ГОСТ!");
+    } else if (app.id === "app_gost_inspector") {
+      this.flags.gostInspectorInstalled = true;
+      this.showMessageBox("Модуль «ГОСТ-Инспектор v2.0» активирован. Добавлена оперативная экспресс-сверка норм ГОСТ.");
+    } else if (app.id === "app_pneumo_optimizer") {
+      this.flags.pneumoOptimizerInstalled = true;
+      this.showMessageBox("«Оптимизатор пневмосети «Стрела»» смонтирован. Раз в смену первая одобренная накладная не расходует склад!");
+    } else if (app.id === "app_riot_warning") {
+      this.flags.riotWarningInstalled = true;
+      this.showMessageBox("Система «Набат» активирована. Терминал подаст сигнал тревоги при опасном росте бунта в секторах.");
+    } else if (app.id === "app_water_dispenser") {
+      this.flags.waterDispenserInstalled = true;
+      this.showMessageBox("Авто-дозатор «Родник» запущен. Каждое утро самый обезвоженный сектор бункера получает +10% воды.");
+    } else if (app.id === "app_reserve_battery") {
+      this.resources.fuel += 1;
+      this.flags.reserveBatteryInstalled = true;
+      this.updateResourceUI();
+      this.showMessageBox("Резервная энергоячейка «Искра» смонтирована. На склад начислена +1 Топливная Ячейка, сеть защищена.");
+    } else if (app.id === "app_power_key" || app.id === "app_key") {
       this.resources.fuel += 1;
       this.updateResourceUI();
       this.showMessageBox("Служебный ключ активирован. В резерв пневмосети добавлена 1 Топливная Ячейка!");
@@ -1714,7 +1940,7 @@ class BunkerGame {
       this.flags.omegaProtocolUnlocked = true;
       this.checkAchievement("ach_shadow_deal");
       this.openOmegaProtocolWindow();
-      this.showMessageBox("Артефакт «???» [Спецхранение КСР] получен бесплатно!\nСекретный протокол «ОМЕГА» запущен на терминале.");
+      this.showMessageBox("Артефакт «???» [Спецхранение КСР] получен!\nСекретный протокол «ОМЕГА» запущен на терминале.");
     } else {
       this.showMessageBox(`Программа «${app.name}» успешно установлена на рабочий стол.`);
     }
@@ -2204,21 +2430,28 @@ class BunkerGame {
   generateDailyTorMarket() {
     if (this.mysteryAbsentDays === undefined) this.mysteryAbsentDays = 0;
 
+    if (!this.mysteryAbsentDays) this.mysteryAbsentDays = 0;
+    this.surplusSoldToday = 0; // Reset daily surplus liquidation counter
+
     const mysteryItem = TOR_MARKET_DATABASE.find(i => i.id === "tor_mystery_omega");
     const isMysteryPurchased = mysteryItem && mysteryItem.purchased;
 
-    // Шанс появления ???: 25% каждый день, 100% гарантия если не появлялся 3 дня подряд (на 4-й день)
+    // 15% base chance, 100% guarantee on 4th consecutive day missed
     let includeMystery = false;
     if (!isMysteryPurchased && mysteryItem) {
       this.mysteryAbsentDays++;
-      if (this.mysteryAbsentDays >= 4 || Math.random() < 0.25) {
+      if (this.mysteryAbsentDays >= 4 || Math.random() < 0.15) {
         includeMystery = true;
-        this.mysteryAbsentDays = 0; // Сброс счетчика при появлении
+        this.mysteryAbsentDays = 0;
       }
     }
 
+    const antibiotics = TOR_MARKET_DATABASE.find(i => i.id === "tor_antibiotics");
+    const isAntibioticsPurchased = antibiotics && antibiotics.purchased;
+
     const pool = TOR_MARKET_DATABASE.filter(item => {
-      if (item.id === "tor_mystery_omega") return false; // Обрабатываем отдельно по спец-шансу
+      if (item.id === "tor_mystery_omega") return false;
+      if (item.id === "tor_antibiotics" && isAntibioticsPurchased) return false;
       if (item.purchased && (item.type === "family_cure" || item.type === "omega_protocol" || item.type === "ksr_booster" || item.type === "escape_pass")) {
         return false;
       }
@@ -2230,15 +2463,15 @@ class BunkerGame {
       selected.push(mysteryItem);
     }
 
-    const antibiotics = TOR_MARKET_DATABASE.find(i => i.id === "tor_antibiotics");
-    // Days 1, 2, 3: Antibiotics guaranteed if not purchased
-    if (this.day <= 3 && antibiotics && !antibiotics.purchased && !selected.some(s => s.id === antibiotics.id)) {
+    // Days 1 to 5: Antibiotics strictly guaranteed if not purchased
+    if (this.day >= 1 && this.day <= 5 && antibiotics && !isAntibioticsPurchased && !selected.some(s => s.id === antibiotics.id)) {
       selected.push(antibiotics);
     }
 
     const remaining = pool.filter(i => !selected.some(s => s.id === i.id));
     const shuffled = [...remaining].sort(() => Math.random() - 0.5);
-    while (selected.length < 4 && shuffled.length > 0) {
+    // 5-6 items per day
+    while (selected.length < 5 && shuffled.length > 0) {
       selected.push(shuffled.pop());
     }
 
@@ -2267,7 +2500,26 @@ class BunkerGame {
 
   openTorRadio() {
     this.openWindow("win-tor");
-    if (this.day === 1) {
+    if (this.day <= 1) {
+      const lockedMsg = document.getElementById("tor-market-locked");
+      const unlockedMsg = document.getElementById("tor-market-unlocked");
+      const signalStatus = document.getElementById("tor-signal-status");
+      if (lockedMsg) {
+        lockedMsg.style.display = "block";
+        lockedMsg.innerHTML = `<div style="color: #ff9900; padding: 25px; text-align: center; font-family: monospace; font-size: 11px; line-height: 1.6;">
+          <strong>[ПРИКАЗ КОМЕНДАТУРЫ №12]:</strong><br><br>
+          Радиоузел законсервирован на регламентное техническое обслуживание до Смены №2.<br><br>
+          Доступ к радиоэфиру во время стажировки и в первый рабочий день строго воспрещен.
+        </div>`;
+      }
+      if (unlockedMsg) unlockedMsg.style.display = "none";
+      if (signalStatus) {
+        signalStatus.textContent = "[ОПЕЧАТАНО] Радиоузел законсервирован до Смены №2";
+        signalStatus.style.color = "#ff9900";
+      }
+      return;
+    }
+    if (false) {
       const lockedMsg = document.getElementById("tor-market-locked");
       const unlockedMsg = document.getElementById("tor-market-unlocked");
       const signalStatus = document.getElementById("tor-signal-status");
@@ -2433,6 +2685,34 @@ class BunkerGame {
     }
 
     // Render strictly the 4 items for today
+    // Add Surplus Liquidation Panel
+    const surplusDiv = document.createElement("div");
+    surplusDiv.style.marginBottom = "10px";
+    surplusDiv.style.padding = "6px 8px";
+    surplusDiv.style.background = "#221100";
+    surplusDiv.style.border = "1px solid #ff9900";
+    surplusDiv.innerHTML = `
+      <div style="font-size: 11px; font-weight: bold; color: #ffcc00; margin-bottom: 4px;">
+        💰 СБЫТ ИЗЛИШКОВ СКЛАДА ПЕРЕКУПЩИКАМ (ЛИМИТ: <span id="tor-surplus-counter">${this.surplusSoldToday || 0} / 2</span>):
+      </div>
+      <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+        <button class="btn-win" id="btn-sell-fuel" style="font-size: 10px; padding: 2px 6px;">Топливо (+120р)</button>
+        <button class="btn-win" id="btn-sell-food" style="font-size: 10px; padding: 2px 6px;">Пайки (+100р)</button>
+        <button class="btn-win" id="btn-sell-water" style="font-size: 10px; padding: 2px 6px;">Вода (+80р)</button>
+        <button class="btn-win" id="btn-sell-meds" style="font-size: 10px; padding: 2px 6px;">Медпак (+150р)</button>
+        <button class="btn-win" id="btn-sell-ammo" style="font-size: 10px; padding: 2px 6px;">Патроны (+140р)</button>
+      </div>
+    `;
+    container.appendChild(surplusDiv);
+
+    setTimeout(() => {
+      document.getElementById("btn-sell-fuel")?.addEventListener("click", () => this.sellSurplusToTor("fuel"));
+      document.getElementById("btn-sell-food")?.addEventListener("click", () => this.sellSurplusToTor("food"));
+      document.getElementById("btn-sell-water")?.addEventListener("click", () => this.sellSurplusToTor("water"));
+      document.getElementById("btn-sell-meds")?.addEventListener("click", () => this.sellSurplusToTor("meds"));
+      document.getElementById("btn-sell-ammo")?.addEventListener("click", () => this.sellSurplusToTor("ammo"));
+    }, 50);
+
     this.dailyTorMarketItems.forEach(item => {
       const row = document.createElement("div");
       row.className = "tor-market-item";
@@ -3011,7 +3291,7 @@ class BunkerGame {
   updateTray() {
     const dateEl = document.getElementById("tray-date");
     if (dateEl) {
-      dateEl.textContent = GAME_DATES[this.day - 1] || "20.11.1998";
+      dateEl.textContent = (this.day === 0) ? "13.11.1998" : (GAME_DATES[this.day - 1] || "14.11.1998");
     }
   }
 
@@ -3899,6 +4179,13 @@ class BunkerGame {
     }, { passive: false });
   }
 
+  updateMapUI() {
+    this.renderTacticalMap();
+    if (this.selectedSectorId) {
+      this.selectSector(this.selectedSectorId);
+    }
+  }
+
   renderTacticalMap() {
     this.syncMapConduitSelects?.();
     const nodesGroup = document.getElementById("svg-nodes-group");
@@ -3918,8 +4205,19 @@ class BunkerGame {
 
     // Draw Sector Nodes
     this.sectors.forEach(sec => {
+      let secStatus = sec.status;
+      const hasCrisis = this.dispatches && this.dispatches.some(d =>
+        d.sectorId === sec.id &&
+        d.mapMetric &&
+        (d.mapMetric.val <= 25 || (d.mapMetric.key === "rebellion" && d.mapMetric.val >= 70)) &&
+        !(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[d.id])
+      );
+      if (hasCrisis && secStatus !== "dead") {
+        secStatus = "critical";
+      }
+
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      g.setAttribute("class", `sector-node ${sec.status} ${sec.id === this.selectedSectorId ? 'selected' : ''}`);
+      g.setAttribute("class", `sector-node ${secStatus} ${sec.id === this.selectedSectorId ? 'selected' : ''}`);
       g.setAttribute("transform", `translate(${sec.coords.x}, ${sec.coords.y})`);
       g.setAttribute("data-id", sec.id);
 
@@ -3974,13 +4272,37 @@ class BunkerGame {
       else node.classList.remove("selected");
     });
 
+    // Check if an active unresolved dispatch affects this sector's map metrics
+    let activeMapMetric = null;
+    const currentDisp = this.dispatches ? this.dispatches[this.currentDispatchIdx] : null;
+    const isCurrentResolved = currentDisp ? !!(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[currentDisp.id]) : false;
+
+    if (currentDisp && currentDisp.sectorId === sectorId && !isCurrentResolved && currentDisp.mapMetric) {
+      activeMapMetric = currentDisp.mapMetric;
+    } else if (this.dispatches) {
+      const found = this.dispatches.find(d => 
+        d.sectorId === sectorId && 
+        d.mapMetric && 
+        !(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[d.id])
+      );
+      if (found) activeMapMetric = found.mapMetric;
+    }
+
+    const hasCriticalEmergency = activeMapMetric && (
+      (activeMapMetric.val <= 25) || 
+      (activeMapMetric.key === "rebellion" && activeMapMetric.val >= 70)
+    );
+
+    const statusBadgeText = hasCriticalEmergency ? "ТРЕВОГА" : sec.status.toUpperCase();
+    const statusBadgeClass = hasCriticalEmergency ? "status-badge critical" : `status-badge ${sec.status}`;
+
     const telContent = document.getElementById("telemetry-content");
     if (telContent) {
       telContent.innerHTML = `
         <div style="font-weight: bold; font-size: 12px; color: #ffff00; margin-bottom: 2px;">${sec.name}</div>
         <div style="font-size: 9px; color: #88c0a0; margin-bottom: 4px;">${sec.role}</div>
         <div style="font-size: 10px; margin-bottom: 2px;">• <strong>Население:</strong> ${sec.population} чел. (Потерь: ${sec.totalDead || 0})</div>
-        <div style="font-size: 10px; margin-bottom: 2px;">• <strong>Статус:</strong> <span class="status-badge ${sec.status}">${sec.status.toUpperCase()}</span></div>
+        <div style="font-size: 10px; margin-bottom: 2px;">• <strong>Статус:</strong> <span class="${statusBadgeClass}">${statusBadgeText}</span></div>
         <div style="font-size: 9px; border-top: 1px dashed rgba(51,255,102,0.3); padding-top: 4px; color: #aaffcc;">${sec.notes}</div>
       `;
     }
@@ -4002,11 +4324,26 @@ class BunkerGame {
         if (valEl) valEl.textContent = `${clamped}%`;
       };
 
-      setMeter("heat", sec.heat ?? 70);
-      setMeter("food", sec.food ?? 70);
-      setMeter("water", sec.water ?? 70);
-      setMeter("sanitation", sec.sanitation ?? 70);
-      setMeter("riot", sec.riotRisk ?? 15, true);
+      let heatVal = sec.heat ?? 70;
+      let foodVal = sec.food ?? 70;
+      let waterVal = sec.water ?? 70;
+      let sanVal = sec.sanitation ?? 70;
+      let riotVal = sec.riotRisk ?? 15;
+
+      if (activeMapMetric) {
+        const { key, val } = activeMapMetric;
+        if (key === "heat") heatVal = val;
+        else if (key === "food") foodVal = val;
+        else if (key === "water") waterVal = val;
+        else if (key === "sanitation") sanVal = val;
+        else if (key === "rebellion" || key === "riot") riotVal = val;
+      }
+
+      setMeter("heat", heatVal);
+      setMeter("food", foodVal);
+      setMeter("water", waterVal);
+      setMeter("sanitation", sanVal);
+      setMeter("riot", riotVal, true);
     }
 
     if (supplyPanel) {
@@ -4120,7 +4457,7 @@ class BunkerGame {
   // DISPATCH & INBOX LOGIC (WITH TELEMETRY ANALYZER HIGHLIGHTS)
   // =========================================================================
   getRandomDispatchInterval() {
-    const steps = [45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65];
+    const steps = [15, 16, 17, 18];
     const sec = steps[Math.floor(Math.random() * steps.length)];
     return sec * 1000;
   }
@@ -4151,6 +4488,20 @@ class BunkerGame {
     this.currentDispatchIdx = 0;
     this.stats.dispatchesApprovedToday = 0;
     this.radioFineGivenToday = false;
+    this.freePneumoUsedToday = false;
+
+    // Water dispenser module effect: restore +10% water to most depleted sector
+    if (this.flags.waterDispenserInstalled && this.sectors && this.sectors.length > 0) {
+      let driest = this.sectors[0];
+      this.sectors.forEach(s => {
+        if ((s.water ?? 70) < (driest.water ?? 70)) driest = s;
+      });
+      if (driest) {
+        driest.water = Math.min(100, (driest.water ?? 70) + 10);
+        this.logEvent(`[АВТО-ДОЗАТОР «РОДНИК»]: Сектор [${driest.name}] получил +10% дистиллята.`);
+      }
+    }
+
     this.generateDailyTorMarket();
 
     const planBadge = document.getElementById("shift-plan-badge");
@@ -4266,6 +4617,7 @@ class BunkerGame {
 
     if (disp.sectorId) {
       this.selectSector(disp.sectorId);
+      this.switchTelemetryTab(disp.sectorId);
     }
 
     document.getElementById("disp-sender").textContent = disp.sender;
@@ -4489,24 +4841,46 @@ class BunkerGame {
       }
     }
 
-    // Deduct allocated resources from warehouse
-    for (const [res, qty] of Object.entries(alloc)) {
-      this.resources[res] = Math.max(0, (this.resources[res] ?? 0) - qty);
+    // Deduct allocated resources from warehouse (with pneumo optimizer support)
+    let isPneumoSaved = false;
+    if (this.flags.pneumoOptimizerInstalled && !this.freePneumoUsedToday && !disp.isStory && !isBribe) {
+      this.freePneumoUsedToday = true;
+      isPneumoSaved = true;
+      this.logEvent("[ОПТИМИЗАТОР ПНЕВМОСЕТИ «СТРЕЛА»]: Накладная отправлена за счет вакуумного импульса (склад сбережен)!");
+    } else {
+      for (const [res, qty] of Object.entries(alloc)) {
+        this.resources[res] = Math.max(0, (this.resources[res] ?? 0) - qty);
+      }
     }
 
     window.soundEngine.playApproveStamp();
 
-    // Bribe handling vs Standard Fraud handling
-    if (isBribe && disp.bribeOffer) {
+    // Bribe handling vs Story vs Standard Fraud handling
+    const takingBribe = isBribe || !!disp.bribeOffer;
+
+    if (disp.isStory) {
+      // Story dispatches: zero money awards, zero fraud fines
+      this.logEvent(`[СЮЖЕТНОЕ РЕШЕНИЕ]: Накладная [${disp.sender}] одобрена.`);
+      this.stats.dispatchesApprovedToday++;
+      this.stats.totalApproved++;
+    } else if (takingBribe && disp.bribeOffer) {
       const bribeAmount = disp.bribeOffer.amount || 500;
       this.playerProfile.balance += bribeAmount;
+      if (window.soundEngine && typeof window.soundEngine.playCash === "function") {
+        window.soundEngine.playCash();
+      }
       if (!this.bribesTakenToday) this.bribesTakenToday = 0;
       this.bribesTakenToday++;
+      const dateStr = (this.day > 0 && GAME_DATES[this.day - 1]) ? GAME_DATES[this.day - 1] : "13.11.1998";
       this.playerProfile.bankHistory.unshift(
-        `${GAME_DATES[this.day - 1]} ${new Date().toLocaleTimeString().slice(0, 5)} [ВЗЯТКА В КОНВЕРТЕ]: +${bribeAmount} руб. (${disp.sender})`
+        `${dateStr} ${new Date().toLocaleTimeString().slice(0, 5)} [ВЗЯТКА В КОНВЕРТЕ]: +${bribeAmount} руб. (${disp.sender})`
       );
       this.logEvent(`[КОРРУПЦИЯ]: Вы взяли серый конверт (+${bribeAmount} руб.) и подписали накладную!`);
-      // При получении взятки стандартный штраф за ложную депешу НЕ накладывается!
+      this.updateProfileUI();
+      this.updateBankUI();
+      this.saveGame();
+      this.stats.dispatchesApprovedToday++;
+      this.stats.totalApproved++;
     } else if (disp.isFraud) {
       this.queuePendingFine(`Ущерб фонду бункера по ложной депеше [${disp.sender}]`, 400);
       this.modifyRating("gos", -10);
@@ -4523,9 +4897,22 @@ class BunkerGame {
 
     // Mark emergency in this sector resolved live!
     if (!this.resolvedSectorEmergencies) this.resolvedSectorEmergencies = {};
-    if (disp.sectorId) {
-      this.resolvedSectorEmergencies[disp.sectorId] = true;
+    if (disp.id) {
+      this.resolvedSectorEmergencies[disp.id] = true;
     }
+    // Replenish sector metric upon successful delivery
+    if (disp.mapMetric && disp.sectorId) {
+      const sec = this.getSector(disp.sectorId);
+      if (sec) {
+        const { key } = disp.mapMetric;
+        if (key === "heat") sec.heat = Math.max(sec.heat || 70, 75);
+        else if (key === "food") sec.food = Math.max(sec.food || 70, 80);
+        else if (key === "water") sec.water = Math.max(sec.water || 70, 80);
+        else if (key === "sanitation") sec.sanitation = Math.max(sec.sanitation || 70, 75);
+        else if (key === "rebellion" || key === "riot") sec.riotRisk = Math.min(sec.riotRisk || 15, 15);
+      }
+    }
+    this.updateMapUI();
 
     // Instantly refresh telemetry window if open on screen!
     const winTel = document.getElementById("win-telemetry");
@@ -4551,19 +4938,46 @@ class BunkerGame {
 
     window.soundEngine.playRejectStamp();
 
-    if (!disp.isFraud) {
-      this.queuePendingFine(`Отказ в аварийном снабжении [${disp.sender}], вызвавший жертвы`, 400);
+    if (disp.isStory) {
+      // Story dispatches: zero money fines for rejecting!
+      this.logEvent(`[СЮЖЕТНОЕ РЕШЕНИЕ]: В депеше [${disp.sender}] отказано.`);
+    } else if (disp.bribeOffer) {
+      // Refusing a bribe has NO penalty! It counts as fraud detected!
+      this.logEvent(`[ОТКАЗ В КОРРУПЦИИ]: Вы отказались от взятки [${disp.sender}] и сохранили ресурсы бункера.`);
+      this.stats.correctFraudsDetected++;
+    } else if (!disp.isFraud) {
+      const cas = 2;
+      this.deadToday = (this.deadToday || 0) + cas;
+      this.totalCasualties = (this.totalCasualties || 0) + cas;
+      if (disp.sectorId) {
+        const sec = this.getSector(disp.sectorId);
+        if (sec) {
+          sec.deadToday = (sec.deadToday || 0) + cas;
+          sec.population = Math.max(0, (sec.population || 50) - cas);
+          sec.totalDead = (sec.totalDead || 0) + cas;
+        }
+      }
+      this.queuePendingFine(`Отказ в аварийном снабжении [${disp.sender}], вызвавший гибель рабочих`, 400);
       this.modifyRating("gos", -10);
+      this.logEvent(`[ТРАГЕДИЯ]: Отказ в аварии [${disp.sender}] привел к гибели ${cas} чел.! Потери внесены в отчет.`);
+      this.updateMapUI();
     } else {
       this.stats.correctFraudsDetected++;
       if (this.stats.correctFraudsDetected >= 3) {
         this.checkAchievement("ach_sharp_eye");
       }
+      this.logEvent(`[ПРЕСЕЧЕНИЕ САБОТАЖА]: Фальшивая заявка [${disp.sender}] отклонена. Склад спасен.`);
     }
 
     if (disp.onReject) {
       disp.onReject(this);
     }
+
+    if (!this.resolvedSectorEmergencies) this.resolvedSectorEmergencies = {};
+    if (disp.id) {
+      this.resolvedSectorEmergencies[disp.id] = true;
+    }
+    this.updateMapUI();
 
     this.stats.totalRejected++;
 
@@ -4594,7 +5008,12 @@ class BunkerGame {
       }
     } else {
       // Shift dispatches completely processed!
-      this.renderEmptyDispatch();
+      if (this.day === 0) {
+        this.renderEmptyDispatch();
+        this.showQualificationCertificate();
+      } else {
+        this.renderEmptyDispatch();
+      }
       const planBadge = document.getElementById("shift-plan-badge");
       if (planBadge) planBadge.style.display = "block";
     }
@@ -4631,6 +5050,16 @@ class BunkerGame {
     if (btnEndDay) {
       btnEndDay.addEventListener("click", () => {
         // ПРОВЕРКА: Дежурный диспетчер обязан обработать ВСЕ депеши смены!
+        if (this.day === 0) {
+          if (this.dispatches && this.dispatches.length > 0) {
+            window.soundEngine.playErrorChord();
+            this.showMessageBox("ОТКАЗ В АТТЕСТАЦИИ:\n\nДля завершения вводного инструктажа необходимо обработать обе учебные депеши!");
+            return;
+          }
+          this.showQualificationCertificate();
+          return;
+        }
+
         if (this.dispatches && this.dispatches.length > 0) {
           window.soundEngine.playErrorChord();
           this.showMessageBox(
@@ -4915,14 +5344,31 @@ class BunkerGame {
     const deathCounter = document.getElementById("summary-dead-counter");
 
     if (titleEl) titleEl.textContent = title;
-    if (deathCounter) deathCounter.textContent = `Погибло за прошедшие сутки: ${deaths} чел.`;
+    if (deathCounter) {
+      deathCounter.innerHTML = `Погибло за прошедшие сутки: <span style="color: ${deaths > 0 ? '#cc0000' : '#006600'}; font-weight: bold;">${deaths} чел.</span> (Всего потерь: <strong>${this.totalCasualties || 0}</strong>)`;
+    }
 
     if (paper) {
       paper.innerHTML = "";
       logs.forEach(log => {
         const line = document.createElement("div");
         line.style.marginBottom = "4px";
+        line.style.fontSize = "11.5px";
+        line.style.lineHeight = "1.45";
         line.textContent = `> ${log}`;
+
+        const lower = log.toLowerCase();
+        if (lower.includes("погиб") || lower.includes("штраф") || lower.includes("жертв") || lower.includes("трагеди") || lower.includes("смерт") || lower.includes("растрат")) {
+          line.style.color = "#cc0000";
+          line.style.fontWeight = "bold";
+        } else if (lower.includes("оклад") || lower.includes("зарплат") || lower.includes("преми") || lower.includes("взятка") || lower.includes("прибыль") || lower.includes("+") || lower.includes("спасен")) {
+          line.style.color = "#006600";
+          line.style.fontWeight = "bold";
+        } else if (lower.includes("внимание") || lower.includes("тревог") || lower.includes("депеш") || lower.includes("госплан") || lower.includes("регламент") || lower.includes("сводк")) {
+          line.style.color = "#b36b00";
+        } else {
+          line.style.color = "#222222";
+        }
         paper.appendChild(line);
       });
     }
@@ -5260,6 +5706,7 @@ class BunkerGame {
   }
 
   renderAchievementsGallery() {
+    if (typeof ACHIEVEMENTS_DATA === "undefined") return;
     const list = document.getElementById("menu-achievements-list");
     this.updateAchievementsCounter();
 
@@ -5335,67 +5782,65 @@ class BunkerGame {
     });
   }
 
-  openTelemetryWindow(targetSectorId = null) {
-    this.openWindow("win-telemetry");
-    const secId = targetSectorId || this.selectedTelemetrySector || "sec_mine";
+  switchTelemetryTab(secId) {
+    if (!secId) return;
     this.selectedTelemetrySector = secId;
-
-    // Подсветить нужную вкладку
     document.querySelectorAll("#telemetry-sector-tabs .tel-tab").forEach(btn => {
       const match = (btn.getAttribute("data-sec") === secId);
       btn.classList.toggle("active", match);
       btn.style.fontWeight = match ? "bold" : "normal";
     });
-
     this.updateTelemetryDisplay(secId);
+  }
+
+  openTelemetryWindow(targetSectorId = null) {
+    this.openWindow("win-telemetry");
+    const secId = targetSectorId || this.selectedTelemetrySector || "sec_mine";
+    this.switchTelemetryTab(secId);
   }
 
   updateTelemetryDisplay(secId) {
     const sec = this.getSector(secId);
+    const std = SECTOR_TELEMETRY_STANDARDS[secId] || SECTOR_TELEMETRY_STANDARDS.sec_mine;
+
     const secNameEl = document.getElementById("tel-sec-name");
-    if (secNameEl && sec) secNameEl.textContent = sec.name;
+    if (secNameEl) secNameEl.textContent = std.name;
+
+    const normTempEl = document.getElementById("tel-norm-temp");
+    if (normTempEl) normTempEl.textContent = std.tempNorm;
+
+    const normPressEl = document.getElementById("tel-norm-pressure");
+    if (normPressEl) normPressEl.textContent = std.pressureNorm;
 
     const currentDisp = this.dispatches[this.currentDispatchIdx];
-    const isResolved = !!(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[secId]);
+    const isResolved = currentDisp ? !!(this.resolvedSectorEmergencies && this.resolvedSectorEmergencies[currentDisp.id]) : false;
     const isCurrentSectorDisp = !isResolved && (currentDisp && currentDisp.sectorId === secId);
     const facts = isCurrentSectorDisp ? (currentDisp.telemetryFacts || {}) : {};
 
     const isAnalyzerInstalled = !!this.flags.telemetryAnalyzerInstalled;
 
+    // Strict Monochrome Rule: Without analyzer, everything is terminal green (#33ff66)
+    const MONO_COLOR = "#33ff66";
     const COLOR_OK = "#33ff66";
     const COLOR_WARN = "#ffcc00";
     const COLOR_CRIT = "#ff3333";
 
     const applyColor = (el, color) => {
       if (!el) return;
-      el.style.color = isAnalyzerInstalled ? color : "#33ff66";
+      el.style.color = isAnalyzerInstalled ? color : MONO_COLOR;
     };
 
     // 1. Температура забоя и давление пара
     const tempEl = document.getElementById("tel-val-temp");
     const pressEl = document.getElementById("tel-val-pressure");
     if (tempEl) {
-      let cleanTemp = "";
-      if (facts.sensorTemp) {
-        cleanTemp = facts.sensorTemp.split("(")[0].trim();
-        tempEl.textContent = cleanTemp || facts.sensorTemp;
-      } else {
-        cleanTemp = sec ? `+${Math.round(sec.heat / 3.5 + 5)}°C` : "+19°C";
-        tempEl.textContent = cleanTemp;
-      }
+      const tempStr = facts.sensorTemp || std.defaultTemp;
+      tempEl.textContent = tempStr;
+      const tempNum = parseFloat(tempStr.replace(/[^0-9.-]/g, "")) || 20;
 
-      // GOST temperature limits per sector
-      const tempNum = parseFloat(cleanTemp.replace(/[^0-9.-]/g, "")) || 20;
-      let minT = 15, maxT = 24;
-      if (secId === "sec_water") { minT = 10; maxT = 16; }
-      else if (secId === "sec_hydro") { minT = 16; maxT = 25; }
-      else if (secId === "sec_med") { minT = 18; maxT = 22; }
-      else if (secId === "sec_radar") { minT = -5; maxT = 18; }
-      else if (secId === "sec_block") { minT = 18; maxT = 22; }
-
-      if (tempNum >= minT && tempNum <= maxT) {
+      if (tempNum >= std.tempMin && tempNum <= std.tempMax) {
         applyColor(tempEl, COLOR_OK);
-      } else if (tempNum < minT - 5 || tempNum > maxT + 5) {
+      } else if (tempNum < std.tempMin - 4 || tempNum > std.tempMax + 5) {
         applyColor(tempEl, COLOR_CRIT);
       } else {
         applyColor(tempEl, COLOR_WARN);
@@ -5403,18 +5848,13 @@ class BunkerGame {
     }
 
     if (pressEl) {
-      let rawP = facts.sensorSteamPressure || facts.sensorPressure || facts.sensorBoilerTemp || "4.2 атм";
-      rawP = rawP.split("(")[0].trim();
+      const rawP = facts.sensorSteamPressure || facts.sensorPressure || facts.sensorBoilerTemp || std.defaultPressure;
       pressEl.textContent = rawP;
-
       const pNum = parseFloat(rawP.replace(/[^0-9.-]/g, "")) || 4;
-      let maxP = 6.0;
-      if (secId === "sec_water") maxP = 8.0;
-      if (secId === "sec_hydro") maxP = 4.0;
 
-      if (pNum <= maxP) {
+      if (pNum >= std.pressureMin && pNum <= std.pressureMax) {
         applyColor(pressEl, COLOR_OK);
-      } else if (pNum > maxP + 2.0 || rawP.includes("свищ") || rawP.includes("взрыв")) {
+      } else if (pNum > std.pressureMax + 1.5 || pNum < std.pressureMin - 1.0 || rawP.includes("свищ") || rawP.includes("взрыв")) {
         applyColor(pressEl, COLOR_CRIT);
       } else {
         applyColor(pressEl, COLOR_WARN);
@@ -5423,64 +5863,60 @@ class BunkerGame {
 
     // 2. Газоанализатор и спирт
     const alcEl = document.getElementById("tel-val-alcohol");
+    const coEl = document.getElementById("tel-val-co");
     const gasStatusEl = document.getElementById("tel-val-gas-status");
-    let hasAlcoholReading = false;
     let alcNum = 0.0;
 
     if (alcEl) {
-      if (facts.sensorAudio && facts.sensorAudio.includes("спирт")) {
-        alcEl.textContent = "2.8‰";
-        alcNum = 2.8;
-        hasAlcoholReading = true;
-      } else if (facts.sensorAlcohol) {
-        const rawAlc = facts.sensorAlcohol.split("(")[0].trim();
-        alcEl.textContent = rawAlc;
-        alcNum = parseFloat(rawAlc.replace(/[^0-9.-]/g, "")) || 0;
-        if (alcNum > 0.05) hasAlcoholReading = true;
-      } else {
-        alcEl.textContent = "0.0‰";
-        alcNum = 0.0;
+      let rawAlc = facts.sensorAlcohol;
+      if (!rawAlc && facts.sensorAudio && facts.sensorAudio.includes("спирт")) {
+        rawAlc = "2.8‰";
       }
+      if (!rawAlc) rawAlc = std.defaultAlcohol;
+      alcEl.textContent = rawAlc;
+      alcNum = parseFloat(rawAlc.replace(/[^0-9.-]/g, "")) || 0;
 
-      let maxAlc = 0.2;
-      if (secId === "sec_water") maxAlc = 0.0; // СТРОГО 0.0‰
-      else if (secId === "sec_hydro" || secId === "sec_radar") maxAlc = 0.1;
-      else if (secId === "sec_med") maxAlc = 0.3;
-      else if (secId === "sec_block") maxAlc = 0.5;
-
-      if (alcNum <= maxAlc) {
+      if (alcNum <= std.alcoholMax) {
         applyColor(alcEl, COLOR_OK);
-      } else if (alcNum > maxAlc + 0.6) {
+      } else if (alcNum > std.alcoholMax + 0.5) {
         applyColor(alcEl, COLOR_CRIT);
       } else {
         applyColor(alcEl, COLOR_WARN);
       }
     }
 
+    if (coEl) {
+      const rawCo = facts.sensorCo || std.defaultCo;
+      coEl.textContent = rawCo;
+      const coNum = parseFloat(rawCo.replace(/[^0-9.-]/g, "")) || 0.01;
+      if (coNum <= std.coMax) {
+        applyColor(coEl, COLOR_OK);
+      } else {
+        applyColor(coEl, COLOR_CRIT);
+      }
+    }
+
     if (gasStatusEl) {
-      if (hasAlcoholReading || alcNum > 0.2) {
-        gasStatusEl.textContent = "Пары летучих фракций зафиксированы";
+      if (alcNum > std.alcoholMax || (facts.sensorCo && parseFloat(facts.sensorCo) > std.coMax)) {
+        gasStatusEl.textContent = "ВНИМАНИЕ: Пары летучих фракций превышены!";
         applyColor(gasStatusEl, alcNum > 1.0 ? COLOR_CRIT : COLOR_WARN);
       } else {
-        gasStatusEl.textContent = "Спектр газовой смеси стабилен";
+        gasStatusEl.textContent = std.gasStatus;
         applyColor(gasStatusEl, COLOR_OK);
       }
     }
 
     // 3. Периметр и движение
     const motOutEl = document.getElementById("tel-val-motion-out");
+    const motInEl = document.getElementById("tel-val-motion-in");
     const perimStatusEl = document.getElementById("tel-val-perimeter-status");
+
     if (motOutEl) {
-      let motText = "0 тепловых отметок";
-      if (facts.sensorMotion) {
-        motText = facts.sensorMotion.split("(")[0].trim() || facts.sensorMotion;
-      } else if (facts.sensorPerimeter) {
-        motText = facts.sensorPerimeter.split("(")[0].trim();
-      }
+      const motText = facts.sensorMotion || facts.sensorPerimeter || std.defaultMotionOut;
       motOutEl.textContent = motText;
 
-      const isHostile = motText.includes("силуэт") || motText.includes("цел") || motText.includes("отметок: 4") || motText.includes("прорыв");
-      if (motText.includes("0 тепловых") || motText.includes("Штатно") || motText === "0") {
+      const isHostile = motText.includes("силуэт") || motText.includes("цел") || motText.includes("прорыв") || (motText.match(/[1-9]/) && !motText.includes("0 тепловых") && !motText.includes("0 отметок") && !motText.includes("0 целей"));
+      if (motText.includes("0 тепловых") || motText.includes("0 отметок") || motText.includes("0 целей") || motText.includes("Штатно") || motText.includes("чист")) {
         applyColor(motOutEl, COLOR_OK);
       } else if (isHostile) {
         applyColor(motOutEl, COLOR_CRIT);
@@ -5488,30 +5924,32 @@ class BunkerGame {
         applyColor(motOutEl, COLOR_WARN);
       }
     }
+
+    if (motInEl) {
+      motInEl.textContent = facts.sensorMotionIn || std.defaultMotionIn;
+      applyColor(motInEl, COLOR_OK);
+    }
+
     if (perimStatusEl) {
-      perimStatusEl.textContent = "Сектор наблюдения включен";
+      perimStatusEl.textContent = std.perimStatus;
       applyColor(perimStatusEl, COLOR_OK);
     }
 
     // 4. Акустика и сейсмика
     const audioEl = document.getElementById("tel-val-audio");
     const seismicEl = document.getElementById("tel-val-seismic");
+    const seismicStatusEl = document.getElementById("tel-val-seismic-status");
+
     if (audioEl) {
-      const audText = facts.sensorAudio || "Фоновый уровень 28 дБ";
+      const audText = facts.sensorAudio ? formatAcousticReading(facts.sensorAudio) : std.defaultAudio;
       audioEl.textContent = audText;
 
       const audNum = parseFloat(audText.replace(/[^0-9.-]/g, "")) || 28;
-      let maxDb = 45;
-      if (secId === "sec_mine") maxDb = 75;
-      else if (secId === "sec_hydro") maxDb = 30;
-      else if (secId === "sec_med") maxDb = 35;
-      else if (secId === "sec_radar") maxDb = 50;
-      else if (secId === "sec_block") maxDb = 60;
+      const isRiotSound = audText.includes("погром") || audText.includes("драка") || audText.includes("выстрел") || audText.includes("паника") || audText.includes("крик");
 
-      const isRiotSound = audText.includes("звон") || audText.includes("пение") || audText.includes("крик");
-      if (isRiotSound || audNum > maxDb + 15) {
+      if (isRiotSound || audNum > std.audioMax + 12) {
         applyColor(audioEl, COLOR_CRIT);
-      } else if (audNum > maxDb) {
+      } else if (audNum > std.audioMax || audNum < std.audioMin - 15) {
         applyColor(audioEl, COLOR_WARN);
       } else {
         applyColor(audioEl, COLOR_OK);
@@ -5519,9 +5957,9 @@ class BunkerGame {
     }
 
     if (seismicEl) {
-      const cleanSeismic = (facts.sensorSeismic || "0.1 балла").split("(")[0].trim();
-      seismicEl.textContent = cleanSeismic;
-      const sNum = parseFloat(cleanSeismic.replace(/[^0-9.-]/g, "")) || 0.1;
+      const rawSeismic = facts.sensorSeismic || std.defaultSeismic;
+      seismicEl.textContent = rawSeismic;
+      const sNum = parseFloat(rawSeismic.replace(/[^0-9.-]/g, "")) || 0.1;
 
       if (sNum <= 1.0) {
         applyColor(seismicEl, COLOR_OK);
@@ -5532,13 +5970,20 @@ class BunkerGame {
       }
     }
 
+    if (seismicStatusEl) {
+      seismicStatusEl.textContent = std.seismicStatus;
+      applyColor(seismicStatusEl, COLOR_OK);
+    }
+
     // 5. Биология и фильтры
     const sporesEl = document.getElementById("tel-val-spores");
     const filterEl = document.getElementById("tel-val-filter");
+    const bioStatusEl = document.getElementById("tel-val-bio-status");
+
     if (sporesEl) {
-      const cleanBio = (facts.sensorBio || "Класс 0 (Отрицательно)").split("(")[0].trim();
+      const cleanBio = facts.sensorBio || std.defaultSpores;
       sporesEl.textContent = cleanBio;
-      if (cleanBio.includes("Класс 0") || cleanBio.includes("Отрицательно")) {
+      if (cleanBio.includes("Класс 0") || cleanBio.includes("Отрицательно") || cleanBio.includes("Чисто")) {
         applyColor(sporesEl, COLOR_OK);
       } else if (cleanBio.includes("Класс 1")) {
         applyColor(sporesEl, COLOR_WARN);
@@ -5548,53 +5993,68 @@ class BunkerGame {
     }
 
     if (filterEl) {
-      const cleanFilt = (facts.sensorFilter || facts.sensorCasualties || "Износ: 12%").split("(")[0].trim();
+      const cleanFilt = facts.sensorFilter || std.defaultFilter;
       filterEl.textContent = cleanFilt;
-      const filtNum = parseFloat(cleanFilt.replace(/[^0-9.-]/g, "")) || 15;
-      if (filtNum < 60) {
+      const filtNum = parseFloat(cleanFilt.replace(/[^0-9.-]/g, "")) || 25;
+      if (filtNum < 70) {
         applyColor(filterEl, COLOR_OK);
-      } else if (filtNum >= 85) {
+      } else if (filtNum >= 80) {
         applyColor(filterEl, COLOR_CRIT);
       } else {
         applyColor(filterEl, COLOR_WARN);
       }
     }
 
+    if (bioStatusEl) {
+      bioStatusEl.textContent = std.bioStatus;
+      applyColor(bioStatusEl, COLOR_OK);
+    }
+
     // 6. Энергосеть и приборы
     const powerEl = document.getElementById("tel-val-power");
+    const waterTankEl = document.getElementById("tel-val-water-tank");
     const fridgeEl = document.getElementById("tel-val-fridge");
+
     if (powerEl) {
-      const pwrText = (facts.sensorPower || facts.sensorLabor || "100%").split("(")[0].trim();
+      const pwrText = facts.sensorPower || std.defaultPower;
       powerEl.textContent = pwrText;
       const pwrNum = parseFloat(pwrText.replace(/[^0-9.-]/g, "")) || 100;
-      if (pwrNum >= 80) {
+      if (pwrNum >= 85) {
         applyColor(powerEl, COLOR_OK);
-      } else if (pwrNum < 50) {
+      } else if (pwrNum < 60) {
         applyColor(powerEl, COLOR_CRIT);
       } else {
         applyColor(powerEl, COLOR_WARN);
       }
     }
 
+    if (waterTankEl) {
+      waterTankEl.textContent = facts.sensorWaterTank || std.defaultWaterTank;
+      applyColor(waterTankEl, COLOR_OK);
+    }
+
     if (fridgeEl) {
-      let rawF = (facts.sensorTemp && facts.sensorTemp.includes("Холодильники")) ? facts.sensorTemp : "+3°C";
-      rawF = rawF.split("(")[0].trim();
+      let rawF = facts.sensorFridge || (facts.sensorTemp && facts.sensorTemp.includes("Холодильник") ? facts.sensorTemp : std.defaultFridge);
       fridgeEl.textContent = rawF;
       const fNum = parseFloat(rawF.replace(/[^0-9.-]/g, "")) || 3;
-      if (fNum >= 2 && fNum <= 5) {
-        applyColor(fridgeEl, COLOR_OK);
-      } else if (fNum > 8) {
-        applyColor(fridgeEl, COLOR_CRIT);
+      if (secId === "sec_med") {
+        if (fNum >= 2 && fNum <= 5) {
+          applyColor(fridgeEl, COLOR_OK);
+        } else if (fNum > 8) {
+          applyColor(fridgeEl, COLOR_CRIT);
+        } else {
+          applyColor(fridgeEl, COLOR_WARN);
+        }
       } else {
-        applyColor(fridgeEl, COLOR_WARN);
+        applyColor(fridgeEl, COLOR_OK);
       }
     }
 
-    // Сводный вывод
+    // Сводный вывод системы
     const conclusionEl = document.getElementById("tel-summary-conclusion");
     if (conclusionEl) {
       if (isResolved) {
-        conclusionEl.textContent = `[СИСТЕМА]: Запрос сектора [${sec?.name || secId}] удовлетворен. Аварийный режим снят, показатели приведены в норму ГОСТ.`;
+        conclusionEl.textContent = `[СИСТЕМА]: Запрос сектора [${std.name}] удовлетворен. Аварийный режим снят, показатели приведены в норму ГОСТ.`;
         conclusionEl.style.color = "#33ff66";
       } else if (isAnalyzerInstalled) {
         conclusionEl.textContent = `[АНАЛИЗАТОР v1.2 АКТИВЕН]: Автоматическое сканирование ГОСТ выполнено. Зеленый — допуск, Желтый — внимание, Красный — нарушение!`;
@@ -5605,9 +6065,119 @@ class BunkerGame {
       }
     }
   }
+
+
+  showQualificationCertificate() {
+    let modal = document.getElementById("modal-qualification");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "modal-qualification";
+      modal.style.position = "fixed";
+      modal.style.inset = "0";
+      modal.style.background = "rgba(0,0,0,0.85)";
+      modal.style.zIndex = "10000";
+      modal.style.display = "flex";
+      modal.style.alignItems = "center";
+      modal.style.justifyContent = "center";
+      document.body.appendChild(modal);
+    }
+    modal.style.display = "flex";
+    modal.innerHTML = `
+      <div style="background: #fffffa; border: 4px double #800000; padding: 24px 32px; max-width: 600px; box-shadow: 0 0 35px rgba(0,0,0,0.9); font-family: 'Times New Roman', serif; color: #111; text-align: center; position: relative;">
+        <div style="border-bottom: 2px solid #800000; padding-bottom: 8px; margin-bottom: 12px;">
+          <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #555;">ГОСУДАРСТВЕННЫЙ КОМИТЕТ ПО СПЕЦИАЛЬНЫМ СООРУЖЕНИЯМ</div>
+          <div style="font-size: 15px; font-weight: 900; color: #800000; letter-spacing: 1px; margin-top: 4px;">СЛУЖЕБНОЕ КВАЛИФИКАЦИОННОЕ СВИДЕТЕЛЬСТВО № 74-Б</div>
+        </div>
+        <p style="font-size: 13px; line-height: 1.6; text-align: justify; margin-bottom: 16px;">
+          Настоящим удостоверяется, что инспектор связи <strong>Волков Алексей</strong> успешно прошёл вводную аттестационную проверку регламентов телеметрии, выявил учебный саботаж и признан <strong>ГОДНЫМ</strong> к несению самостоятельного боевого дежурства на пусковом узле спецсооружения «Полярный-89» с правом подписи аварийных накладных Госрезерва.
+        </p>
+        <div style="display: flex; justify-content: space-around; align-items: center; margin: 18px 0; border: 1px dashed #999; padding: 10px; background: #fdfae8;">
+          <div style="text-align: left; font-size: 11px; font-family: monospace;">
+            <strong>ДАТА АТТЕСТАЦИИ:</strong> 13.11.1998<br>
+            <strong>ПРИКАЗ:</strong> № 110-СПЕЦ / ГОСПЛАН<br>
+            <strong>СТАТУС:</strong> ДОПУЩЕН К СМЕНЕ
+          </div>
+          <div style="width: 100px; height: 100px; border: 3px double #cc0000; border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: rotate(-12deg); color: #cc0000; font-weight: 900; font-size: 11px; text-align: center; line-height: 1.2; box-shadow: 0 0 4px rgba(204,0,0,0.4);">
+            АТТЕСТОВАН<br>13.11.1998<br>ГОСПЛАН СССР
+          </div>
+        </div>
+        <button id="btn-start-duty-day1" class="btn-win" style="font-size: 13px; font-weight: bold; padding: 8px 24px; background: #000080; color: #fff; cursor: pointer; border: 2px outset #fff;">
+          ★ ЗАСТУПИТЬ НА ПЕРВУЮ БОЕВУЮ СМЕНУ (14.11.1998) ★
+        </button>
+      </div>
+    `;
+
+    document.getElementById("btn-start-duty-day1").onclick = () => {
+      modal.style.display = "none";
+      window.soundEngine.playApproveStamp();
+      this.startDay1Clean();
+    };
+  }
+
+  startDay1Clean() {
+    this.day = 1;
+    this.tutorialActive = false;
+    this.clearTutorialHighlights();
+    const card = document.getElementById("tutorial-assistant-card");
+    if (card) card.classList.remove("active");
+
+    this.dailyLogs = [
+      "[СИСТЕМА]: Инспектор Волков заступил на первую боевую смену 14.11.1998.",
+      "[СВОДКА]: Все 6 аванпостов на связи. Пневмосеть находится под штатным давлением.",
+      "[РЕГЛАМЕНТ]: Никаких учебных подсказок. Сверяйте каждую депешу со Справочником ГОСТ!"
+    ];
+
+    const day1Mails = (typeof EMAIL_DATABASE !== "undefined") ? EMAIL_DATABASE.filter(m => m.day === 1) : [];
+    day1Mails.forEach(m => {
+      if (!this.receivedEmails.some(existing => existing.id === m.id)) {
+        this.receivedEmails.unshift(m);
+      }
+    });
+
+    this.loadDayDispatches(1);
+    this.renderTacticalMap();
+    this.selectSector(this.selectedSectorId);
+    this.updateResourceUI();
+    this.updateProfileUI();
+    this.updateMailUI();
+    this.updateBankUI();
+    this.updateTray();
+
+    this.showDailySummary("РАПОРТ О ЗАСТУПЛЕНИИ НА СМЕНУ — 14.11.1998", this.dailyLogs, 0);
+  }
+
+  sellSurplusToTor(res) {
+    if (!this.surplusSoldToday) this.surplusSoldToday = 0;
+    if (this.surplusSoldToday >= 2) {
+      window.soundEngine.playErrorChord();
+      this.showMessageBox("Торговец «Лис»: «Тише, начальник! Два сброса за смену — и так потолок, особисты засекут. Завтра приходи!»", "ТЕНЕВОЙ СБЫТ");
+      return;
+    }
+    if ((this.resources[res] ?? 0) < 1) {
+      window.soundEngine.playErrorChord();
+      this.showMessageBox(`На складе нет свободного ресурса [${res}] для сбыта!`, "ОШИБКА СКЛАДА");
+      return;
+    }
+    const prices = { fuel: 120, food: 100, water: 80, meds: 150, ammo: 140 };
+    const price = prices[res] || 100;
+    this.resources[res]--;
+    this.playerProfile.balance += price;
+    this.surplusSoldToday++;
+    window.soundEngine.playCash();
+    this.updateResourceUI();
+    this.updateProfileUI();
+    this.updateBankUI();
+    this.logEvent(`[ТЕНЕВОЙ СБЫТ]: Сбыт 1 ед. [${res}] перекупщикам за +${price} руб.`);
+    const counterEl = document.getElementById("tor-surplus-counter");
+    if (counterEl) counterEl.textContent = `${this.surplusSoldToday} / 2`;
+  }
+
 }
 
 // Global Startup
+if (typeof window !== "undefined") window.BunkerGame = BunkerGame;
+
 window.addEventListener("DOMContentLoaded", () => {
+  window.BunkerGame = BunkerGame;
   window.game = new BunkerGame();
 });

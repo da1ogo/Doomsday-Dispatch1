@@ -12,3 +12,7 @@ restore_temp/
 asar_extracted/
 *.log
 .gemini/
+
+scratch/
+Sborka/
+issue1.md

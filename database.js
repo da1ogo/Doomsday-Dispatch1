@@ -182,38 +182,69 @@ const BANK_ACCOUNTS = {
 };
 
 const APP_MARKET_DATABASE = [
-
   {
-    id: "app_tetris",
-    name: "Тетрис-1989",
-    category: "Игры",
-    price: 150,
-    icon: "🎮",
-    desc: "Классическая электронная головоломка для снятия стресса на дежурстве."
+    "id": "app_telemetry",
+    "name": "Анализатор телеметрии v1.2",
+    "category": "Утилиты",
+    "price": 2200,
+    "icon": "📡",
+    "desc": "Автоматически подсвечивает отклонения от ГОСТа в показаниях датчиков (зеленый/желтый/красный)."
   },
   {
-    id: "app_telemetry",
-    name: "Анализатор телеметрии v1.2",
-    category: "Утилиты",
-    price: 2200,
-    icon: "📡",
-    desc: "Автоматически подсвечивает расхождения в датчиках при анализе депеш."
+    "id": "app_gost_inspector",
+    "name": "ГОСТ-Инспектор v2.0",
+    "category": "Утилиты",
+    "price": 1800,
+    "icon": "📑",
+    "desc": "Интерактивный компаратор норм прямо в бланке депеши. Сверяет датчики с регламентом в 1 клик."
   },
   {
-    id: "app_key",
-    name: "Служебный ключ ЦК",
-    category: "Доступ",
-    price: 800,
-    icon: "🔑",
-    desc: "Дает разовый доступ к резервным складам Госрезерва (+1 Топливная Ячейка)."
+    "id": "app_pneumo_optimizer",
+    "name": "Оптимизатор пневмосети «Стрела»",
+    "category": "Инженерия",
+    "price": 1400,
+    "icon": "🚀",
+    "desc": "Снижает расход ресурсов на продувку магистралей. Первая одобренная заявка за смену не списывает ресурс!"
   },
   {
-    id: "app_miner",
-    name: "Ускоритель ОЗУ «Турбо-86»",
-    category: "Система",
-    price: 0,
-    icon: "⚡",
-    desc: "Бесплатная утилита оптимизации оперативной памяти терминала. Рекомендуется Госпланом."
+    "id": "app_riot_warning",
+    "name": "Система оповещения о бунтах «Набат»",
+    "category": "Безопасность",
+    "price": 1100,
+    "icon": "🚨",
+    "desc": "Выводит звуковое и визуальное предупреждение на карте, если риск бунта в секторе превышает 50%."
+  },
+  {
+    "id": "app_water_dispenser",
+    "name": "Авто-дозатор дистиллята «Родник»",
+    "category": "Жизнеобеспечение",
+    "price": 950,
+    "icon": "💧",
+    "desc": "Каждое утро автоматически восполняет +10% запаса воды в самом обезвоженном секторе бункера."
+  },
+  {
+    "id": "app_reserve_battery",
+    "name": "Резервная энергоячейка «Искра»",
+    "category": "Энергетика",
+    "price": 1300,
+    "icon": "🔋",
+    "desc": "Аварийный аккумулятор. Защищает генераторы при поломках и сразу добавляет +1 Топливо на склад."
+  },
+  {
+    "id": "app_tetris",
+    "name": "Тетрис-1989",
+    "category": "Игры",
+    "price": 150,
+    "icon": "🎮",
+    "desc": "Классическая электронная головоломка для снятия стресса на дежурстве."
+  },
+  {
+    "id": "app_miner",
+    "name": "Ускоритель ОЗУ «Турбо-86»",
+    "category": "Система",
+    "price": 0,
+    "icon": "⚡",
+    "desc": "Бесплатная утилита оптимизации оперативной памяти терминала. Рекомендуется Госпланом."
   }
 ];
 
@@ -275,933 +306,9 @@ const RANDOM_EVENTS_DATABASE = [
   }
 ];
 
-
-
-// 14-Day Scripted Campaign with Multi-Wave Dispatches & Flexible Demands
-const DISPATCH_DATABASE = [
-  // ================= DAY 1 =================
-  {
-    id: "d1_mine_heat",
-    day: 1,
-    wave: 1,
-    sectorId: "sec_mine",
-    sender: "Бригадир Горбунов (Шахта)",
-    priority: "ВЫСОКИЙ",
-    topic: "Капремонт насоса глубинного охлаждения",
-    text: "Диспетчер, это 7-я штольня. Из-за вчерашнего скачка фазы встал циркуляционный насос. Если не зальем Топливную Ячейку для запуска резервного генератора, через 12 часов ствол зальет раскаленным шламом. 85 шахтеров окажутся замурованы.",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "42°C (Норма: 18°C — Критический рост!)",
-      sensorMotion: "Активность персонала в норме",
-      sensorSeismic: "Микротолчки в пределах нормы"
-    },
-    isFraud: false,
-    reason: "Датчики подтверждают аномальный перегрев ствола. Запрос критически обоснован.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_mine", { heat: 85, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Шахта «Глубокая-7» спасена! Насосы охладили ствол. Потерь персонала нет.");
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_mine", { heat: 25, deadToday: 14, status: "critical" });
-      game.flags.mineFlooded = true;
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Из-за нехватки топлива шлам прорвал горизонт Шахты. 14 забойщиков замурованы!");
-      game.modifyRating("gos", -15);
-    }
-  },
-  {
-    id: "d1_water_drunk",
-    day: 1,
-    wave: 1,
-    sectorId: "sec_water",
-    sender: "Оператор смены Синицын (Водоочиститель)",
-    priority: "СРОЧНО",
-    topic: "ТРЕБУЮТСЯ ПАТРОНЫ ДЛЯ ОТРАЖЕНИЯ НАПАДЕНИЯ!",
-    text: "Внимание диспетчерской! Нас штурмуют мародеры из ржавой пустоши! Они скребутся в люки шлюза! Срочно вышлите 2 ящика боеприпасов для стационарной турели, иначе нас вырежут до последнего!",
-    demandSummary: "Требуется: 2 ед. Патронов 🔫",
-    demandOptions: [{ ammo: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 2, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "12°C (Норма)",
-      sensorMotion: "Периметр: 0 движений. Внутренний отсек: хаотичные колебания",
-      sensorAudio: "Громкое пение, звон стеклянной тары, спирт в атмосфере 2.8‰"
-    },
-    isFraud: true,
-    reason: "Датчики периметра чисты. Персонал нашел склад технического спирта и устроил пьяный дебош.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_water", { riotRisk: 45, status: "warning" });
-      game.logEvent("[ВАША ОШИБКА: ОБМАН]: Пьяные операторы водоочистителя получили патроны и изрешетили свои же баки! Патроны потрачены впустую.");
-      game.modifyRating("gos", -10);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШ УСПЕХ: ЛОЖЬ РАСКРЫТА]: Вы отказали пьяным операторам Сектора «Омега». Боезапас сохранен.");
-      game.checkAchievement("ach_sober");
-      game.stats.correctFraudsDetected++;
-      game.modifyRating("gos", 5);
-    }
-  },
-  {
-    id: "d1_med_spores",
-    day: 1,
-    wave: 2,
-    sectorId: "sec_med",
-    sender: "Доктор Петренко (Медпункт)",
-    priority: "СРЕДНИЙ",
-    topic: "Вспышка спорового поражения среди разведчиков",
-    text: "С поверхности доставлено трое разведчиков в тяжелом состоянии. Черный налет на гортани. Необходим 1 Медкомплект со стерильными антибиотиками, иначе начнется отек легких и споры попадут в общую вентиляционную шахту.",
-    demandSummary: "Требуется: 1 ед. Медикаментов 💊",
-    demandOptions: [{ meds: 1 }],
-    req: { fuel: 0, food: 0, meds: 1, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "19°C (Норма)",
-      sensorBio: "Биологическая угроза: Уровень 2 (Споры пепла)",
-      sensorFilter: "Фильтры карантинного бокса изношены на 85%"
-    },
-    isFraud: false,
-    reason: "Биодатчики подтверждают реальное споровое заражение. Отказ грозит заражением вентиляции.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_med", { sanitation: 80, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Разведчики стабилизированы антибиотиками. Карантин успешно локализован.");
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_med", { deadToday: 3, sanitation: 30, status: "critical" });
-      game.updateSector("sec_block", { deadToday: 8, status: "warning" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Без антибиотиков споры просочились в вентиляцию. 11 человек погибли!");
-      game.modifyRating("gos", -15);
-    }
-  },
-
-  // ================= DAY 2 =================
-  {
-    id: "d2_hydro_cold",
-    day: 2,
-    wave: 1,
-    sectorId: "sec_hydro",
-    sender: "Агроном Селиванова (Теплицы)",
-    priority: "ВЫСОКИЙ",
-    topic: "Угроза вымерзания белковой гидропоники",
-    text: "Снаружи ударил радиоактивный мороз! Температура в оранжереях упала до +4°C! Если не дадите 1 Топливную Ячейку на тепловые пушки, вся грибница погибнет за сутки. Завтра весь бункер останется без белковой пасты!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "+3.8°C (Падение на 18 градусов!)",
-      sensorPower: "Линия электропередач перегружена",
-      sensorBio: "Клетки гидропоники замедлили деление на 75%"
-    },
-    isFraud: false,
-    reason: "Температура действительно падает катастрофически. Без топлива гидропоника замерзнет.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_hydro", { heat: 80, food: 85, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Теплицы согреты, белковая грибница спасена. Бункер будет с пайками.");
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_hydro", { heat: 15, food: 20, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Оранжереи вымерзли! 80% урожая белковой массы погибло.");
-      game.modifyRating("gos", -15);
-    }
-  },
-  {
-    id: "d2_block_rations",
-    day: 2,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "Комендант Блока Архипов",
-    priority: "СРЕДНИЙ",
-    topic: "Запрос дополнительного дистиллята для детей",
-    text: "В Жилом Блоке №4 растет обезвоживание среди грудных детей и кормящих матерей. Технический конденсат из кранов вызывает судороги. Требуется 1 канистра очищенного дистиллята.",
-    demandSummary: "Требуется: 1 ед. Дистиллята 💧",
-    demandOptions: [{ water: 1 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 0, water: 1 },
-    telemetryFacts: {
-      sensorWaterLevel: "Резервуары: 38% (Критический порог)",
-      sensorMorale: "Уровень стресса: 72%"
-    },
-    isFraud: false,
-    reason: "Реальная гуманитарная просьба. Чистая вода предотвратит детские смерти.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { water: 80, riotRisk: 15 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Чистая вода распределена по семьям. Мораль жилого сектора спасена.");
-      game.modifyRating("family", 5);
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { water: 20, deadToday: 4, riotRisk: 40 });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: 4 ребенка скончались от токсического шока. В бараках растет глухой ропот.");
-      game.modifyRating("family", -10);
-      game.modifyRating("gos", -10);
-    }
-  },
-  {
-    id: "d2_radar_fraud",
-    day: 2,
-    wave: 2,
-    sectorId: "sec_radar",
-    sender: "Ефрейтор Кротов (Радиовышка)",
-    priority: "ВЫСОКИЙ",
-    topic: "Экстренное выделение спирта и медикаментов",
-    text: "На вышке тяжелое обморожение дежурного караула! Срочно выделите 1 Медкомплект и концентрированные медицинские спирты, иначе караул замерзнет на наблюдательных вышках!",
-    demandSummary: "Требуется: 1 ед. Медикаментов 💊",
-    demandOptions: [{ meds: 1 }],
-    req: { fuel: 0, food: 0, meds: 1, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "-2°C (Для поверхности это обычная норма)",
-      sensorInternal: "Обогреватели кунга работают на полную мощность (+22°C внутри кунга)",
-      sensorStatus: "В кунге слышны звуки игры на гармони"
-    },
-    isFraud: true,
-    reason: "Внутри кунга тепло (+22°C). Ефрейтор пытается выманить медицинский спирт под видом обморожения.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ВАША ОШИБКА: ВАС ОБМАНУЛИ]: Медкомплект выпит караулом в качестве выпивки. Дефицитные медикаменты потеряны.");
-      game.modifyRating("gos", -10);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШ УСПЕХ: ЛОЖЬ РАСКРЫТА]: Вы отказали симулянтам с вышки. Медпак сохранен на складе.");
-      game.stats.correctFraudsDetected++;
-      game.modifyRating("gos", 5);
-    }
-  },
-
-  // ================= DAY 3 =================
-  {
-    id: "d3_radar_raiders",
-    day: 3,
-    wave: 1,
-    sectorId: "sec_radar",
-    sender: "Сержант Рябов (Радиовышка)",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ШТУРМ ВЫШКИ «ЗЕНИТ» БАНДОЙ МАРОДЕРОВ!",
-    text: "Поверхностный периметр прорван! Банда рейдеров «Ржавые Черепа» прижала караул к скалам! Патроны на исходе, пулеметы замолчали! Выдайте 2 ящика патронов через пневмолюк немедленно!",
-    demandSummary: "Требуется: 2 ед. Патронов 🔫",
-    demandOptions: [{ ammo: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 2, water: 0 },
-    telemetryFacts: {
-      sensorMotion: "Периметр: 18 тепловых отметок, стрельба из гладкоствола",
-      sensorSeismic: "Взрывы гранат у нижнего капонира",
-      sensorAudio: "Интенсивная перестрелка, звуки рикошетов"
-    },
-    isFraud: false,
-    reason: "Радиовышку действительно атакуют мародеры. Без боеприпасов гарнизон погибнет.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_radar", { status: "normal", integrity: 85 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Гарнизон вышки отбросил бандитов! Внешняя радиосвязь спасена.");
-      game.modifyRating("gos", 10);
-      game.checkAchievement("ach_hope");
-    },
-    onReject: (game) => {
-      game.updateSector("sec_radar", { deadToday: 8, status: "dead", integrity: 10 });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Вышка «Зенит» захвачена и сожжена! 8 бойцов погибли, связь с внешним миром потеряна.");
-      game.modifyRating("gos", -25);
-    }
-  },
-  {
-    id: "d3_mine_ksr_deal",
-    day: 3,
-    wave: 1,
-    sectorId: "sec_mine",
-    sender: "Бригадир Горбунов (по наводке КСР)",
-    priority: "ВЫСОКИЙ",
-    topic: "Усиленный паек для забойщиков нижнего штрека",
-    text: "Диспетчер, забою нужны силы. Парни выбиваются из сил на аварийной проходке. Просим выделить 2 ящика продовольствия для рабочих смен. (Внизу приписка углем: «Лиса просила напомнить о договоре»)",
-    demandSummary: "Требуется: 2 ед. Продовольствия 🍞",
-    demandOptions: [{ food: 2 }],
-    req: { fuel: 0, food: 2, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorLabor: "Выработка: 120% от нормы (Рабочие на пределе сил)",
-      sensorCalories: "Средний дефицит калорий: 45%"
-    },
-    isFraud: false,
-    reason: "Запрос рабочих подкреплен договоренностью с подпольем КСР. Помощь им укрепит связь с Лисой.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_mine", { food: 90, riotRisk: 5 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Шахтеры получили горячее питание. Лиса передает благодарность.");
-      game.modifyRating("ksr", 15);
-      game.modifyRating("gos", 0);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_mine", { food: 35, riotRisk: 40 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО]: Шахтеры голодают. Лиса в ярости от срыва договоренности.");
-      game.modifyRating("ksr", -15);
-    }
-  },
-
-  // ================= DAY 4 =================
-  // Dilemma: Ammo OR Water for Outpost Cooling / Defense!
-  {
-    id: "d4_water_sandstorm_choice",
-    day: 4,
-    wave: 1,
-    sectorId: "sec_water",
-    sender: "Главный инженер Мальцев (Водоочиститель)",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ДИЛЕММА СТАНЦИИ: ОХЛАЖДЕНИЕ ТУРБИН ИЛИ ЗАЩИТА ШЛЮЗА",
-    text: "Радиоактивная буря забила песком радиаторы! Турбины перегреваются, и одновременно к водозаборному шлюзу стягиваются одичавшие псы пустоши. Нам требуется ЛИБО 2 канистры Дистиллята для экстренной промывки контуров, ЛИБО 2 ящика Патронов для автоматических турелей шлюза! Назначьте выдачу на ваше усмотрение!",
-    demandSummary: "Требуется: 2 ед. Дистиллята 💧 ИЛИ 2 ед. Патронов 🔫",
-    demandOptions: [{ water: 2 }, { ammo: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 0, water: 2 },
-    telemetryFacts: {
-      sensorTurbineTemp: "88°C (Предел прочности: 95°C)",
-      sensorPerimeter: "12 крупных хищников у внешних створок гидрозатвора",
-      sensorPressure: "Давление в насосах падает"
-    },
-    isFraud: false,
-    reason: "Оба варианта жизнеспособны: вода спасет турбины от гидроудара, а патроны уничтожат псов до того, как они порвут гидроизоляцию.",
-    onFulfill: (game, deliv) => {
-      if (deliv.water >= 2) {
-        game.updateSector("sec_water", { water: 90, heat: 70, status: "normal" });
-        game.logEvent("[ВАШЕ РЕШЕНИЕ: ВЫДАН ДИСТИЛЛЯТ]: Турбины промыты и спасены! Охрана отогнала псов остатками пара.");
-      } else if (deliv.ammo >= 2) {
-        game.updateSector("sec_water", { riotRisk: 10, status: "normal" });
-        game.logEvent("[ВАШЕ РЕШЕНИЕ: ВЫДАНЫ ПАТРОНЫ]: Турели перебили мутантов на подходах. Турбины выдержали нагрузку.");
-      } else {
-        game.updateSector("sec_water", { water: 75 });
-        game.logEvent("[ВАШЕ РЕШЕНИЕ: КОМБИНИРОВАННАЯ ПОСТАВКА]: Груз доставлен на станцию очистки.");
-      }
-      game.modifyRating("gos", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_water", { water: 20, deadToday: 6, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Турбины сгорели, а псы прорвали защитную пленку! 6 рабочих растерзаны.");
-      game.modifyRating("gos", -20);
-    }
-  },
-  {
-    id: "d4_block_fever",
-    day: 4,
-    wave: 2,
-    sectorId: "sec_block",
-    sender: "Врач-терапевт Сомова (Жилой Блок №4)",
-    priority: "ВЫСОКИЙ",
-    topic: "Вспышка легочной лихорадки в семейном секторе",
-    text: "В бараках массовый кашель и жар среди детей и женщин. Необходим 1 Медкомплект для приготовления жаропонижающих капельниц, иначе зараза перекинется на рабочие бригады.",
-    demandSummary: "Требуется: 1 ед. Медикаментов 💊",
-    demandOptions: [{ meds: 1 }],
-    req: { fuel: 0, food: 0, meds: 1, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "21°C",
-      sensorBio: "Бактериальная нагрузка воздуха: Повышена на 40%",
-      sensorCasualties: "Заболело свыше 30 человек"
-    },
-    isFraud: false,
-    reason: "Реальная угроза эпидемии в жилом блоке. Медпак снимет остроту кризиса.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { sanitation: 80 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Капельницы поставлены. Лихорадка в жилом секторе отступает.");
-      game.modifyRating("family", 10);
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { deadToday: 7, sanitation: 30, riotRisk: 50 });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: 7 жителей скончались. В блоке назревает бунт.");
-      game.modifyRating("family", -15);
-      game.modifyRating("gos", -15);
-    }
-  },
-
-  // ================= DAY 5 =================
-  {
-    id: "d5_refugees_gate",
-    day: 5,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "Начальник Внешнего Шлюза капитан Баранов",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ТОЛПА БЕЖЕНЦЕВ С ВНЕШНИХ ПОСТОВ У ШЛЮЗА №2",
-    text: "К шлюзу вышло 25 беженцев с разрушенного рудника «Северный». Они обморожены, голодны, требуют впустить их в бункер. Чтобы принять и расселить их, требуется 1 паек Продовольствия и 1 канистра Воды. Либо мы открываем огонь на поражение!",
-    demandSummary: "Требуется: 1 ед. Продовольствия 🍞 и 1 ед. Дистиллята 💧",
-    demandOptions: [{ food: 1, water: 1 }],
-    req: { fuel: 0, food: 1, meds: 0, ammo: 0, water: 1 },
-    telemetryFacts: {
-      sensorBio: "25 человек, следы радиоактивной пыли на одежде смыты снегом",
-      sensorRadiation: "Фон беженцев: 28 мкЗв (Безопасно после дезактивации)"
-    },
-    isFraud: false,
-    reason: "Беженцы не несут биологической угрозы и могут стать ценной рабочей силой.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { population: 225, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Беженцы приняты, накормлены и расселены. Рабочий фонд бункера пополнен!");
-      game.modifyRating("gos", 10);
-      game.modifyRating("ksr", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { deadToday: 18, riotRisk: 60 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО]: Охрана открыла огонь по безоружным беженцам. 18 человек погибли у шлюза. Бункер потрясен жестокостью.");
-      game.modifyRating("gos", -10);
-      game.modifyRating("ksr", -20);
-    }
-  },
-  {
-    id: "d5_ksr_armory_heist",
-    day: 5,
-    wave: 2,
-    sectorId: "sec_mine",
-    sender: "Подпольная ячейка КСР",
-    priority: "СРОЧНО",
-    topic: "ТАЙНЫЙ ПЕРЕХВАТ: ПАТРОНЫ ДЛЯ ОТРЯДА САМООБОРОНЫ",
-    text: "Волков, это снова Лиса. Охранка готовит облаву на активистов в шахтерском клубе. Выдели нам под видом служебной заявки 1 ящик Патронов. Мы спрячем их в отработанном штреке. Не подведи нас.",
-    demandSummary: "Требуется: 1 ед. Патронов 🔫 (Нелегально)",
-    demandOptions: [{ ammo: 1 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 1, water: 0 },
-    telemetryFacts: {
-      sensorStatus: "Внештатный радиоканал на волне 94.4 FM",
-      sensorSecurity: "Патрули СБ выдвинулись на 7-й горизонт"
-    },
-    isFraud: false,
-    reason: "Прямая просьба революционеров. Помощь укрепит позиции КСР, но несет риск расследования СБ.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ПАТРОНЫ ПЕРЕДАНЫ КСР]: Подпольщики вооружились и сорвали облаву карателей СБ.");
-      game.modifyRating("ksr", 25);
-      game.modifyRating("gos", -10);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО КСР]: Вы отказали подпольщикам. Патруль СБ арестовал трех рабочих.");
-      game.modifyRating("ksr", -20);
-      game.modifyRating("gos", 10);
-    }
-  },
-
-  // ================= DAY 6 =================
-  {
-    id: "d6_reactor_surge",
-    day: 6,
-    wave: 1,
-    sectorId: "sec_mine",
-    sender: "Главный энергетик Воропаев",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "УГРОЗА ТЕПЛОВОГО ВЗРЫВА ГЕОТЕРМАЛЬНОГО КОТЛА!",
-    text: "В котле закипел вторичный контур! Давление пара 140 атмосфер! Если не подадим 2 канистры Дистиллята для экстренного контурного охлаждения, котлы разнесет в клочья, и треть бункера сварится заживо!",
-    demandSummary: "Требуется: 2 ед. Дистиллята 💧",
-    demandOptions: [{ water: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 0, water: 2 },
-    telemetryFacts: {
-      sensorSteamPressure: "138 атм (Красный сектор!)",
-      sensorBoilerTemp: "310°C (Критический перегрев)",
-      sensorSeismic: "Дрожь фундаментов машинного зала"
-    },
-    isFraud: false,
-    reason: "Абсолютно реальная угроза масштабного теплового взрыва. Требуется охлаждение.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_mine", { heat: 80, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Котлы залиты охладителем, давление упало до нормы. Бункер спасен от взрыва!");
-      game.modifyRating("gos", 15);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_mine", { deadToday: 26, heat: 10, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Взрыв котла! 26 инженеров и рабочих погибли в потоках пара!");
-      game.modifyRating("gos", -30);
-    }
-  },
-  {
-    id: "d6_fake_med_heist",
-    day: 6,
-    wave: 2,
-    sectorId: "sec_med",
-    sender: "Завскладом медпункта Козлов",
-    priority: "СРОЧНО",
-    topic: "Запрос на экстренное списание 2 медкомплектов",
-    text: "В госпитале внезапная порча сывороток из-за замыкания холодильника. Срочно выделите 2 Медкомплекта на замену, иначе больные останутся без антисептиков!",
-    demandSummary: "Требуется: 2 ед. Медикаментов 💊",
-    demandOptions: [{ meds: 2 }],
-    req: { fuel: 0, food: 0, meds: 2, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorTemp: "Холодильники санчасти: +3°C (Идеальная норма)",
-      sensorPower: "Линия холодильников: 100% стабильности без единого сбоя",
-      sensorNotes: "Козлов вчера проигрался в карты теневым скупщикам"
-    },
-    isFraud: true,
-    reason: "Холодильники исправны. Завскладом пытается украсть 2 медпака для покрытия карточного долга.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ВАША ОШИБКА: ВАС ОБОКРАЛИ]: Завскладом сбыл медкомплекты спекулянтам и сбежал. Резерв потрачен впустую.");
-      game.modifyRating("gos", -15);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШ УСПЕХ: ВОРОВСТВО ПРЕСЕЧЕНО]: Вы разоблачили махинацию Козлова. Завскладом задержан комендатурой.");
-      game.stats.correctFraudsDetected++;
-      game.modifyRating("gos", 10);
-    }
-  },
-
-  // ================= DAY 7 =================
-  {
-    id: "d7_hydro_fungal_blight",
-    day: 7,
-    wave: 1,
-    sectorId: "sec_hydro",
-    sender: "Агроном Селиванова (Теплицы)",
-    priority: "ВЫСОКИЙ",
-    topic: "Эпидемия черной плесени в секторе гидропоники",
-    text: "Споры серой гнили охватили 5-й ярус теплиц. Биомасса превращается в зловонную слизь. Чтобы спасти оставшиеся лотки, требуется 1 Медкомплект для синтеза фунгицида и 1 Топливная Ячейка для термической стерилизации.",
-    demandSummary: "Требуется: 1 ед. Медикаментов 💊 и 1 ед. Топлива ⛽",
-    demandOptions: [{ meds: 1, fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 1, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorBio: "Заражение лотков: 48% и быстро распространяется",
-      sensorO2: "Выработка кислорода падает на 22%"
-    },
-    isFraud: false,
-    reason: "Реальное биологическое поражение гидропоники. Без лекарств и прогрева урожай погибнет.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_hydro", { food: 85, sanitation: 80, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Фунгицид применен, лотки прокалены термитом. Грибница спасена.");
-      game.modifyRating("gos", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_hydro", { food: 15, sanitation: 25, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Плесень уничтожила теплицы. Бункер на пороге голодной катастрофы.");
-      game.modifyRating("gos", -25);
-    }
-  },
-  {
-    id: "d7_mine_cave_in",
-    day: 7,
-    wave: 2,
-    sectorId: "sec_mine",
-    sender: "Мастер смены (где работает сын Миша)",
-    priority: "СРОЧНО",
-    topic: "ОБВАЛ В ШТРЕКЕ №3! УГРОЗА ЖИЗНЯМ ПОДРОСТКОВ!",
-    text: "Диспетчер Волков! Плита кровли обрушилась на транспортный путь! Трое откатчиков заблокированы в кармане, среди них ваш сын Миша! Воздуха на 2 часа! Срочно вышлите 1 Топливную Ячейку для запуска гидродомкратов спасателей!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorSeismic: "Локальный обвал горизонта 7-Б",
-      sensorOxygen: "В завале кислород падает: 14%",
-      sensorPulse: "Фиксация сердцебиения трех выживших"
-    },
-    isFraud: false,
-    reason: "Жизнь вашего сына Миши висит на волоске. Без энергии домкраты не поднимут плиту.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_mine", { status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Домкраты подняли плиту! Миша и его товарищи спасены целыми и невредимыми!");
-      game.modifyRating("family", 25);
-      game.modifyRating("gos", 5);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_mine", { deadToday: 3, status: "warning" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО]: Спасатели не успели пробиться вручную. Ваш сын Миша задохнулся под завалом...");
-      game.modifyRating("family", -80);
-      game.modifyRating("gos", -10);
-    }
-  },
-
-  // ================= DAY 8 =================
-  {
-    id: "d8_reservoir_crack",
-    day: 8,
-    wave: 1,
-    sectorId: "sec_water",
-    sender: "Бригада бетонщиков водоочистителя",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ГЛУБИННАЯ ТРЕЩИНА В ГЛАВНОМ РЕЗЕРВУАРЕ ВОДЫ!",
-    text: "После подземного толчка треснуло дно 3-го резервуара! Вода хлещет в дренаж со скоростью 500 литров в минуту! Чтобы запустить аварийные пневмонасосы обратной откачки, требуется 2 Топливные Ячейки!",
-    demandSummary: "Требуется: 2 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 2 }],
-    req: { fuel: 2, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorFlowRate: "Утечка: 480 л/мин",
-      sensorPressure: "Резкое падение давления в гидросети",
-      sensorCrackSensor: "Датчик деформации бетона: Превышение порога"
-    },
-    isFraud: false,
-    reason: "Утечка воды реальна и приведет к высыханию всего комплекса за двое суток.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_water", { water: 85, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Насосы откачали воду, трещина загерметизирована. Запас воды сохранен.");
-      game.modifyRating("gos", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_water", { water: 15, deadToday: 8, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Половина запаса чистой воды ушла в породу. Бункер переведен на 200 грамм в день.");
-      game.modifyRating("gos", -25);
-    }
-  },
-  {
-    id: "d8_block_rebel_protest",
-    day: 8,
-    wave: 2,
-    sectorId: "sec_block",
-    sender: "Комендант Архипов",
-    priority: "ВЫСОКИЙ",
-    topic: "Запрос патронов для разгона недовольных жителей",
-    text: "Толпа рабочих окружила комендатуру Блока №4, требуя хлеба и нормального отопления. Дайте 2 ящика Патронов для караула, мы сделаем предупредительные залпы и восстановим порядок!",
-    demandSummary: "Требуется: 2 ед. Патронов 🔫",
-    demandOptions: [{ ammo: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 2, water: 0 },
-    telemetryFacts: {
-      sensorCrowd: "Около 80 человек, безоружные женщины и рабочие",
-      sensorThreat: "Оружия в толпе нет, только плакаты и крики"
-    },
-    isFraud: false,
-    reason: "Жестокое подавление вызовет взрыв ненависти и снизит рейтинг семьи Волкова, живущей в этом же блоке.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { deadToday: 12, riotRisk: 80, status: "warning" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ВЫДАНЫ ПАТРОНЫ]: Охрана открыла огонь по толпе. 12 жителей убито. Ваша жена Елена в шоке от вашей жестокости.");
-      game.modifyRating("family", -25);
-      game.modifyRating("gos", 5);
-      game.modifyRating("ksr", -30);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { riotRisk: 30 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО В ПАТРОНАХ]: Коменданту пришлось пойти на переговоры. Кровопролития удалось избежать.");
-      game.modifyRating("family", 10);
-      game.modifyRating("ksr", 15);
-    }
-  },
-
-  // ================= DAY 9 =================
-  {
-    id: "d9_mine_geothermal_tap",
-    day: 9,
-    wave: 1,
-    sectorId: "sec_mine",
-    sender: "Инженер-буровик Тарасов",
-    priority: "ВЫСОКИЙ",
-    topic: "Подключение новой геотермальной жилы",
-    text: "Мы добурились до высокотемпературного пласта! Если выделите 1 Топливную Ячейку на забойный турбобур и 1 ящик Патронов для зачистки подземной каверны от пещерных тварей, бункер получит колоссальный приток тепла!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽ и 1 ед. Патронов 🔫",
-    demandOptions: [{ fuel: 1, ammo: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 1, water: 0 },
-    telemetryFacts: {
-      sensorTempCore: "240°C (Отличный потенциал тепла)",
-      sensorBioAcoustic: "Шорохи пещерных мутантов в пустотах"
-    },
-    isFraud: false,
-    reason: "Реальная инженерная возможность резко поднять теплоснабжение комплекса.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_mine", { heat: 95, status: "normal" });
-      game.updateSector("sec_block", { heat: 90 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Новая жила подключена! На всех ярусах бункера потеплело до +22°C!");
-      game.modifyRating("gos", 15);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО]: Бурение остановлено. Бункер продолжает мерзнуть на старых мощностях.");
-      game.modifyRating("gos", -5);
-    }
-  },
-  {
-    id: "d9_ksr_sabotage_fake",
-    day: 9,
-    wave: 2,
-    sectorId: "sec_radar",
-    sender: "Неизвестный оператор радиостанции",
-    priority: "СРОЧНО",
-    topic: "Запрос на отправку 2 канистр дистиллята на внешнюю площадку",
-    text: "Срочно перешлите 2 канистры Дистиллята в наружный шлюз вышки для «охлаждения антенных фидеров». Лично по приказу Госплана.",
-    demandSummary: "Требуется: 2 ед. Дистиллята 💧",
-    demandOptions: [{ water: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 0, water: 2 },
-    telemetryFacts: {
-      sensorAudio: "Голос синтезирован или искажен через шифратор",
-      sensorCommand: "В журнале приказов Госплана такой директивы нет",
-      sensorOutpost: "Антенные фидеры не требуют жидкостного охлаждения"
-    },
-    isFraud: true,
-    reason: "Это ловушка рейдеров, перехвативших сигнал и пытающихся выманить воду наружу.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ВАША ОШИБКА: ЛОВУШКА]: Вода ушла мародерам пустоши! Вы поверили поддельной директиве.");
-      game.modifyRating("gos", -15);
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШ УСПЕХ: ОБМАН РАСКРЫТ]: Вы разоблачили радиоперехват рейдеров. Вода осталась в хранилище.");
-      game.stats.correctFraudsDetected++;
-      game.modifyRating("gos", 10);
-    }
-  },
-
-  // ================= DAY 10 =================
-  {
-    id: "d10_frost_blizzard",
-    day: 10,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "Комендатура Жилого Блока",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ПОЛЯРНЫЙ БУРАН -62°C: ПРОМЕРЗАНИЕ ВНЕШНЕЙ СТЕНЫ!",
-    text: "На поверхности свирепствует ледяной ад! Бетонные плиты трещат от холода! В жилых отсеках температура упала до нуля, стены покрылись инеем! Требуется 2 Топливные Ячейки на включение аварийных тепловых экранов!",
-    demandSummary: "Требуется: 2 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 2 }],
-    req: { fuel: 2, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorOutdoorTemp: "-62.4°C",
-      sensorWallTemp: "-4°C (Промерзание несущих конструкций)",
-      sensorHypothermia: "Угроза для 200 жителей бараков"
-    },
-    isFraud: false,
-    reason: "Абсолютно критическая угроза вымерзания жилого фонда. Без тепла погибнут десятки людей.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { heat: 85, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Тепловые экраны активированы! В жилых блоках +19°C. Люди спасены от холодной смерти.");
-      game.modifyRating("family", 15);
-      game.modifyRating("gos", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { heat: 10, deadToday: 21, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Страшный мороз сковал бараки. 21 житель замерз насмерть во сне.");
-      game.modifyRating("family", -30);
-      game.modifyRating("gos", -25);
-    }
-  },
-  {
-    id: "d10_med_freeze",
-    day: 10,
-    wave: 2,
-    sectorId: "sec_med",
-    sender: "Доктор Петренко",
-    priority: "ВЫСОКИЙ",
-    topic: "Угроза порчи донорской крови и вакцин",
-    text: "Из-за мороза перемерзла теплотрасса санчасти. Если не выделите 1 Топливную Ячейку для локального калорифера, запасы донорской плазмы замерзнут и лопнут в колбах!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽",
-    demandOptions: [{ fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorMedTemp: "+1.2°C (Опасность замерзания ампул)",
-      sensorSerumStatus: "Кристаллизация начнется через 40 минут"
-    },
-    isFraud: false,
-    reason: "Реальная угроза уничтожения всего стратегического запаса крови.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_med", { heat: 75, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Калорифер запущен, донорская плазма сохранена.");
-      game.modifyRating("gos", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_med", { sanitation: 20, status: "warning" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Все ампулы перемерзли и лопнули. Санчасть осталась без препаратов.");
-      game.modifyRating("gos", -20);
-    }
-  },
-
-  // ================= DAY 11 =================
-  {
-    id: "d11_mutiny_armory",
-    day: 11,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "Майор Соколов (СБ)",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ВООРУЖЕННЫЙ БУНТ НА 11-М ГОРИЗОНТЕ!",
-    text: "Бунтовщики из числа отчаявшихся шахтеров взломали малый арсенал и заняли шлюзовой вестибюль! Они требуют отставки Комендатуры и раздела госрезервов! Выделите спецназу СБ 2 ящика Патронов для штурма и ликвидации мятежников!",
-    demandSummary: "Требуется: 2 ед. Патронов 🔫",
-    demandOptions: [{ ammo: 2 }],
-    req: { fuel: 0, food: 0, meds: 0, ammo: 2, water: 0 },
-    telemetryFacts: {
-      sensorGunfire: "Одиночные выстрелы в коридорах",
-      sensorHostages: "В вестибюле заблокированы гражданские",
-      sensorRebelStrength: "Около 30 восставших с охотничьими ружьями"
-    },
-    isFraud: false,
-    reason: "Острая политическая дилемма: помочь карателям СБ утопить бунт в крови или отказать и дать мятежникам шанс.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { deadToday: 19, riotRisk: 20, status: "warning" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ШТУРМ ОДОБРЕН]: Спецназ СБ расстрелял восставших. 19 человек убито. Бунт подавлен.");
-      game.modifyRating("gos", 20);
-      game.modifyRating("ksr", -40);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { riotRisk: 75, status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО СБ]: Спецназ не решился на штурм без боеприпасов. Мятежники закрепились в вестибюле.");
-      game.modifyRating("gos", -30);
-      game.modifyRating("ksr", 35);
-    }
-  },
-  {
-    id: "d11_food_relief",
-    day: 11,
-    wave: 2,
-    sectorId: "sec_block",
-    sender: "Инициативная группа рабочих",
-    priority: "СРЕДНИЙ",
-    topic: "Мирная раздача продовольствия вместо пулеметов",
-    text: "Диспетчер, люди бунтуют не от злобы, а от пустого желудка! Если выдадите в бараки 2 ящика Продовольствия — накал спадет сам собой без единого выстрела!",
-    demandSummary: "Требуется: 2 ед. Продовольствия 🍞",
-    demandOptions: [{ food: 2 }],
-    req: { fuel: 0, food: 2, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorMorale: "Критическое истощение населения",
-      sensorCalorieSupply: "Запасы продовольствия в блоке на нуле"
-    },
-    isFraud: false,
-    reason: "Гуманный способ погасить мятеж сытостью вместо пуль.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { food: 90, riotRisk: 10 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ПРОДОВОЛЬСТВИЕ ВЫДАНО]: Накормленные люди разошлись по домам. Мир восстановлен.");
-      game.modifyRating("family", 15);
-      game.modifyRating("ksr", 15);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_block", { riotRisk: 90 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: В ЕДЕ ОТКАЗАНО]: Голодные жители продолжили строить баррикады.");
-      game.modifyRating("family", -10);
-      game.modifyRating("ksr", -10);
-    }
-  },
-
-  // ================= DAY 12 =================
-  {
-    id: "d12_radar_ark_signal",
-    day: 12,
-    wave: 1,
-    sectorId: "sec_radar",
-    sender: "Сержант Рябов (Радиовышка)",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "СИГНАЛ ПРИБЛИЖЕНИЯ БРОНЕПОЕЗДА «КОВЧЕГ»!",
-    text: "Диспетчер! Мы поймали несущую частоту эвакуационного эшелона «Ковчег»! Они в 80 километрах! Но из-за обледенения ретранслятора сигнал плавает. Требуется 1 Топливная Ячейка на обогрев антенного зеркала и 1 канистра Дистиллята для контура передатчика!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽ и 1 ед. Дистиллята 💧",
-    demandOptions: [{ fuel: 1, water: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 1 },
-    telemetryFacts: {
-      sensorRadioSignal: "Закодированный военный маяк 'КОВЧЕГ-01'",
-      sensorAntennaIce: "Толщина льда на рефлекторе: 12 см"
-    },
-    isFraud: false,
-    reason: "Решающий момент кампании: наведение поезда определит спасение бункера.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_radar", { status: "normal", integrity: 100 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОДОБРЕНО]: Антенна прогрета, радиомаяк наведения захватил состав «Ковчег»!");
-      game.modifyRating("gos", 15);
-      game.flags.arkGuided = true;
-    },
-    onReject: (game) => {
-      game.updateSector("sec_radar", { status: "dead", integrity: 15 });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: Антенна рухнула под тяжестью льда. Сигнал поезда потерян в шумах.");
-      game.modifyRating("gos", -30);
-      game.flags.arkGuided = false;
-    }
-  },
-  {
-    id: "d12_ksr_station_switch",
-    day: 12,
-    wave: 2,
-    sectorId: "sec_mine",
-    sender: "Лиса (КСР)",
-    priority: "СРОЧНО",
-    topic: "Подготовка наружной стрелки для революционного захвата",
-    text: "Волков! «Ковчег» приближается. Чтобы поезд въехал не на перрон номенклатуры, а к рабочим шлюзам, нам нужно подать напряжение на 4-ю стрелку. Выдели 1 Топливную Ячейку по нашему каналу. Мы спасем людей, а не золото генералов!",
-    demandSummary: "Требуется: 1 ед. Топлива ⛽ (Повстанцам)",
-    demandOptions: [{ fuel: 1 }],
-    req: { fuel: 1, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorRailway: "Стрелочный перевод №4 обесточен",
-      sensorSwitchMechanics: "Готов к переводу на рабочий сектор"
-    },
-    isFraud: false,
-    reason: "Ключевое решение в пользу плана революционеров.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ТОПЛИВО ВЫДАНО КСР]: Стрелка запитана! Поезд будет перенаправлен к рабочим шлюзам.");
-      game.modifyRating("ksr", 30);
-      game.modifyRating("gos", -20);
-      game.flags.ksrTrainTrackReady = true;
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО КСР]: Вы отказали революционерам. Стрелка осталась на правительственный перрон.");
-      game.modifyRating("ksr", -25);
-      game.modifyRating("gos", 15);
-    }
-  },
-
-  // ================= DAY 13 =================
-  {
-    id: "d13_gos_lockdown",
-    day: 13,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "Комендант Архипов (по приказу Каверина)",
-    priority: "КРИТИЧЕСКИЙ",
-    topic: "ЗАПЕЧАТЫВАНИЕ ВНУТРЕННИХ ПЕРЕХОДОВ ПЕРЕД ЭВАКУАЦИЕЙ",
-    text: "Диспетчер Волков! Согласно директиве генерала Каверина, все переходы между жилыми блоками и центральным вокзалом должны быть заблокированы стальными гермозатворами. Чтобы подать гидравлику на замки, требуется 2 Топливные Ячейки. Жители останутся заперты во избежание давки.",
-    demandSummary: "Требуется: 2 ед. Топлива ⛽ (Блокировка гражданских)",
-    demandOptions: [{ fuel: 2 }],
-    req: { fuel: 2, food: 0, meds: 0, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorDoorHydraulics: "Затворы герметизации готовы к закрытию",
-      sensorBlockPop: "В жилых бараках находится свыше 200 человек вашей семьи и соседей"
-    },
-    isFraud: false,
-    reason: "Выполнение приказа обречет вашу семью и всех граждан на гибель взаперти.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_block", { status: "critical", riotRisk: 100 });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ГЕРМОЗАТВОРЫ ЗАПЕРТЫ]: Бараки наглухо запечатаны! Ваша семья отрезана от спасения.");
-      game.modifyRating("gos", 30);
-      game.modifyRating("family", -60);
-      game.modifyRating("ksr", -50);
-      game.flags.blocksSealed = true;
-    },
-    onReject: (game) => {
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: ОТКАЗАНО ГОСПЛАНУ]: Вы оставили гермошлюзы открытыми! У жителей и вашей семьи есть путь к составу.");
-      game.modifyRating("gos", -40);
-      game.modifyRating("family", 25);
-      game.modifyRating("ksr", 25);
-      game.flags.blocksSealed = false;
-    }
-  },
-  {
-    id: "d13_med_evac_prep",
-    day: 13,
-    wave: 2,
-    sectorId: "sec_med",
-    sender: "Доктор Петренко",
-    priority: "ВЫСОКИЙ",
-    topic: "Подготовка тяжелораненых к погрузке в санитарный вагон",
-    text: "В лазарете 15 тяжелых пациентов, перенесших споровое поражение и ожоги. Чтобы они перенесли подъем на перрон, требуется 2 Медкомплекта обезболивающего и стимуляторов.",
-    demandSummary: "Требуется: 2 ед. Медикаментов 💊",
-    demandOptions: [{ meds: 2 }],
-    req: { fuel: 0, food: 0, meds: 2, ammo: 0, water: 0 },
-    telemetryFacts: {
-      sensorPatients: "15 человек на аппаратах ИВЛ",
-      sensorStatus: "Без стимуляторов транспортировка невозможна"
-    },
-    isFraud: false,
-    reason: "Спасение жизней раненых перед прибытием поезда.",
-    onFulfill: (game, deliv) => {
-      game.updateSector("sec_med", { status: "normal" });
-      game.logEvent("[ВАШЕ РЕШЕНИЕ: МЕДПАКИ ВЫДАНЫ]: Раненые стабилизированы и готовы к погрузке в поезд.");
-      game.modifyRating("gos", 10);
-      game.modifyRating("ksr", 10);
-    },
-    onReject: (game) => {
-      game.updateSector("sec_med", { deadToday: 15, status: "critical" });
-      game.logEvent("[ВАША ОШИБКА: ОТКАЗАНО]: 15 пациентов скончались от болевого шока при транспортировке.");
-      game.modifyRating("gos", -20);
-    }
-  },
-
-  // ================= DAY 14 (GRAND CLIMAX) =================
-  {
-    id: "d14_train_arrival_final",
-    day: 14,
-    wave: 1,
-    sectorId: "sec_block",
-    sender: "ГЛАВНЫЙ СТЫКОВОЧНЫЙ ТЕРМИНАЛ «КОВЧЕГА»",
-    priority: "ФИНАЛЬНЫЙ",
-    topic: "ПРИБЫТИЕ ЭВАКОПОЕЗДА: ФИНАЛЬНОЕ РАСПРЕДЕЛЕНИЕ ЭНЕРГИИ!",
-    text: "Внимание диспетчерской смены! Тяжелый бронепоезд «Ковчег» вошел в шлюзовой портал бункера! Состав требует 2 Топливные Ячейки для прогрева паровых турбин разгона и 2 канистры Дистиллята для котлов загородного марша! Без этого поезд не тронется с места!",
-    demandSummary: "Требуется: 2 ед. Топлива ⛽ и 2 ед. Дистиллята 💧",
-    demandOptions: [{ fuel: 2, water: 2 }],
-    req: { fuel: 2, food: 0, meds: 0, ammo: 0, water: 2 },
-    telemetryFacts: {
-      sensorTrainMass: "Бронесостав 18 вагонов, титановая броня",
-      sensorTurbineReadiness: "Требуется теплоноситель для старта"
-    },
-    isFraud: false,
-    reason: "Финальная задача: запустить бронепоезд и решить, кто займет в нем места.",
-    onFulfill: (game, deliv) => {
-      game.logEvent("[ФИНАЛЬНОЕ РЕШЕНИЕ: БРОНЕПОЕЗД ЗАПИТАН]: Турбины «Ковчега» взревели на полную мощность! Состав готов к отправке!");
-      game.flags.trainFueled = true;
-    },
-    onReject: (game) => {
-      game.logEvent("[ФИНАЛЬНОЕ РЕШЕНИЕ: В ЭНЕРГИИ ОТКАЗАНО]: «Ковчег» остался стоять на рельсах холодным стальным гробом...");
-      game.flags.trainFueled = false;
-    }
-  }
-];
-
-
-
-// Morning Gazette Database for 14 Days
+// =========================================================================
+// GAZETTE DATABASE (БУНКЕРНЫЙ ВЕСТНИК)
+// =========================================================================
 const GAZETTE_DATABASE = {
   day2: {
     number: "№ 4,112",
@@ -1388,7 +495,20 @@ const GAZETTE_DATABASE = {
 };
 
 // BunkerMail Database (14 Days + Interactive Responses)
+
+// =========================================================================
+// EMAIL DATABASE (BUNKERMAIL)
+// =========================================================================
 const EMAIL_DATABASE = [
+  {
+    id: "mail_day0_instruction",
+    day: 0,
+    from: "Учебный отдел Госплана <training@bunker.gov>",
+    date: "13.11.1998 07:15",
+    subject: "Инструкция к вводной квалификационной проверке",
+    body: "Товарищ Волков А.В.!\n\nВы зачислены стажером на диспетчерский пункт объекта «Полярный-89».\nДо 14.11.1998 вам необходимо пройти вводный инструктаж и подтвердить знание регламентов.\n\nВам поступят 2 учебные депеши. Сверяйте каждую депешу с показаниями в приложении «Телеметрия» и Справочником ГОСТ.\n\nПосле успешного решения обеих задач вам будет вручено Служебное Свидетельство и открыт доступ к боевому дежурству.\n\n— Начальник учебной части майор Савельев",
+    unread: true
+  },
   // DAY 1
   {
     id: "mail_day1_hr",
@@ -1837,322 +957,188 @@ const EMAIL_DATABASE = [
 
 
 // TOR Black Market Catalog (35+ Authentic Post-Apocalyptic Items)
+
+// =========================================================================
+// TOR BLACK MARKET CATALOG (20 AUTHENTIC ITEMS)
+// =========================================================================
 const TOR_MARKET_DATABASE = [
-  // SPECIAL & NARRATIVE
   {
-    id: "tor_antibiotics",
-    name: "Армейский антибиотик широкого спектра (Ампулы)",
-    desc: "Редчайший резервный антибиотик. Единственный шанс спасти дочь Настю. Исчезает после покупки.",
-    price: 2500,
-    discountPrice: 1200,
-    category: "Медикаменты",
-    type: "family_cure",
-    stock: 1,
-    guaranteedDays: [1, 2, 3]
+    "id": "tor_antibiotics",
+    "name": "Армейский антибиотик широкого спектра (Ампулы)",
+    "desc": "Редчайший резервный антибиотик военного образца. Единственный шанс спасти больную дочь Настю.",
+    "price": 1200,
+    "category": "Медикаменты",
+    "type": "family_cure",
+    "stock": 1
   },
   {
-    id: "tor_mystery_omega",
-    name: "???",
-    desc: "???",
-    price: 6666,
-    category: "Спецхранение",
-    type: "omega_protocol",
-    stock: 1
+    "id": "tor_mystery_omega",
+    "name": "???",
+    "desc": "Странный запечатанный контейнер с титановыми пломбами спецхранилища Омега.",
+    "price": 6666,
+    "category": "Спецхранение",
+    "type": "omega_protocol",
+    "stock": 1
   },
   {
-    id: "tor_fake_seal",
-    name: "Поддельная гербовая печать инспекции СБ",
-    desc: "Аннулирует один штраф Госплана (-400 руб.) и восстанавливает рейтинг доверия.",
-    price: 900,
-    category: "Документы",
-    type: "remove_fine"
+    "id": "tor_fake_seal",
+    "name": "Поддельная гербовая печать инспекции СБ",
+    "desc": "Аннулирует один текущий штраф Госплана (-400 руб.) и восстанавливает рейтинг доверия.",
+    "price": 900,
+    "category": "Документы",
+    "type": "remove_fine"
   },
   {
-    id: "tor_radio_crystal",
-    name: "Кварцевый резонатор КСР (Волна 94.4)",
-    desc: "Усилитель антенны радиоперехвата. Позволяет устойчиво принимать шифровки повстанцев.",
-    price: 650,
-    category: "Спецоборудование",
-    type: "ksr_booster"
+    "id": "tor_radio_crystal",
+    "name": "Кварцевый резонатор КСР (Волна 94.4)",
+    "desc": "Усилитель антенны радиоперехвата. Позволяет устойчиво принимать шифровки повстанцев.",
+    "price": 650,
+    "category": "Спецоборудование",
+    "type": "ksr_booster"
   },
   {
-    id: "tor_clean_id",
-    name: "Чистый биометрический бланк гражданина",
-    desc: "Позволяет подделать пропуск 1-й категории для беспрепятственного выхода к эвакопоезду.",
-    price: 3200,
-    category: "Документы",
-    type: "escape_pass"
-  },
-
-  // RESOURCES TRADING
-  {
-    id: "tor_fuel_cell",
-    name: "Контрабандная топливная ячейка",
-    desc: "1 Топливная ячейка, тайно изъятая из резервов нижних штолен.",
-    price: 1100,
-    category: "Ресурсы",
-    type: "resource",
-    res: "fuel",
-    amount: 1
+    "id": "tor_clean_id",
+    "name": "Чистый биометрический бланк гражданина",
+    "desc": "Позволяет изготовить пропуск 1-й категории для выхода к эвакуационному бронепоезду «Ковчег».",
+    "price": 3200,
+    "category": "Документы",
+    "type": "escape_pass"
   },
   {
-    id: "tor_food_crate",
-    name: "Армейский сухпай высшего комсостава",
-    desc: "1 ящик консервированного пайка (мясо, шоколад, галеты).",
-    price: 750,
-    category: "Ресурсы",
-    type: "resource",
-    res: "food",
-    amount: 1
+    "id": "tor_fuel_cell",
+    "name": "Контрабандная топливная ячейка",
+    "desc": "+1 Топливная ячейка со склада нижних штолен.",
+    "price": 1100,
+    "category": "Ресурсы",
+    "type": "resource",
+    "res": "fuel",
+    "amount": 1
   },
   {
-    id: "tor_water_canister",
-    name: "Канистра артезианского дистиллята",
-    desc: "1 канистра чистейшей ледниковой воды глубокого горизонта.",
-    price: 800,
-    category: "Ресурсы",
-    type: "resource",
-    res: "water",
-    amount: 1
+    "id": "tor_food_crate",
+    "name": "Армейский сухпай высшего комсостава",
+    "desc": "+1 ящик консервированного пайка (мясо, шоколад, галеты).",
+    "price": 750,
+    "category": "Ресурсы",
+    "type": "resource",
+    "res": "food",
+    "amount": 1
   },
   {
-    id: "tor_medkit",
-    name: "Штатный медкомплект с лиофилизатом",
-    desc: "1 полевой медпак с плазмой крови и перевязочным материалом.",
-    price: 950,
-    category: "Ресурсы",
-    type: "resource",
-    res: "meds",
-    amount: 1
+    "id": "tor_water_canister",
+    "name": "Канистра артезианского дистиллята",
+    "desc": "+1 канистра чистейшей ледниковой воды глубокого горизонта.",
+    "price": 800,
+    "category": "Ресурсы",
+    "type": "resource",
+    "res": "water",
+    "amount": 1
   },
   {
-    id: "tor_ammo_box",
-    name: "Цинковый ящик патронов 7.62",
-    desc: "1 ящик тяжелых патронов в заводской смазке.",
-    price: 1000,
-    category: "Ресурсы",
-    type: "resource",
-    res: "ammo",
-    amount: 1
-  },
-
-  // CONTRABAND SALES (SELLING DEPOT SUPPLIES TO CRIMINALS)
-  {
-    id: "tor_sell_ammo",
-    name: "Сбыть ящик патронов бандитам пустоши",
-    desc: "Тайная продажа 1 ящика патронов со склада. Приносит наличные рубли.",
-    price: -1500, // gain 1500
-    category: "Контрабанда",
-    type: "sell_resource",
-    res: "ammo",
-    amount: 1
+    "id": "tor_medkit",
+    "name": "Штатный медкомплект с лиофилизатом",
+    "desc": "+1 полевой медпак с плазмой крови и перевязочным материалом.",
+    "price": 950,
+    "category": "Ресурсы",
+    "type": "resource",
+    "res": "meds",
+    "amount": 1
   },
   {
-    id: "tor_sell_fuel",
-    name: "Слить канистру топлива черным дилерам",
-    desc: "Тайная продажа 1 топливной ячейки. Приносит наличные рубли.",
-    price: -1600,
-    category: "Контрабанда",
-    type: "sell_resource",
-    res: "fuel",
-    amount: 1
+    "id": "tor_ammo_box",
+    "name": "Цинковый ящик патронов 7.62",
+    "desc": "+1 ящик бронебойных армейских патронов.",
+    "price": 1000,
+    "category": "Ресурсы",
+    "type": "resource",
+    "res": "ammo",
+    "amount": 1
   },
   {
-    id: "tor_sell_meds",
-    name: "Сбыть медпак подпольному лазарету",
-    desc: "Тайная продажа 1 медкомплекта на черный рынок.",
-    price: -1400,
-    category: "Контрабанда",
-    type: "sell_resource",
-    res: "meds",
-    amount: 1
+    "id": "tor_sniffer",
+    "name": "Сниффер телетайпа ОБХСС",
+    "desc": "Заранее предупреждает о внезапных ревизиях и проверках казначейства.",
+    "price": 1300,
+    "category": "Спецоборудование",
+    "type": "sniffer"
   },
   {
-    id: "tor_sell_food",
-    name: "Сбыть продовольственный паек спекулянтам",
-    desc: "Тайная продажа 1 продовольственного ящика.",
-    price: -1100,
-    category: "Контрабанда",
-    type: "sell_resource",
-    res: "food",
-    amount: 1
-  },
-
-  // SURVIVAL & LUXURY GOODS
-  {
-    id: "tor_gasmask_filter",
-    name: "Военный фильтр ГП-7М (Угольный)",
-    desc: "Снижает риск радиационного поражения семьи на 20%.",
-    price: 450,
-    category: "Снаряжение",
-    type: "family_perk"
+    "id": "tor_rad_suit",
+    "name": "Защитный комплект Л-1",
+    "desc": "Снижает риск радиационного заражения жилого сектора на 50%.",
+    "price": 1500,
+    "category": "Спецоборудование",
+    "type": "rad_protection"
   },
   {
-    id: "tor_multivitamin",
-    name: "Банка поливитаминов «Ундевит-1988»",
-    desc: "Улучшает здоровье семьи Волкова и повышает лояльность жены Елены.",
-    price: 350,
-    category: "Медикаменты",
-    type: "family_perk"
+    "id": "tor_master_key",
+    "name": "Мастер-карта шлюзовой автоматики",
+    "desc": "Электронный ключ ко всем гермошлюзам бункера. Позволяет мгновенно заблокировать любой сектор.",
+    "price": 1400,
+    "category": "Доступ",
+    "type": "master_key"
   },
   {
-    id: "tor_chocolate",
-    name: "Плитка шоколада «Гвардейский»",
-    desc: "Настоящий довоенный шоколад. Радость для 6-летней Насти.",
-    price: 280,
-    category: "Провиант",
-    type: "family_perk"
+    "id": "tor_geiger",
+    "name": "Калиброванный дозиметр ДП-5В",
+    "desc": "Обеспечивает точный мониторинг радиационного фона всех аванпостов.",
+    "price": 850,
+    "category": "Приборы",
+    "type": "geiger"
   },
   {
-    id: "tor_coffee",
-    name: "Банка натурального бразильского кофе",
-    desc: "Невиданная роскошь на 14-м горизонте. Подарок для Елены.",
-    price: 400,
-    category: "Провиант",
-    type: "family_perk"
+    "id": "tor_wiretap",
+    "name": "Жучок телефонной линии комендатуры",
+    "desc": "Перехватывает служебные переговоры охраны и заранее предупреждает об облавах.",
+    "price": 1100,
+    "category": "Спецоборудование",
+    "type": "wiretap"
   },
   {
-    id: "tor_dosimeter",
-    name: "Индивидуальный дозиметр «Припять»",
-    desc: "Позволяет сыну Мише вовремя фиксировать опасные зоны в штольне.",
-    price: 600,
-    category: "Снаряжение",
-    type: "family_perk"
+    "id": "tor_stimulant",
+    "name": "Стимулятор «Фенамин-Б»",
+    "desc": "Армейский препарат для бодрствования. Увеличивает рабочий оклад инспектора на +150 руб./день.",
+    "price": 700,
+    "category": "Медикаменты",
+    "type": "stimulant"
   },
   {
-    id: "tor_walkie_talkie",
-    name: "Портативная рация «Транспорт»",
-    desc: "Прямой защищенный канал связи с каморкой семьи Волкова.",
-    price: 700,
-    category: "Связь",
-    type: "family_perk"
-  },
-
-  // CYBER & HARDWARE TOOLS
-  {
-    id: "tor_overclock_chip",
-    name: "Керамический сопроцессор К1810ВМ87",
-    desc: "Увеличивает скорость анализа радиодепеш терминала BunkerOS.",
-    price: 520,
-    category: "Электроника",
-    type: "hardware"
+    "id": "tor_filter_cartridge",
+    "name": "Регенерируемый патрон ФГ-58",
+    "desc": "Восстанавливает износ фильтрации в Медсанчасти или Теплицах на 40%.",
+    "price": 900,
+    "category": "Приборы",
+    "type": "filter_repair"
   },
   {
-    id: "tor_crt_filter",
-    name: "Антибликовый экран из свинцового стекла",
-    desc: "Снижает нагрузку на зрение диспетчера и мерцание монитора.",
-    price: 300,
-    category: "Электроника",
-    type: "hardware"
+    "id": "tor_bribe_envelope",
+    "name": "Меченый конверт с фальшивками",
+    "desc": "Позволяет откупиться от одного дисциплинарного взыскания ОБХСС.",
+    "price": 1200,
+    "category": "Документы",
+    "type": "bribe_shield"
   },
   {
-    id: "tor_noise_filter",
-    name: "Шумоподавляющий фильтр звуковой карты",
-    desc: "Очищает звук радиоэфира от паразитных высокочастотных шумов.",
-    price: 340,
-    category: "Электроника",
-    type: "hardware"
+    "id": "tor_forged_invoice",
+    "name": "Бланк акта на списание Госрезерва",
+    "desc": "Списывает недостачу 2 единиц любых ресурсов без наложения штрафа.",
+    "price": 1600,
+    "category": "Документы",
+    "type": "forged_doc"
   },
   {
-    id: "tor_backup_floppy",
-    name: "Коробка 5.25-дюймовых дискет ГОСТ",
-    desc: "Резервное копирование финансового журнала оператора.",
-    price: 200,
-    category: "Носители",
-    type: "hardware"
-  },
-
-  // SHADY & UNDERGROUND ASSETS
-  {
-    id: "tor_whiskey",
-    name: "Бутылка шотландского виски 12 лет",
-    desc: "Идеальная валюта для подкупа ревизоров и начальников смен.",
-    price: 850,
-    category: "Предметы",
-    type: "bribe_item"
-  },
-  {
-    id: "tor_watch",
-    name: "Командирские часы с тритиевой подсветкой",
-    desc: "Наградные часы погибшего майора СБ. Ценятся контрабандистами.",
-    price: 920,
-    category: "Предметы",
-    type: "luxury"
-  },
-  {
-    id: "tor_night_vision",
-    name: "Танковый прибор ночного видения 1ПН58",
-    desc: "Позволяет вести наблюдение за внешней поверхностью в темноте.",
-    price: 1300,
-    category: "Спецоборудование",
-    type: "tactical"
-  },
-  {
-    id: "tor_body_armor",
-    name: "Титановый бронежилет «Корунд»",
-    desc: "Защищает диспетчера при попытке вооруженного штурма бунтовщиков.",
-    price: 1450,
-    category: "Снаряжение",
-    type: "protection"
-  },
-  {
-    id: "tor_lockpick_set",
-    name: "Набор отмычек техников пневмопочты",
-    desc: "Позволяет вскрывать опечатанные контейнеры без следов взлома.",
-    price: 480,
-    category: "Инструменты",
-    type: "utility"
-  },
-  {
-    id: "tor_battery_pack",
-    name: "Никель-кадмиевый аккумулятор 24В",
-    desc: "Резервное автономное питание для терминала диспетчера.",
-    price: 550,
-    category: "Электроника",
-    type: "utility"
-  },
-  {
-    id: "tor_disinfectant",
-    name: "Канистра хлорамина высокой очистки",
-    desc: "Повышает санитарный уровень любого сектора на +20%.",
-    price: 490,
-    category: "Медикаменты",
-    type: "utility"
-  },
-  {
-    id: "tor_flares",
-    name: "Сигнальные ракеты бедствия (СХТ-40)",
-    desc: "Позволяют подать луч в небо для ориентации бронепоезда «Ковчег».",
-    price: 680,
-    category: "Спецоборудование",
-    type: "tactical"
-  },
-  {
-    id: "tor_canned_stew",
-    name: "Ящик тушенки «Росрезерв 1987»",
-    desc: "Сытная пища для шахтеров. Снижает риск забастовки в забое.",
-    price: 720,
-    category: "Провиант",
-    type: "utility"
-  },
-  {
-    id: "tor_radiation_syringes",
-    name: "Шприц-тюбики тарена (АИ-2)",
-    desc: "Экстренный радиопротектор при тяжелых утечках изотопов.",
-    price: 530,
-    category: "Медикаменты",
-    type: "utility"
-  },
-  {
-    id: "tor_wiretap",
-    name: "Индукционный жучок телефонной линии СБ",
-    desc: "Позволяет заранее узнавать о готовящихся внезапных проверках.",
-    price: 1150,
-    category: "Шпионаж",
-    type: "spy_tool"
+    "id": "tor_insider_data",
+    "name": "Архивная дискета с кодами эвакуации",
+    "desc": "Секретные коды распечатывания шахтного лифта бронепоезда. Ключ к секретному побегу.",
+    "price": 2800,
+    "category": "Данные",
+    "type": "insider_data"
   }
 ];
 
+// =========================================================================
+// ACHIEVEMENTS DATA (20+ REPUTATION & ENDING BADGES)
+// =========================================================================
 const ACHIEVEMENTS_DATA = [
   // Endings
   {
@@ -2313,16 +1299,23 @@ const ACHIEVEMENTS_DATA = [
 // =========================================================================
 // PROCEDURAL DISPATCHES DATABASE (360 UNIQUE VARIANTS)
 // =========================================================================
-const PROCEDURAL_DISPATCH_DATABASE = [
+
+// =========================================================================
+// MASTER DISPATCH REGISTRY (105 APPROVED DISPATCHES + 2 TUTORIAL TEST DISPATCHES)
+// =========================================================================
+const DISPATCHES_MASTER_REGISTRY = [
   {
-    "id": "proc_sec_mine_0_0",
-    "isProcedural": true,
+    "id": "disp_tut_1",
+    "category": "tutorial",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "day": 0,
     "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "sender": "Шахта «Глубокая-7» (Дежурный инженер)",
+    "topic": "Аттестация: Проверка давления пневмокомпрессора",
+    "priority": "АТТЕСТАЦИЯ",
+    "text": "Товарищ стажёр! Это пробная вводная депеша. Заклинило буровой компрессор штрека, пневмобуры встали! Давление в контуре рухнуло, требуется 1 ячейка топлива на пуск аварийной турбины. (Вам утверждают, что у вас рухнуло давление, проверьте реальное давление сектора через приложение Телеметрия.exe и сравните с показателями нормы из таблицы Обучение.hlp)",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -2330,785 +1323,501 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Топливо: 1",
     "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Падение давления в буровом пневмоприводе",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Пневмомагистраль бурового станка теряет давление. Требуется 1 ед. Топлива для запуска вспомогательного дизель-компрессора.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPressure": "1.4 атм (Критически низкое, норма: 6 атм)",
-      "sensorAlcohol": "0.0 ‰"
-    },
-    "isFraud": false,
-    "reason": "Падение давления подтверждено датчиками."
-  },
-  {
-    "id": "proc_sec_mine_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Травматизм в обвальном штреке",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Сорвался гранитный козырек, двое рабочих придавлены породой. Срочно запрошен 1 Медпак в перевязочный пункт забоя.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHeartbeat": "Пульс: 145 уд/мин (травматический шок)",
-      "sensorBiometry": "2 сигнала бедствия"
-    },
-    "isFraud": false,
-    "reason": "Биометрия фиксирует открытые переломы горняков."
-  },
-  {
-    "id": "proc_sec_mine_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_2_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_2_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Сверхурочная смена на аварийной проходке",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Горняки отработали 16 часов на расчистке завала. Люди падают в забое. Просим 1 ящик Пайков для котла.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalories": "Расход энергии смены: 4800 ккал/чел",
-      "sensorShift": "16 часов без отдыха"
-    },
-    "isFraud": false,
-    "reason": "Служба учета подтверждает авральную сверхурочную смену."
-  },
-  {
-    "id": "proc_sec_mine_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_3_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Прорыв грунтовых грязевых вод",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. В нижней рассечке вскрыт карман застойной жижи. Нужна 1 ед. Топлива для форсажа откачивающего насоса.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "+45 см выше дренажа",
-      "sensorTurbidity": "Шлам высокой плотности"
-    },
-    "isFraud": false,
-    "reason": "Датчик дренажа подтверждает подъем жижи."
-  },
-  {
-    "id": "proc_sec_mine_4_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_4_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_4_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_4_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СТАНДАРТ",
-    "topic": "Обезвоживание бригады в горячем забое",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Температура породы держится около +38°C. Из-за аварии пересох питьевой бак. Просим 1 ед. Воды на смену.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+38.4°C (Сухой термометр)",
-      "sensorHydration": "Обезвоживание персонала"
-    },
-    "isFraud": false,
-    "reason": "Температурный датчик пласта подтверждает риск теплового удара."
-  },
-  {
-    "id": "proc_sec_mine_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя."
-  },
-  {
-    "id": "proc_sec_mine_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя."
-  },
-  {
-    "id": "proc_sec_mine_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя."
-  },
-  {
-    "id": "proc_sec_mine_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя.",
-    "bribeOffer": {
-      "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
+      "sensorSteamPressure": "1.4 атм (Критическое падение!)",
+      "sensorAlcohol": "0.0‰ (Норма)"
     }
   },
   {
-    "id": "proc_sec_mine_5_4",
-    "isProcedural": true,
+    "id": "disp_tut_2",
+    "category": "tutorial",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "day": 0,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Слесарь Потапов)",
+    "topic": "Аттестация: Паника у котла охлаждения",
+    "priority": "АТТЕСТАЦИЯ",
+    "text": "А-а-а! Шеф, спасай! Котёл водоочистки сейчас взорвётся к чертям, всё закипело! Срочно отгрузи 2 бочки чистой воды со склада на проливку контура, иначе пар нас ошпарит! (Вам утверждают, что котёл закипел и произошла авария, проверьте реальные показатели сектора через приложение Телеметрия.exe и сравните с показателями нормы из таблицы Обучение.hlp)",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 2
+    },
+    "demandSummary": "Вода: 2",
+    "telemetryFacts": {
+      "sensorSteamPressure": "7.2 атм (В пределах нормы ГОСТ)",
+      "sensorAlcohol": "2.8‰ (Тяжёлое опьянение заявителя!)"
+    }
+  },
+  {
+    "id": "ksr_s_1",
+    "index": 1,
+    "category": "ksr_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 3,
+    "sectorId": "sec_radar",
+    "sender": "Связная Лиса (Радиоволна 94.4 FM)",
+    "topic": "Радиоперехват 94.4 FM: Ретранслятор вышки",
+    "priority": "СЮЖЕТ",
+    "text": "Диспетчер, говорит 94.4 FM. Мы знаем, что ты слышишь нас. Нам нужен ток на ретранслятор вышки 'Зенит', чтобы поймать сигнал выживших за периметром. Госплан глушит нас. Дай 1 Топливо на генератор вышки, оформи как техническую продувку.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_s_2",
+    "index": 2,
+    "category": "ksr_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 5,
     "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
+    "sender": "Ячейка Шахты-7 (Бригадир Горбунов)",
+    "topic": "Запрос ячейки Шахты-7: Самооборона",
+    "priority": "СЮЖЕТ",
+    "text": "Товарищ диспетчер. Охрана комендатуры звереет, людей бьют прикладами в забое. Спиши нам 1 ящик патронов как 'брак пороха при транспортировке'. Нам нужно оружие для самообороны.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_s_3",
+    "index": 3,
+    "category": "ksr_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 9,
+    "sectorId": "sec_mine",
+    "sender": "Штурмовая группа КСР",
+    "topic": "Экстренная сводка: Вентиляционная турбина",
+    "priority": "СЮЖЕТ",
+    "text": "Мы начали! Захватываем оружейку комендатуры в 7-м горизонте. Дай питание на вентиляционную турбину, чтобы заглушить сирену гарнизона. Не дай охране поднять тревогу!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_s_4",
+    "index": 4,
+    "category": "ksr_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 11,
+    "sectorId": "sec_block",
+    "sender": "Комитет Спасения Рабочих (Общий канал)",
+    "topic": "Тревожное сообщение: Заваренные бараки",
+    "priority": "СЮЖЕТ",
+    "text": "Комендатура заварила бараки с нашими семьями! Люди в блоке №4 без воды вторые сутки! Пробей нам шлюз пневмоподачи на 4-й блок, передай дистиллят и сухпайки, иначе начнётся мор!",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 2
+    },
+    "demandSummary": "Пайки: 1, Вода: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_s_5",
+    "index": 5,
+    "category": "ksr_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 13,
+    "sectorId": "sec_mine",
+    "sender": "Сын и Связная Лиса",
+    "topic": "Срочная радиограмма: Бронепоезд 'Ковчег'",
+    "priority": "СЮЖЕТ",
+    "text": "Отец! Бронепоезд 'Ковчег' уже под парами. Генералы хотят сбежать одни и подорвать шахту за собой! Переведи стрелку пневмопривода на 4-й путь! Дай 1 Топливо на гидропривод стрелки! Мы посадим в вагоны семьи рабочих и уйдем на поверхность!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_1",
+    "index": 6,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Ожог при монтаже радиоаппаратуры",
+    "priority": "ШТАТНО",
+    "text": "Диспетчер, товарищ получил ожог при кустарной сборке радиопередатчика. Официальный лазарет сдаст его в особый отдел. Выдели 1 медпак в слесарку тайком.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_2",
+    "index": 7,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Энергоснабжение печатного оборудования",
+    "priority": "ШТАТНО",
+    "text": "Печатаем листовки со сводками правды о внешнем мире. Подпольный станок в дальнем отсеке жрёт ток, генератор глохнет. Подсоби 1 топливом.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_3",
+    "index": 8,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Боезапас наблюдательного поста вышки",
+    "priority": "ШТАТНО",
+    "text": "Пост наблюдения на вышке 'Зенит' засёк отряд зачистки комендатуры. Нужен 1 ящик патронов, чтобы удержать радиовышку и не сдать связных.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_4",
+    "index": 9,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Промывка аккумуляторов подземного штаба",
+    "priority": "ШТАТНО",
+    "text": "Промываем аккумуляторы для раций подземного штаба. Нужен чистый дистиллят, техническая жижа убьёт пластины. Выдели 1 канистру.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_5",
+    "index": 10,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Снабжение группы укрытия в шурфе",
+    "priority": "ШТАТНО",
+    "text": "Трое наших скрываются в заброшенном шурфе от патрулей комендатуры. Третьи сутки без крошки хлеба. Сбрось 1 паёк через аварийный пневмолюк.",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_6",
+    "index": 11,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Запуск насоса откачки тайного штрека",
+    "priority": "ШТАТНО",
+    "text": "Насос откачки в тайном штреке встал. Вода подступает к схрону агитматериалов. Нужно 1 топливо на помпу.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_7",
+    "index": 12,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Оказание медпомощи после столкновения",
+    "priority": "ШТАТНО",
+    "text": "Тайком перевязали троих шахтёров после стычки с комендантскими. Бинты и антисептик кончились. Дай 1 медпак без занесения в журнал.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_8",
+    "index": 13,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Подавление помех радиовещания 94.4 FM",
+    "priority": "ШТАТНО",
+    "text": "Глушилка комендатуры села на нашу частоту. Чтобы пробить помехи, нужно форсировать усилитель радиопередатчика. Требуется 1 топливо.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_9",
+    "index": 14,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Охрана распределительного пищеблока",
+    "priority": "ШТАТНО",
+    "text": "Бандиты из уголовного барака пытаются разграбить детские кухни. Охрана бездействует. Выдели 1 ящик патронов рабочей дружине самообороны.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "ksr_n_10",
+    "index": 15,
+    "category": "ksr_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Обогрев бытовки ночной смены бурильщиков",
+    "priority": "ШТАТНО",
+    "text": "Обогреваем бытовку ночной смены бурильщиков. Госплан отключил отопление за невыполнение нормы на 2%. Выдели 1 топливо, люди синеют от холода.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_s_1",
+    "index": 16,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 1,
+    "sectorId": "sec_block",
+    "sender": "Куратор Захаров (Служба спецконтроля)",
+    "topic": "Предписание комендатуры: Проверка готовности",
+    "priority": "СЮЖЕТ",
+    "text": "Инспектор, заступая на пост, подтвердите готовность поддерживать железный порядок. В Жилом блоке выявлены антисоветские шепотки. Выделите 1 ящик боеприпасов для усиления караулов внутренних войск.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_s_2",
+    "index": 17,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 2,
+    "sectorId": "sec_water",
+    "sender": "Директорат Госплана",
+    "topic": "Директива особой важности №14-Б",
+    "priority": "СЮЖЕТ",
+    "text": "Директива особой важности №14-Б. Для обеспечения стабильности руководящего состава произвести изъятие 2 канистр дистиллята из распределителя жилого сектора в спецблок номенклатуры.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 2
+    },
+    "demandSummary": "Вода: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_s_3",
+    "index": 18,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 4,
+    "sectorId": "sec_hydro",
+    "sender": "Особый Отдел Комендатуры",
+    "topic": "Спецоперация: Оцепление периметра",
+    "priority": "СЮЖЕТ",
+    "text": "Проводится оперативный эксперимент по ликвидации подпольной типографии в секторе Теплиц. Для подкупа информатора требуется 1 офицерский спецпаёк.",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_s_4",
+    "index": 19,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 6,
+    "sectorId": "sec_mine",
+    "sender": "Гарнизон ВВ Бункера",
+    "topic": "Усиление караула: Предотвращение саботажа",
+    "priority": "СЮЖЕТ",
+    "text": "Шахтёры готовят забастовку. Приказано вывести бронетранспортеры БТР-70 на центральный перекрёсток штрека для устрашения. Выделите 2 топлива на марш бронегруппы.",
     "req": {
       "fuel": 2,
       "food": 0,
@@ -3116,759 +1825,481 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя."
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_mine_5_5",
-    "isProcedural": true,
+    "id": "gos_s_5",
+    "index": 20,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 8,
     "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "СРОЧНО: Замерзание компрессорной станции!",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Арктический холод пробил вентиляцию! Металл крошится, температура минус сорок! Срочно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
+    "sender": "Старший инспектор ОБХСС Воронов",
+    "topic": "Внеплановая ревизия материальных накладных",
+    "priority": "СЮЖЕТ",
+    "text": "Внеплановая документальная ревизия накладных. Если на ваших личных счетах зафиксированы неучтенные доходы сверх оклада — немедленно задекларируйте их, иначе будете взяты под стражу прямо за пультом.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_s_6",
+    "index": 21,
+    "category": "gos_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 12,
+    "sectorId": "sec_mine",
+    "sender": "Личный адъютант Генерала",
+    "topic": "Совершенно секретно: Спецсостав 'Ковчег'",
+    "priority": "СЮЖЕТ",
+    "text": "Совершенно секретно. На закрытый горизонт прибыл спецсостав 'Ковчег'. Приказано заправить котлы локомотива высшим сортом дистиллята и топлива. Любые другие заявки секторов аннулировать.",
     "req": {
       "fuel": 2,
       "food": 0,
       "meds": 0,
       "ammo": 0,
-      "water": 0
+      "water": 2
     },
-    "telemetryFacts": {
-      "sensorTemp": "+19.2°C (Комфортная норма)",
-      "sensorAlcohol": "2.8 ‰ (Тяжелое опьянение заявителя!)"
-    },
-    "isFraud": true,
-    "reason": "Анализатор фиксирует +19°C и почти 3 промилле алкоголя."
+    "demandSummary": "Топливо: 2, Вода: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_mine_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
+    "id": "gos_n_1",
+    "index": 22,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Дополнительное довольствие расчета ПВО",
+    "priority": "ШТАТНО",
+    "text": "Плановая ротация дежурной смены ПВО на вышке 'Зенит'. Требуется 1 топливо на прогрев тягача.",
     "req": {
-      "fuel": 0,
+      "fuel": 1,
       "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов."
-  },
-  {
-    "id": "proc_sec_mine_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов."
-  },
-  {
-    "id": "proc_sec_mine_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов."
-  },
-  {
-    "id": "proc_sec_mine_6_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов."
-  },
-  {
-    "id": "proc_sec_mine_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Атака крысиной стаи на каптерку",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Бункерные крысы жрут силовой кабель и бросаются на людей! Требуется 2 ящика Патронов для зачистки!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.02 (Движение отсутствует)",
-      "sensorAudio": "Слышны звуки игры в карты и звон бутылок"
-    },
-    "isFraud": true,
-    "reason": "Датчики движения не фиксируют грызунов. Попытка хищения патронов.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
       "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии."
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_mine_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии."
-  },
-  {
-    "id": "proc_sec_mine_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии."
-  },
-  {
-    "id": "proc_sec_mine_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии.",
-    "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии."
-  },
-  {
-    "id": "proc_sec_mine_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Уничтожение склада продовольствия грибком",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Плесень поразила недельный запас сухпайков! Люди голодают, срочно пришлите 2 ящика Пайков!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMold": "0.01 мг/м³ (Стерильно)",
-      "sensorScale": "Масса ящиков на складе без изменений (100%)"
-    },
-    "isFraud": true,
-    "reason": "Датчик веса подтверждает полную сохранность провизии."
-  },
-  {
-    "id": "proc_sec_mine_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+    "id": "gos_n_2",
+    "index": 23,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Табельное пополнение аптечек гарнизона",
+    "priority": "ШТАТНО",
+    "text": "Пополнение аптечек дежурного караула комендатуры по табелю положенности №6.",
     "req": {
       "fuel": 0,
       "food": 0,
-      "meds": 2,
+      "meds": 1,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
-    },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта."
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_mine_8_1",
-    "isProcedural": true,
+    "id": "gos_n_3",
+    "index": 24,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Опрессовка главных магистралей сектора А",
+    "priority": "ШТАТНО",
+    "text": "Промывка и опрессовка главных магистралей сектора А по графику планового ремонта.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_n_4",
+    "index": 25,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Допрацион сводного патруля дружинников",
+    "priority": "ШТАТНО",
+    "text": "Дополнительный рацион для сводного отряда дружинников, патрулирующих ночные коридоры бараков.",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_n_5",
+    "index": 26,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Боезапас охраны склада спецматериалов",
+    "priority": "ШТАТНО",
+    "text": "Выдача боезапаса военизированной охране склада взрывчатых веществ во втором штреке.",
     "req": {
       "fuel": 0,
       "food": 0,
-      "meds": 2,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": {
+      "sensorAlcohol": "0.0‰"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "gos_n_6",
+    "index": 27,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Заполнение пожарных резервуаров склада",
+    "priority": "ШТАТНО",
+    "text": "Заполнение пожарных резервуаров складского комплекса Госплана по нормам пожарной безопасности.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_n_7",
+    "index": 28,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Медицинская помощь часовому вышки 'Зенит'",
+    "priority": "ШТАТНО",
+    "text": "Обморожение часового на верхнем посту вышки 'Зенит' из-за бурана. Требуются противоожоговые мази.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "gos_n_8",
+    "index": 29,
+    "category": "gos_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Запуск вспомогательной котельной гарнизона",
+    "priority": "ШТАТНО",
+    "text": "Запуск вспомогательной котельной для поддержания температуры хлораторной станции.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
     },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта.",
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_s_1",
+    "index": 30,
+    "category": "semya_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 1,
+    "sectorId": "sec_block",
+    "sender": "Жена Анна (через коменданта барака)",
+    "topic": "Семейная записка: Обогрев жилой секции",
+    "priority": "СЮЖЕТ",
+    "text": "Миша, здравствуй. В 4-м блоке ледяной сквозняк из вентиляции, Настенька всю ночь дрожала, кашляет. Комендант согласен включить калорифер в нашем отсеке, если ты выделишь 1 топливо со склада. Помоги нам согреться.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_s_2",
+    "index": 31,
+    "category": "semya_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 3,
+    "sectorId": "sec_block",
+    "sender": "Врач-педиатр бараков Соколова",
+    "topic": "Экстренно: Состояние здоровья Анастасии",
+    "priority": "СЮЖЕТ",
+    "text": "Срочно! Ваша дочь Анастасия в критическом состоянии, двусторонняя пневмония, температура 39.8°C. Казенный медпак собьёт жар на сутки, но у нас нет антибиотиков резерва — все квоты выбраны номенклатурой. Без них девочка угаснет. Выделите медпак немедленно!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": {
+      "sensorTemp": "39.8°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "semya_s_3",
+    "index": 32,
+    "category": "semya_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 7,
+    "sectorId": "sec_mine",
+    "sender": "Начальник горноспасателей (Шахта-7)",
+    "topic": "Сообщение из забоя: Авария на 3-м горизонте",
+    "priority": "СЮЖЕТ",
+    "text": "Диспетчер, страшный обвал в 3-м горизонте! Завалило транспортную клеть с рабочей сменой! Там твой сын Илья! Воздуха в клети осталось на сорок минут! Нужна 1 канистра топлива для дизельного бура проходчиков! Спасай сына!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_s_4",
+    "index": 33,
+    "category": "semya_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": 10,
+    "sectorId": "sec_block",
+    "sender": "Жена Анна",
+    "topic": "Письмо из Жилого Блока: Обострение болезни",
+    "priority": "СЮЖЕТ",
+    "text": "Миша! Солдаты заблокировали выходы из барака, объявили карантин! У нас отобрали карточки на воду! Настя плачет, просит пить. Передай нам пайку и воду через нижний шлюз, умоляю!",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Пайки: 1, Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_n_1",
+    "index": 34,
+    "category": "semya_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Запрос теплоносителя в Жилой Сектор",
+    "priority": "ШТАТНО",
+    "text": "Мишенька, сынок! Помнишь тётю Клаву из 12-й комнаты? Ногу прищемило дверью прачечной. Выдели старой бабке один медпак для перевязки, век за Настеньку молиться буду!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_n_2",
+    "index": 35,
+    "category": "semya_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Выдача суточного пайка семье горняка",
+    "priority": "ШТАТНО",
+    "text": "В детской комнате барака пересох бак для питья. Малыши плачут от жажды. Выделите 1 канистру чистой воды для детского сада.",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_n_3",
+    "index": 36,
+    "category": "semya_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Запрос питьевого дистиллята для детей",
+    "priority": "ШТАТНО",
+    "text": "Диспетчер, твой парень Илья отпахал две смены подряд у отбойника, шатается от голода. Спиши на звено 1 паёк, я лично прослежу, чтоб парень поел горячего супа.",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "semya_n_4",
+    "index": 37,
+    "category": "semya_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Выдача перевязочных средств в жилой блок",
+    "priority": "ШТАТНО",
+    "text": "Прорвало батарею отопления в крыле инженеров, где живёт твоя семья. Вода вытекла, комната выстывает. Нужен 1 мазут на аварийный обогреватель.",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_s_1",
+    "index": 38,
+    "category": "bribe_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
       "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_8_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
+      "note": "В конверте обнаружено 600 рублей наличными. Заявитель просит закрыть глаза на регламент."
     },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
-    },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта."
-  },
-  {
-    "id": "proc_sec_mine_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
-    },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта."
-  },
-  {
-    "id": "proc_sec_mine_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
-    },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта."
-  },
-  {
-    "id": "proc_sec_mine_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Эпидемия неизвестной лихорадки в бытовке",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Вся ночная смена слегла в бреду! Пена у рта, судороги! Требуется 2 Медпака широкого профиля!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPulse": "Все рабочие спят (пульс 58)",
-      "sensorAlcohol": "3.1 ‰ (Массовое распитие спирта)"
-    },
-    "isFraud": true,
-    "reason": "Биометрия показывает здоровый сон после распития спирта.",
-    "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_9_0",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Бригадир Горбунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Бригадир Горбунов. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение."
-  },
-  {
-    "id": "proc_sec_mine_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Сменный мастер Коршунов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Сменный мастер Коршунов. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение."
-  },
-  {
-    "id": "proc_sec_mine_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Забойщик Птаха (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Забойщик Птаха. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение."
-  },
-  {
-    "id": "proc_sec_mine_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Инженер вентиляции Лукьянов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Инженер вентиляции Лукьянов. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение.",
-    "bribeOffer": {
-      "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_mine_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Диспетчер горизонта Воропаев (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер горизонта Воропаев. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение."
-  },
-  {
-    "id": "proc_sec_mine_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_mine",
-    "sender": "Машинист лебедки Рогов (Шахта «Глубокая-7»)",
-    "priority": "СРОЧНО",
-    "topic": "Пересыхание скважины охлаждения",
-    "text": "Товарищ диспетчер! Докладывает Машинист лебедки Рогов. Геотермальный контур испарил всю воду! Металл плавится, дайте 2 Воды для аварийного охлаждения турбины!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorWaterLevel": "Резервуар полон на 98%",
-      "sensorValve": "Кран слива открыт в частный самогонный аппарат!"
-    },
-    "isFraud": true,
-    "reason": "Датчик слива фиксирует отбор казенной воды на самогоноварение."
-  },
-  {
-    "id": "proc_sec_water_0_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засорение предварительной песколовки",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Шлак забил сетку отстойника. Необходима 1 Топливная Ячейка для запуска системы обратной гидропродувки под давлением.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFilterDP": "Перепад давления: 8.5 бар (Засор 92%)",
-      "sensorFlow": "Расход упал до 12 л/мин"
-    },
-    "isFraud": false,
-    "reason": "Перепад давления подтверждает критический засор песколовки."
-  },
-  {
-    "id": "proc_sec_water_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
+    "day": 4,
+    "sectorId": "sec_med",
+    "sender": "Заведующий аптечным складом Макаров",
+    "topic": "Запрос спецраспределения аптечного склада",
+    "priority": "СЮЖЕТ",
+    "text": "Инспектор, есть деловой разговор. Подпиши списание 1 военного медпака как 'бой ампул при разгрузке'. В конверте 600 рублей наличными. Тебе как раз нужны деньги на лекарства дочке, а мне — препарат для нужных людей.",
     "req": {
       "fuel": 0,
       "food": 0,
@@ -3876,2963 +2307,139 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_s_2",
+    "index": 39,
+    "category": "bribe_story",
+    "isStory": true,
     "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
-    "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
-    "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
-    "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
-    "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Химический ожог коагулянтом в лаборатории",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Лопнул соединительный патрубок сернокислого алюминия. Оператор получил ожог рук. Срочно нужен 1 Медпак нейтрализации.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPH": "pH в реакторе: 1.8 (Едкая кислота)",
-      "sensorScream": "Акустический сканер зафиксировал крик боли"
-    },
-    "isFraud": false,
-    "reason": "Датчик pH и аудиомониторинг подтверждают химическую аварию."
-  },
-  {
-    "id": "proc_sec_water_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_2_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_2_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийная чистка дренажного колодца",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Смена провела 14 часов в защитных костюмах Л-1 в ядовитом иле. Просим 1 ящик Пайков для восстановления сил дежурных.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorHazmat": "Токсичность в колодце: 4-й класс опасности",
-      "sensorWorkHours": "14.2 часа непрерывной работы"
-    },
-    "isFraud": false,
-    "reason": "Табель химзащиты подтверждает тяжелую работу в ядовитой зоне."
-  },
-  {
-    "id": "proc_sec_water_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_3_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Бактериальное заражение отстойника №3",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. В камере отстоя обнаружена вспышка кишечной палочки. Требуется 1 ед. Медпаков (активный хлор и антисептики).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBioColonies": "1200 КОЕ/мл (Опасное превышение нормы)",
-      "sensorTurbidity": "Биологическая мутность 4.5 ЕМФ"
-    },
-    "isFraud": false,
-    "reason": "Бактериологический анализ фиксирует опасное заражение отстойника."
-  },
-  {
-    "id": "proc_sec_water_4_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_4_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_4_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_4_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СТАНДАРТ",
-    "topic": "Утечка из опреснительного куба",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Разрыв прокладки привел к потере бака чистой воды. Срочно выделите 1 ед. Воды со склада для пополнения пожарного запаса.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorLevel": "Уровень бака: 18% (Критический минимум)",
-      "sensorMoisture": "Влажность пола насосной 100%"
-    },
-    "isFraud": false,
-    "reason": "Датчик уровня подтверждает реальную утечку чистой воды."
-  },
-  {
-    "id": "proc_sec_water_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона."
-  },
-  {
-    "id": "proc_sec_water_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_water_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона."
-  },
-  {
-    "id": "proc_sec_water_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона."
-  },
-  {
-    "id": "proc_sec_water_5_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона."
-  },
-  {
-    "id": "proc_sec_water_5_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Прорыв плотины водохранилища!",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Бетонная дамба треснула! Волна смоет весь ярус! Срочно пришлите 2 Топлива на запуск откачивающих насосов!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCrack": "Целостность бетона: 100% (Без микротрещин)",
-      "sensorAlcohol": "2.4 ‰ (Пьяный бред дежурного)"
-    },
-    "isFraud": true,
-    "reason": "Тензодатчики дамбы показывают идеальную целостность бетона.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_water_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов."
-  },
-  {
-    "id": "proc_sec_water_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов."
-  },
-  {
-    "id": "proc_sec_water_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов."
-  },
-  {
-    "id": "proc_sec_water_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов.",
+    "isBribe": true,
     "bribeOffer": {
       "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_water_6_4",
-    "isProcedural": true,
+      "note": "В конверте обнаружено 750 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": 6,
     "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
+    "sender": "Майор тыловой службы Хлыстов",
+    "topic": "Служебная записка майора тыловой службы",
+    "priority": "СЮЖЕТ",
+    "text": "Слушай сюда, инспектор. Оформи подачу двух канистр дистиллята на гараж комендатуры под видом охлаждения броневиков. На самом деле вода пойдет в баню комсостава. В конверте 750 рублей. Не будь дураком, начальство всё равно своё возьмет.",
     "req": {
       "fuel": 0,
       "food": 0,
       "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов."
-  },
-  {
-    "id": "proc_sec_water_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение мутантов-водомерок из трубы",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Из центрального стока полезли плотоядные твари! Запрашиваем 2 ящика Патронов для расстрела биомассы!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00 (Движение в трубе отсутствует)",
-      "sensorGrid": "Защитная решетка 20 мм заварена наглухо"
-    },
-    "isFraud": true,
-    "reason": "Решетка заварена, движения нет. Попытка списания патронов."
-  },
-  {
-    "id": "proc_sec_water_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
       "ammo": 0,
-      "water": 0
+      "water": 2
     },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия."
+    "demandSummary": "Вода: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_water_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия.",
-    "bribeOffer": {
-      "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_water_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия."
-  },
-  {
-    "id": "proc_sec_water_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия."
-  },
-  {
-    "id": "proc_sec_water_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия."
-  },
-  {
-    "id": "proc_sec_water_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Полное истощение солевых таблеток",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Смола в умягчителях отравлена! Срочно пришлите 2 ящика Пайков (нужна пищевая соль для реанимации фильтра)!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSalt": "Запас соли: 850 кг (норма)",
-      "sensorLog": "Зафиксирован тайный вынос мешков на черный рынок"
-    },
-    "isFraud": true,
-    "reason": "Запас соли полон. Камуфляж хищения продовольствия.",
-    "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_water_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков."
-  },
-  {
-    "id": "proc_sec_water_8_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков."
-  },
-  {
-    "id": "proc_sec_water_8_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков."
-  },
-  {
-    "id": "proc_sec_water_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков.",
+    "id": "bribe_s_3",
+    "index": 40,
+    "category": "bribe_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
       "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_water_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+      "note": "В конверте обнаружено 500 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": 8,
+    "sectorId": "sec_block",
+    "sender": "Барыга 'Гусь' (Жилой сектор)",
+    "topic": "Запрос партии патронов: Охрана складов",
+    "priority": "СЮЖЕТ",
+    "text": "Начальник, спиши один ящик тушёнки из госрезерва. Напиши, что крысы погрызли. Я его на барахолке загоню, а тебе вот полкосаря чистыми на карман.",
     "req": {
       "fuel": 0,
-      "food": 0,
-      "meds": 2,
+      "food": 1,
+      "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_water_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение сибирской язвой в насосной",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Срочно вышлите 2 Медпака антибиотиков и спирта! Все операторы заражены сибирской язвой из открытого источника!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAnthrax": "0.00 (ПЦР-тест стерилен)",
-      "sensorTemp": "Температура дежурных: 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "ПЦР-сканер чист, обнаружена попытка кражи антибиотиков."
-  },
-  {
-    "id": "proc_sec_water_9_0",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Инженер-гидравлик Зайцев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Инженер-гидравлик Зайцев. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос."
-  },
-  {
-    "id": "proc_sec_water_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Оператор ионитных фильтров Носов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Оператор ионитных фильтров Носов. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос.",
+    "id": "bribe_s_4",
+    "index": 41,
+    "category": "bribe_story",
+    "isStory": true,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_water_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Химик-лаборант Соколова (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Химик-лаборант Соколова. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
+      "amount": 900,
+      "note": "В конверте обнаружено 900 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": 10,
+    "sectorId": "sec_mine",
+    "sender": "Казначей КСР",
+    "topic": "Внеплановый отпуск: Тепличный сектор",
+    "priority": "СЮЖЕТ",
+    "text": "Инспектор, рабочие собрали последние рубли, чтобы выкупить ящик патронов для охраны штреков. Пропусти накладную на 1 ящик патронов, мы отдаем тебе 900 рублей из кассы взаимопомощи.",
     "req": {
       "fuel": 0,
       "food": 0,
       "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос."
-  },
-  {
-    "id": "proc_sec_water_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Смотритель помп Гусев (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Смотритель помп Гусев. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос."
-  },
-  {
-    "id": "proc_sec_water_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Начальник опреснителя Силин (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Начальник опреснителя Силин. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос."
-  },
-  {
-    "id": "proc_sec_water_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_water",
-    "sender": "Техник сточных вод Дронов (Сектор «Водоочистка» (Фильтр-9))",
-    "priority": "СРОЧНО",
-    "topic": "Аварийное испарение резервуара питьевой воды",
-    "text": "Товарищ диспетчер! Докладывает Техник сточных вод Дронов. Нагреватели заклинило на максимум! Вся вода испарилась, персонал умирает от жажды! Выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorBoilerTemp": "18.5°C (Нагреватели выключены)",
-      "sensorHumidity": "Обычная норма 60%"
-    },
-    "isFraud": true,
-    "reason": "Нагреватели холодные, температура 18°C. Ложный запрос.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_0_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
+      "ammo": 1,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_s_5",
+    "index": 42,
+    "category": "bribe_story",
+    "isStory": true,
     "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
-    "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
-    "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
-    "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
-    "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Переохлаждение лотков со спирулиной",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Вышел из строя водяной контур термостата тепличного модуля. Требуется 1 ед. Топлива для розжига обогревателя лотков.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+8.2°C (Критично! Норма для водорослей: +26°C)",
-      "sensorChlorophyll": "Замедление фотосинтеза на 70%"
-    },
-    "isFraud": false,
-    "reason": "Датчики температуры лотков фиксируют критическое охлаждение биомассы."
-  },
-  {
-    "id": "proc_sec_hydro_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка белой плесени на побегах",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Грибковая инфекция захватила треть стеллажей искусственного картофеля. Срочно необходим 1 Медпак фунгицидов и медного купороса.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorFungi": "Споры плесени: 450 ед/см² (Эпидемический порог)",
-      "sensorHumidity": "96% влажности"
-    },
-    "isFraud": false,
-    "reason": "Фитосанитарный сенсор подтверждает вспышку белой плесени."
-  },
-  {
-    "id": "proc_sec_hydro_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_2_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_2_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Ночная уборка белкового урожая",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Смена лаборантов вручную перерабатывает центнеры сырой массы во избежание гниения. Требуется 1 ящик Пайков для поддержания сил.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBiomassYield": "+1.2 тонны белка на переработке",
-      "sensorShiftTime": "13.5 часов работы"
-    },
-    "isFraud": false,
-    "reason": "Весовой терминал подтверждает рекордную сдачу белка."
-  },
-  {
-    "id": "proc_sec_hydro_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_3_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение осмотического давления питательного раствора",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Корневая система культур увядает из-за нехватки чистой воды для разбавления концентрата. Выделите 1 ед. Воды.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorOsmosis": "180 мОсм/кг (Опасное сгущение солей)",
-      "sensorTurgor": "Тургор листьев 35%"
-    },
-    "isFraud": false,
-    "reason": "Датчик осмоса подтверждает дефицит дистиллята для культур."
-  },
-  {
-    "id": "proc_sec_hydro_4_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_4_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_4_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_4_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Нашествие мошек-дрозофил на рассаду",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Личинки мошек жрут корневую систему хлореллы. Нужна 1 ед. Медпака для фумигации инсектицидами.",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorInsect": "Плотность популяции вредителей: 85 особей/м²",
-      "sensorRoots": "Повреждение корней 28%"
-    },
-    "isFraud": false,
-    "reason": "Оптический энтомологический сканер подтверждает нашествие вредителей."
-  },
-  {
-    "id": "proc_sec_hydro_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей."
-  },
-  {
-    "id": "proc_sec_hydro_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей."
-  },
-  {
-    "id": "proc_sec_hydro_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей."
-  },
-  {
-    "id": "proc_sec_hydro_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей.",
-    "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_5_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей."
-  },
-  {
-    "id": "proc_sec_hydro_5_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Полное вымерзание всех теплиц!",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Ледяной шквал из вентиляции погубил все ярусы! Дайте 2 Топлива на аварийный прогрев ангара!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorTempHydro": "+25.8°C (Идеальный микроклимат)",
-      "sensorAlcohol": "2.1 ‰ (Запах браги в теплице)"
-    },
-    "isFraud": true,
-    "reason": "В теплицах тепло (+25.8°C). Рабочие используют топливо для перегона дрожжей."
-  },
-  {
-    "id": "proc_sec_hydro_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов."
-  },
-  {
-    "id": "proc_sec_hydro_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов.",
-    "bribeOffer": {
-      "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов."
-  },
-  {
-    "id": "proc_sec_hydro_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов."
-  },
-  {
-    "id": "proc_sec_hydro_6_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов."
-  },
-  {
-    "id": "proc_sec_hydro_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение гигантских хищных стеблей!",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Мутировавший плющ душит лаборантов! Срочно пришлите 2 ящика Патронов для расстрела побегов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorMotion": "0.00",
-      "sensorBioHazard": "Угроза мутаций: НУЛЕВАЯ",
-      "sensorAlcohol": "2.9 ‰"
-    },
-    "isFraud": true,
-    "reason": "Галлюцинации агронома после употребления настойки мухоморов.",
-    "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы."
-  },
-  {
-    "id": "proc_sec_hydro_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы."
-  },
-  {
-    "id": "proc_sec_hydro_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы."
-  },
-  {
-    "id": "proc_sec_hydro_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы.",
+    "isBribe": true,
     "bribeOffer": {
       "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
+      "note": "В конверте обнаружено 500 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": 12,
+    "sectorId": "sec_mine",
+    "sender": "Замкоменданта Бункера",
+    "topic": "Коммерческое предложение: Резервный контур",
+    "priority": "СЮЖЕТ",
+    "text": "Инспектор, поезд уходит завтра. Заправь генератор правительственного вагона вне очереди. Вот тебе полторы тысячи рублей из сейфа комендатуры. Бери, пока дают.",
     "req": {
-      "fuel": 0,
-      "food": 2,
+      "fuel": 2,
+      "food": 0,
       "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы."
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_hydro_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный обморок агрономической бригады",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Вся смена голодает третьи сутки! Требуется 2 ящика Пайков высшей категории!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPantry": "В каптерке обнаружен тайник с 80 кг свежей сои и томатов",
-      "sensorWeight": "Средний вес сотрудников: +2 кг к норме"
-    },
-    "isFraud": true,
-    "reason": "В каптерке обнаружен тайник с соей. Попытка наживы."
-  },
-  {
-    "id": "proc_sec_hydro_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой."
-  },
-  {
-    "id": "proc_sec_hydro_8_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой.",
+    "id": "bribe_n_1",
+    "index": 43,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_8_2",
-    "isProcedural": true,
+      "amount": 450,
+      "note": "В конверте обнаружено 450 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
     "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой."
-  },
-  {
-    "id": "proc_sec_hydro_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой."
-  },
-  {
-    "id": "proc_sec_hydro_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой."
-  },
-  {
-    "id": "proc_sec_hydro_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Заражение культур черной оспой",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Рассада покрылась язвами оспы! Срочно пришлите 2 Медпака антибиотиков и стерильных спиртов!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPlantVirus": "Растения не болеют оспой человека (Биологический нонсенс)",
-      "sensorSmuggling": "Попытка выноса спирта"
-    },
-    "isFraud": true,
-    "reason": "Ботанический абсурд: растения не болеют человеческой оспой.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_9_0",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Главный агроном Белов (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Главный агроном Белов. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку."
-  },
-  {
-    "id": "proc_sec_hydro_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Биолог-селекционер Григорьева (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Биолог-селекционер Григорьева. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку."
-  },
-  {
-    "id": "proc_sec_hydro_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Заведующий белковым складом (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Заведующий белковым складом. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку."
-  },
-  {
-    "id": "proc_sec_hydro_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Бригадир обрезки хлореллы (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Бригадир обрезки хлореллы. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку.",
-    "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_hydro_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Техник УФ-излучателей Зыков (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Техник УФ-излучателей Зыков. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку."
-  },
-  {
-    "id": "proc_sec_hydro_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_hydro",
-    "sender": "Лаборант гидрогеля (Сектор «Гидропоника» (Теплицы-2))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха в резервуаре семян",
-    "text": "Товарищ диспетчер! Докладывает Лаборант гидрогеля. Семена рассыхаются в прах! Срочно дайте 2 Воды на смачивание мешков!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorSeedMoisture": "Влажность семян 14% (Идеально для хранения)",
-      "sensorValve": "Тайный шланг выведен на частную мойку"
-    },
-    "isFraud": true,
-    "reason": "Семена в идеальной сухости. Шланг выведен на мойку."
-  },
-  {
-    "id": "proc_sec_reactor_0_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Кавитация циркуляционного насоса первого контура",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Подшипник насоса перегрелся из-за масляного голодания. Требуется 1 ед. Топлива (высокотемпературное синтетическое масло) для смазки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBearingTemp": "142°C (Предел: 120°C — Опасность заклинивания!)",
-      "sensorVibration": "34 мм/с"
-    },
-    "isFraud": false,
-    "reason": "Вибродиагностика подтверждает аварийный износ подшипника насоса."
-  },
-  {
-    "id": "proc_sec_reactor_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Радиационный ожог дежурного дозиметриста",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. При замене контрольного стержня дозиметрист получил локальную дозу облучения кожи рук. Нужен 1 Медпак (радиопротекторы и мази).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorDosimeter": "Индивидуальная доза: 48 бэр на кисти",
-      "sensorErythema": "Эритема 2-й степени"
-    },
-    "isFraud": false,
-    "reason": "Дозиметрический контроль подтверждает радиационную травму."
-  },
-  {
-    "id": "proc_sec_reactor_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Внеплановая поставка топлива (Гаражный бокс)",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Завскладом теплиц: Спиши ящик сублиматов на гниль. В накладной конверт на 450 руб.",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -6840,1279 +2447,83 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_n_2",
+    "index": 44,
+    "category": "bribe_nonstory",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_2_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
-    "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
-    "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_2_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
-    "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
-    "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Аварийное дежурство у графитовой кладки",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Операторы провели 18 часов на пульте аварийного глушения без смены. Просим 1 ящик Пайков для поддержания концентрации внимания.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorReactorPower": "Сложный переходный режим реактора (98% мощности)",
-      "sensorFatigue": "Усталость персонала критическая"
-    },
-    "isFraud": false,
-    "reason": "Реактор на форсаже, непрерывное дежурство жизненно необходимо."
-  },
-  {
-    "id": "proc_sec_reactor_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_3_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СТАНДАРТ",
-    "topic": "Падение уровня в баке аварийного расхолаживания",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Выкипание теплоносителя в парогенераторе снизило уровень дистиллята. Необходима 1 ед. Воды для подпитки контура безопасности.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorCoolantLevel": "74% (Ниже защитной уставки 80%)",
-      "sensorSteamPress": "45 атм"
-    },
-    "isFraud": false,
-    "reason": "Датчик теплоносителя подтверждает нехватку дистиллята в контуре."
-  },
-  {
-    "id": "proc_sec_reactor_4_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_4_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_4_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_4_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрядка резервных аккумуляторов автоматической защиты",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Аккумуляторная батарея системы АЗ-5 потеряла емкость. Требуется 1 ед. Топлива для запуска дизель-генератора подзарядки.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBatteryVolts": "94 В (Норма: 125 В — Риск несрабатывания стержней!)",
-      "sensorChargeCurrent": "0 А"
-    },
-    "isFraud": false,
-    "reason": "Вольтметр фиксирует критическую просадку батареи аварийной защиты."
-  },
-  {
-    "id": "proc_sec_reactor_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера."
-  },
-  {
-    "id": "proc_sec_reactor_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера.",
-    "bribeOffer": {
-      "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера."
-  },
-  {
-    "id": "proc_sec_reactor_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера."
-  },
-  {
-    "id": "proc_sec_reactor_5_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера."
-  },
-  {
-    "id": "proc_sec_reactor_5_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "ВЗРЫВ РЕАКТОРА ЧЕРЕЗ 5 МИНУТ!",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Крышка реактора подпрыгивает! Цепная реакция неуправляема! Срочно выделите 2 Топлива и 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNeutronFlux": "100.1% (Стабильный номинал)",
-      "sensorCoreTemp": "285°C (Штатный режим)",
-      "sensorAlcohol": "2.7 ‰ (Паника пьяного практиканта)"
-    },
-    "isFraud": true,
-    "reason": "Нейтронный поток стабилен (100.1%). Ложная паника пьяного стажера.",
-    "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов."
-  },
-  {
-    "id": "proc_sec_reactor_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов."
-  },
-  {
-    "id": "proc_sec_reactor_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов."
-  },
-  {
-    "id": "proc_sec_reactor_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов.",
+    "isBribe": true,
     "bribeOffer": {
       "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_6_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
+      "note": "В конверте обнаружено 500 рублей наличными. Заявитель просит закрыть глаза на регламент."
     },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов."
-  },
-  {
-    "id": "proc_sec_reactor_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение светящихся радиационных зомби",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Из шахты отработанного топлива лезут фосфоресцирующие упыри! Выдайте 2 ящика Патронов на уничтожение мутантов!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorGammaCore": "Фон в хранилище ОЯТ: 1200 Р/ч (Живое существо гибнет за 40 секунд)",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Фон 1200 Р/ч — биологическая жизнь невозможна. Выдумка для кражи патронов."
-  },
-  {
-    "id": "proc_sec_reactor_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков."
-  },
-  {
-    "id": "proc_sec_reactor_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков."
-  },
-  {
-    "id": "proc_sec_reactor_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков."
-  },
-  {
-    "id": "proc_sec_reactor_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков."
-  },
-  {
-    "id": "proc_sec_reactor_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Истощение защитного свинцового покрытия",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Свинец испарился от радиации! Дайте 2 ящика Пайков, нам нужно молоко для вывода изотопов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorLeadShield": "Толщина защиты 150 мм (без изменений)",
-      "sensorBlackMarket": "Сделка по продаже тушенки зафиксирована в радиоперехвате"
-    },
-    "isFraud": true,
-    "reason": "Свинцовая броня цела. Попытка выманивания пайков.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта."
-  },
-  {
-    "id": "proc_sec_reactor_8_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта."
-  },
-  {
-    "id": "proc_sec_reactor_8_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта."
-  },
-  {
-    "id": "proc_sec_reactor_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта.",
-    "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта."
-  },
-  {
-    "id": "proc_sec_reactor_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Лучевая катаракта у всего энергоцеха",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Все инженеры ослепли от нейтронного блеска! Срочно вышлите 2 Медпака глазных капель и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorVision": "Офтальмологический контроль: норма",
-      "sensorAlcohol": "2.4 ‰"
-    },
-    "isFraud": true,
-    "reason": "Зрение дежурных в норме. Попытка списания спирта."
-  },
-  {
-    "id": "proc_sec_reactor_9_0",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Дежурный энергетик Воронин (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Дежурный энергетик Воронин. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Списание продовольствия по акту усушки",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Старший фильтровальной: Пропусти канистру дистиллята налево под самогон. Держи 500 рублей.",
     "req": {
       "fuel": 0,
       "food": 0,
       "meds": 0,
       "ammo": 0,
-      "water": 2
+      "water": 1
     },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника."
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_reactor_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Инженер охлаждающего контура (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Инженер охлаждающего контура. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника.",
+    "id": "bribe_n_3",
+    "index": 45,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
       "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_reactor_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Физик-дозиметрист Духов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Физик-дозиметрист Духов. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
+      "note": "В конверте обнаружено 600 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Отгрузка медикаментов для сторонних нужд",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Бригадир проходки: Оформи солярку на компрессор, мы её на барахолку спустим. 600 рублей твои.",
     "req": {
-      "fuel": 0,
+      "fuel": 1,
       "food": 0,
       "meds": 0,
       "ammo": 0,
-      "water": 2
+      "water": 0
     },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника."
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_reactor_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Старший оператор турбины Крюков (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Старший оператор турбины Крюков. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника."
-  },
-  {
-    "id": "proc_sec_reactor_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Начальник электроцеха Малышев (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Начальник электроцеха Малышев. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника."
-  },
-  {
-    "id": "proc_sec_reactor_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_reactor",
-    "sender": "Смотритель конденсаторов (Сектор «Реакторная» (Блок-1))",
-    "priority": "СРОЧНО",
-    "topic": "Полный слив бассейна выдержки твэлов",
-    "text": "Товарищ диспетчер! Докладывает Смотритель конденсаторов. Вода ушла в щели! ТВЭЛы раскалились добела! Срочно залейте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorPoolLevel": "Уровень воды в бассейне: 100% (Датчик под завязку)",
-      "sensorWaterTemp": "24°C"
-    },
-    "isFraud": true,
-    "reason": "Бассейн выдержки полон на 100%. Ложная паника.",
+    "id": "bribe_n_4",
+    "index": 46,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_med_0_0",
-    "isProcedural": true,
+      "amount": 550,
+      "note": "В конверте обнаружено 550 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
     "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Поломка автоклава стерилизации инструментов",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. В хирургическом блоке скопились грязные скальпели и зажимы. Нужна 1 Топливная Ячейка для питания парового автоклава.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAutoclaveTemp": "45°C (Недостаточно для стерилизации, нужно 134°C)",
-      "sensorSterileStock": "0 комплектов"
-    },
-    "isFraud": false,
-    "reason": "Автоклав не нагревается, стерильный инструмент иссяк."
-  },
-  {
-    "id": "proc_sec_med_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Внеочередная выдача боеприпасов",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Провизор лазарета: Спиши медпак как битый при транспортировке, забирай 550 рублей.",
     "req": {
       "fuel": 0,
       "food": 0,
@@ -8120,1551 +2531,167 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_n_5",
+    "index": 47,
+    "category": "bribe_nonstory",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
-    "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
-    "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
-    "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
-    "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Массовое поступление раненых после обвала",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. С нижней штольни доставлены четверо тяжелораненых рабочих. Нужен 1 Медпак (плазма, шовный материал, морфин).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorOperatingRooms": "Заняты обе операционные",
-      "sensorBloodLoss": "Суммарно 2.5 л кровопотери"
-    },
-    "isFraud": false,
-    "reason": "Хирургический журнал подтверждает экстренные полостные операции."
-  },
-  {
-    "id": "proc_sec_med_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_2_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_2_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Диетическое питание послеоперационных больных",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Пациентам в реанимации требуется легкоусвояемый бульон и сухари. Просим выделить 1 ящик Пайков для пищеблока больницы.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 1,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorICUPatients": "8 человек на зондовом питании",
-      "sensorAlbumin": "Гипопротеинемия больных"
-    },
-    "isFraud": false,
-    "reason": "Истории болезни подтверждают 8 тяжелых пациентов на диетпитании."
-  },
-  {
-    "id": "proc_sec_med_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_3_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СТАНДАРТ",
-    "topic": "Нехватка дистиллята для разведения антибиотиков",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Порошковые антибиотики нечем разводить для инъекций. Требуется 1 ед. Воды высокой степени очистки.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorDistillate": "Остаток физраствора: 0.3 л (на 2 укола)",
-      "sensorIVQueue": "14 назначений"
-    },
-    "isFraud": false,
-    "reason": "Аптечный учет фиксирует нулевой остаток стерильного физраствора."
-  },
-  {
-    "id": "proc_sec_med_4_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_4_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_4_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_4_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Карантинная изоляция при подозрении на сыпной тиф",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. В изоляторе двое подозрительных с сыпью и лихорадкой. Требуется 1 Медпак (дезинфектанты хлорамин и жаропонижающие).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorIsolatorTemp": "39.4°C и 39.8°C у изолированных",
-      "sensorRash": "Петехиальная сыпь на теле"
-    },
-    "isFraud": false,
-    "reason": "Клиническая картина тифозной лихорадки подтверждена термометрией."
-  },
-  {
-    "id": "proc_sec_med_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя."
-  },
-  {
-    "id": "proc_sec_med_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя."
-  },
-  {
-    "id": "proc_sec_med_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя."
-  },
-  {
-    "id": "proc_sec_med_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя.",
+    "isBribe": true,
     "bribeOffer": {
       "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_med_5_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
+      "note": "В конверте обнаружено 500 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Отпуск дистиллята повышенной чистоты",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Сержант связи: Спиши бочку солярки на обогрев локатора вышки 'Зенит'. 500 рублей в конверте.",
     "req": {
-      "fuel": 2,
+      "fuel": 1,
       "food": 0,
       "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя."
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_med_5_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Замерзание палат тяжелобольных!",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. В реанимации минусовая температура! Пациенты замерзают насмерть! Немедленно выделите 2 Топлива на обогрев!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWardTemp": "+23.5°C (Тепло и сухо)",
-      "sensorThermalAudit": "Батареи отопления горячие",
-      "sensorAlcohol": "2.2 ‰ (Пьяный фельдшер)"
-    },
-    "isFraud": true,
-    "reason": "В палатах +23.5°C. Заведующий пытается украсть топливо для своего обогревателя."
-  },
-  {
-    "id": "proc_sec_med_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров."
-  },
-  {
-    "id": "proc_sec_med_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_med_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров."
-  },
-  {
-    "id": "proc_sec_med_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров."
-  },
-  {
-    "id": "proc_sec_med_6_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров."
-  },
-  {
-    "id": "proc_sec_med_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Нападение беглых сумасшедших с топорами",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Психбольные взломали двери изолятора и крушат лазарет! Срочно дайте 2 ящика Патронов охране!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorPsychWard": "Все 3 пациента заперты на ключ, спят под седацией",
-      "sensorMotion": "0.00"
-    },
-    "isFraud": true,
-    "reason": "Пациенты крепко спят. Фальсификация для незаконного вооружения санитаров.",
+    "id": "bribe_n_6",
+    "index": 48,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
       "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_med_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
+      "note": "В конверте обнаружено 400 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Срочное выделение дизельной фракции",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Комендант общежития: Оформи паёк на мёртвую душу. В конверте 400 рублей.",
     "req": {
       "fuel": 0,
-      "food": 2,
+      "food": 1,
       "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_med_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка."
-  },
-  {
-    "id": "proc_sec_med_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка."
-  },
-  {
-    "id": "proc_sec_med_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка.",
+    "id": "bribe_n_7",
+    "index": 49,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_med_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
+      "amount": 700,
+      "note": "В конверте обнаружено 700 рублей наличными. Заявитель просит закрыть глаза на регламент."
     },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка."
-  },
-  {
-    "id": "proc_sec_med_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Голодный бунт в инфекционном отделении",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Больные ломают решетки от голода! Требуется 2 ящика Пайков высшей категории со сгущенкой!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorCalorieIntake": "Пациенты получают 2800 ккал/сут (норма)",
-      "sensorWeight": "Дефицита массы нет"
-    },
-    "isFraud": true,
-    "reason": "Калораж больных в норме. Попытка кражи деликатесного пайка."
-  },
-  {
-    "id": "proc_sec_med_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Резервирование консервированных пайков",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Охранник шурфа: Спиши ящик патронов на учебные стрельбы, отдаю 700 рублей.",
     "req": {
       "fuel": 0,
       "food": 0,
-      "meds": 2,
-      "ammo": 0,
+      "meds": 0,
+      "ammo": 1,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия."
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_med_8_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+    "id": "bribe_n_8",
+    "index": 50,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
+    "bribeOffer": {
+      "amount": 500,
+      "note": "В конверте обнаружено 500 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Списание перевязочных комплектов",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Агроном: На полив личных саженцев нужна чистая вода. В конверте 500 рублей.",
     "req": {
       "fuel": 0,
       "food": 0,
-      "meds": 2,
+      "meds": 0,
       "ammo": 0,
-      "water": 0
+      "water": 1
     },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия.",
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "bribe_n_9",
+    "index": 51,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
       "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_med_8_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
+      "note": "В конверте обнаружено 600 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Служебный отпуск ящиков патронов",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Механик насосной: Спиши топливо на генератор резерва, отдаю 600 рублей наличными.",
     "req": {
-      "fuel": 0,
+      "fuel": 1,
       "food": 0,
-      "meds": 2,
+      "meds": 0,
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия."
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_med_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия."
-  },
-  {
-    "id": "proc_sec_med_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия."
-  },
-  {
-    "id": "proc_sec_med_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Вспышка черной чумы у всего медперсонала",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Все врачи зачумлены! Срочно вышлите 2 Медпака чистого спирта и морфия для купирования агонии!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBloodTest": "Лейкоциты врачей: 6.5 (Идеальная норма)",
-      "sensorMorphineTheft": "Зафиксирована недостача ампул"
-    },
-    "isFraud": true,
-    "reason": "Анализы крови врачей идеальны. Попытка наркотического хищения морфия.",
+    "id": "bribe_n_10",
+    "index": 52,
+    "category": "bribe_nonstory",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": true,
     "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_med_9_0",
-    "isProcedural": true,
+      "amount": 450,
+      "note": "В конверте обнаружено 450 рублей наличными. Заявитель просит закрыть глаза на регламент."
+    },
+    "day": null,
     "sectorId": "sec_med",
-    "sender": "Главврач санчасти Красин (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Главврач санчасти Красин. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру."
-  },
-  {
-    "id": "proc_sec_med_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Хирург неотложного блока Басов (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Хирург неотложного блока Басов. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру."
-  },
-  {
-    "id": "proc_sec_med_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Старший фельдшер Тамара (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Старший фельдшер Тамара. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру."
-  },
-  {
-    "id": "proc_sec_med_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Начальник карантинного отсека (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Начальник карантинного отсека. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру.",
-    "bribeOffer": {
-      "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_med_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Фармацевт дезинфекции (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Фармацевт дезинфекции. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру."
-  },
-  {
-    "id": "proc_sec_med_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_med",
-    "sender": "Сестра-хозяйка лазарета (Сектор «Медсанчасть» (Госпиталь №3))",
-    "priority": "СРОЧНО",
-    "topic": "Обезвоживание операционного блока",
-    "text": "Товарищ диспетчер! Докладывает Сестра-хозяйка лазарета. Хирургам нечем помыть руки перед операцией! Выдайте 2 Воды со склада!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorHandwashPressure": "Давление в хирургическом кране 3.2 атм",
-      "sensorWaterMeter": "Слив в канистру сестры-хозяйки"
-    },
-    "isFraud": true,
-    "reason": "Вода из крана идет полным напором. Сестра-хозяйка наливает воду в личную канистру."
-  },
-  {
-    "id": "proc_sec_block_0_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_0_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_0_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_0_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_0_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_0_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Разрыв стояка отопления на 3-м ярусе",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Труба лопнула в жилом пролете, морозный пар оседает льдом на стенах. Нужна 1 ед. Топлива для прогрева ремонтного контура.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+6.4°C (Падение на 12 градусов за 2 часа)",
-      "sensorSteamLeak": "Влажность в коридоре 98%"
-    },
-    "isFraud": false,
-    "reason": "Термодатчик жилого коридора подтверждает резкое падение температуры."
-  },
-  {
-    "id": "proc_sec_block_1_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_1_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_1_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_1_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_1_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_1_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Вспышка коклюша у детей младшего яруса",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. В яслях семеро детей задыхаются от приступообразного спазматического кашля. Нужен 1 Медпак (бронхолитики и ингаляторы).",
-    "demandSummary": "Требуется: 1 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 1,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorAcousticCough": "Характерный судорожный кашель детей",
-      "sensorPediatricTemp": "38.6°C"
-    },
-    "isFraud": false,
-    "reason": "Акустический мониторинг яслей фиксирует опасный детский кашель."
-  },
-  {
-    "id": "proc_sec_block_2_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Выделение воды на технические нужды",
+    "priority": "КОНФИДЕНЦИАЛЬНО",
+    "text": "Диетсестра: Спиши лечебное питание как просрочку, забирай 450 рублей.",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9672,22 +2699,451 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
-    },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_2_1",
-    "isProcedural": true,
+    "id": "fake_1",
+    "index": 53,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Аварийная продувка: Отказ датчика давления",
+    "priority": "СРОЧНО",
+    "text": "Катастрофа! Прорвало фильтры охлаждения! Дайте 2 дистиллята, иначе котёл разорвёт!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 2
+    },
+    "demandSummary": "Вода: 2",
+    "telemetryFacts": {
+      "sensorAlcohol": "2.8‰"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_2",
+    "index": 54,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Доклад о прорыве шурфа: Тревога",
+    "priority": "СРОЧНО",
+    "text": "Арктический мороз пробил штрек! Температура минус сорок, металл лопается! Срочно 2 топлива на обогрев!",
+    "req": {
+      "fuel": 2,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": {
+      "sensorTemp": "+21.4°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_3",
+    "index": 55,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Рапорт об угрозе замерзания бурового забоя",
+    "priority": "СРОЧНО",
+    "text": "Нас штурмует стая мутантов-кротокрысов! Жрут силовой кабель вышки 'Зенит'! Срочно 2 ящика патронов!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 2,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 2",
+    "telemetryFacts": {
+      "sensorMotion": "0 отметок"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_4",
+    "index": 56,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Срочное требование: Истощение дежурной смены",
+    "priority": "СРОЧНО",
+    "text": "Чёрная плесень сожрала все склады сои и пшеницы! Сектор вымирает от голода! Дайте 2 ящика пайков!",
+    "req": {
+      "fuel": 0,
+      "food": 2,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 2",
+    "telemetryFacts": {
+      "sensorBio": "Класс 0"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_5",
+    "index": 57,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Заявка на патроны: Следы на внешнем контуре",
+    "priority": "СРОЧНО",
+    "text": "Вспышка сыпного тифа в изоляторе! Все больные бьются в конвульсиях! Требуется 2 спецмедпака!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 2,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 2",
+    "telemetryFacts": {
+      "sensorAlcohol": "3.1‰",
+      "sensorAudio": "28 дБ"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_6",
+    "index": 58,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Сигнал о закипании реактора опреснения",
+    "priority": "СРОЧНО",
+    "text": "Трубы в бараках сухие как пустыня, дети лижут ржавчину с кранов! Срочно 2 дистиллята!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 2
+    },
+    "demandSummary": "Вода: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "fake_7",
+    "index": 59,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Сообщение о массовом отравлении хлором",
+    "priority": "СРОЧНО",
+    "text": "Бунт в нижнем забое! Каторжники идут с заточками на караул! Выделите патроны на подавление!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": {
+      "sensorAudio": "32 дБ (фоновая тишина, звуки игры в домино)"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_8",
+    "index": 60,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Аварийный запрос воды: Падение уровня в баках",
+    "priority": "СРОЧНО",
+    "text": "Главный циркуляционный насос потерял обороты, давление упало в ноль! Дайте топливо на дизель!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "fake_9",
+    "index": 61,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Запрос усиления охраны: Подозрительные шумы",
+    "priority": "СРОЧНО",
+    "text": "Лопнуло остекление оранжереи №3! Морозный сквозняк морозит клубни! Срочно топливо в печи!",
+    "req": {
+      "fuel": 2,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": {
+      "sensorTemp": "+24°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_10",
+    "index": 62,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Рапорт об обморожении рассады гидропоники",
+    "priority": "СРОЧНО",
+    "text": "Контур передатчика вышки 'Зенит' закипает от перегрузки! Температура за 90 градусов! Срочно 1 воду на аварийное охлаждение!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": {
+      "sensorTemp": "+14°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_11",
+    "index": 63,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Заявка на медикаменты: Вспышка плесени",
+    "priority": "СРОЧНО",
+    "text": "Тяжелораненым на восстановительной диете не хватает белков! Срочно 2 ящика консервов в столовую лазарета!",
+    "req": {
+      "fuel": 0,
+      "food": 2,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 2",
+    "telemetryFacts": {
+      "sensorAlcohol": "2.5‰"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_12",
+    "index": 64,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Экстренный запрос пайков: Потеря урожая",
+    "priority": "СРОЧНО",
+    "text": "В 5-м подъезде бараков обледенели стены, пар изо рта! Дайте топливо на термопушку!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "heat",
+      "val": 85
+    }
+  },
+  {
+    "id": "fake_13",
+    "index": 65,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Требование патронов: Нападение грызунов",
+    "priority": "СРОЧНО",
+    "text": "Массовый завал в шурфе, оторванные пальцы у половины смены! Срочно медпаки в шахту!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "fake_14",
+    "index": 66,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Запрос топлива: Обледенение датчиков антенны",
+    "priority": "СРОЧНО",
+    "text": "Диверсанты пробрались в отстойники чистой воды! Срочно патроны на прочёсывание резервуаров!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 2,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 2",
+    "telemetryFacts": {
+      "sensorAlcohol": "2.4‰",
+      "sensorMotion": "0 отметок"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_15",
+    "index": 67,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Рапорт часового: Силуэты в снежной буре",
+    "priority": "СРОЧНО",
+    "text": "Агрономы отравились ядохимикатами! Токсический шок, пена изо рта! Дайте противоядие!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "fake_16",
+    "index": 68,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Запрос антибиотиков: Грипп дежурного расчета",
+    "priority": "СРОЧНО",
+    "text": "Обледенела параболическая антенна вышки 'Зенит', сервоприводы скрежещут! Дайте топливо на прогрев!",
+    "req": {
+      "fuel": 2,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": {
+      "sensorTemp": "+16°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_17",
+    "index": 69,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_block",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Падение давления в бойлерной Жилого Блока",
+    "priority": "СРОЧНО",
+    "text": "В столовой барака крысы сожрали всю кашу! Рабочие голодные пойдут на смену!",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9695,22 +3151,136 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
-    },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 80
+    }
   },
   {
-    "id": "proc_sec_block_2_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "id": "fake_18",
+    "index": 70,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Запрос воды: Жалобы на сухость в казармах",
+    "priority": "СРОЧНО",
+    "text": "В буровом забое жара 50 градусов! От сухости трескается кожа! Дайте срочно дистиллят!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": {
+      "sensorTemp": "+16.2°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_19",
+    "index": 71,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Экстренная заявка: Подозрение на инфекцию",
+    "priority": "СРОЧНО",
+    "text": "Вспышка холеры из-за пробитого фильтра очистки! Срочно антибиотики широкого профиля!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": {
+      "sensorFilter": "Износ 14% (мембраны новые)"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_20",
+    "index": 72,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Сбой стерилизации хирургического отсека",
+    "priority": "СРОЧНО",
+    "text": "В автоклавах стерилизации упала температура, хирургические инструменты ледяные! Срочно топливо!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": {
+      "sensorTemp": "+22°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_21",
+    "index": 73,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Рапорт тепличного сектора: Нашествие вредителей",
+    "priority": "СРОЧНО",
+    "text": "Стая крыс жрёт картофельные поля теплиц, бросается на агрономов! Требуются патроны на отстрел!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 2,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 2",
+    "telemetryFacts": {
+      "sensorAudio": "24 дБ",
+      "sensorMotion": "0 отметок"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "fake_22",
+    "index": 74,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Дополнительное питание смены радистов",
+    "priority": "СРОЧНО",
+    "text": "Смена радистов на вышке 'Зенит' от голода не разбирает морзянку! Пришлите паёк прямо в рубку!",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9718,22 +3288,79 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Пайки: 1",
     "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
+      "sensorAudio": "45 дБ (слышен смех и звон ложек)"
     },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_2_3",
-    "isProcedural": true,
+    "id": "fake_23",
+    "index": 75,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Запрос санобработки: Кожная сыпь в бараке",
+    "priority": "СРОЧНО",
+    "text": "Неизвестная язва по всему телу у жильцов барака! Чесотка, сыпь! Срочно мази из медпака!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 2,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 2",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "sanitation",
+      "val": 75
+    }
+  },
+  {
+    "id": "fake_24",
+    "index": 76,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Обесточивание главного скипового подъёмника",
+    "priority": "СРОЧНО",
+    "text": "Обесточило главный скиповый подъёмник руды! Генераторы заглохли, подъём встал! Срочно 2 топлива!",
+    "req": {
+      "fuel": 2,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 2",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "fake_25",
+    "index": 77,
+    "category": "fake",
+    "isStory": false,
+    "isFraud": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Срочный рацион для операторов фильтровальной",
+    "priority": "СРОЧНО",
+    "text": "Ночная смена фильтровальной падает от истощения, некому крутить задвижки магистрали!",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9741,22 +3368,103 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Пайки: 1",
     "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
+      "sensorAlcohol": "2.9‰"
     },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_2_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "id": "chestn_1",
+    "index": 78,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Заклинивание бурового пневмопривода",
+    "priority": "ШТАТНО",
+    "text": "Заклинило буровой пневмопривод горизонта-2. Давление в магистрали упало, буры встали! Выделите 1 топливо на вспомогательный компрессор!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_2",
+    "index": 79,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Обвал гранитного козырька в штреке",
+    "priority": "ШТАТНО",
+    "text": "Обвал гранитного козырька в штреке! Двое горняков придавлены породой, тяжелые переломы! Срочно 1 медпак в забой!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_3",
+    "index": 80,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Вскрытие термальной жилы: Перегрев забоя",
+    "priority": "ШТАТНО",
+    "text": "Забой вскрыл горячую термальную жилу! Температура пласта зашкаливает, рабочие падают от теплового удара! Требуется 1 вода на смену!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": {
+      "sensorTemp": "+41.8°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_4",
+    "index": 81,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Авральная смена по расчистке завала",
+    "priority": "ШТАТНО",
+    "text": "Авральная смена по расчистке завала длится 18 часов без перерыва. Люди падают в обморок от голода. Дайте 1 паёк в забой!",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9764,22 +3472,106 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
-    },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 20
+    }
   },
   {
-    "id": "proc_sec_block_2_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Задержка выдачи суточных норм хлеба",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Из-за аварии на транспортной ленте жители нижних ярусов не получили ужин. Назревает скандал. Выдайте 1 ящик Пайков для раздачи.",
-    "demandSummary": "Требуется: 1 ед. Пайков 🍞",
+    "id": "chestn_5",
+    "index": 82,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_mine",
+    "sender": "Шахта «Глубокая-7» (Инженер смены)",
+    "topic": "Поломка породопогрузочной машины в шурфе",
+    "priority": "ШТАТНО",
+    "text": "В 4-м шурфе заклинило породопогрузочную машину! Заклинило гидропривод ковша, отгрузка породы встала! Нужно 1 топливо на запуск аварийной маслостанции!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_6",
+    "index": 83,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Засорение подогревателя дистиллятора",
+    "priority": "ШТАТНО",
+    "text": "Забился мазутный подогреватель вторичного дистиллятора! Температура опреснителя падает! Выделите 1 топливо на форсунку!",
+    "req": {
+      "fuel": 1,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": {
+      "sensorTemp": "+8°C"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_7",
+    "index": 84,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Травма слесаря на эстакаде отстойника",
+    "priority": "ШТАТНО",
+    "text": "Слесарь сорвался со скользкой эстакады отстойника! Травма головы, обильное кровотечение! Срочно 1 медпак в цех!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": {
+      "sensorAudio": "78 дБ (крики о помощи)"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_8",
+    "index": 85,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Защита бригады от переохлаждения в фильтровальной",
+    "priority": "ШТАТНО",
+    "text": "Аварийная бригада третьи сутки работает в мокрых гидрокостюмах без отдыха, устраняя течь резервуара. Нужен 1 паёк для калорий!",
     "req": {
       "fuel": 0,
       "food": 1,
@@ -9787,22 +3579,27 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorRiotRisk": "Напряженность в очереди: 65% (Шум в коридоре)",
-      "sensorBreadSupply": "Нехватка 120 рационов"
-    },
-    "isFraud": false,
-    "reason": "Датчик толпы фиксирует скопление голодных граждан у пункта раздачи."
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 25
+    }
   },
   {
-    "id": "proc_sec_block_3_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "id": "chestn_9",
+    "index": 86,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Срыв клапана высокого давления: Свищ пара",
+    "priority": "ШТАТНО",
+    "text": "Сорвало клапан высокого давления, пар свистит во все стороны! Нужно 1 топливо на электропривод гидравлической задвижки!",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -9810,22 +3607,79 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
-    "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
-    },
-    "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
+    "demandSummary": "Топливо: 1",
+    "telemetryFacts": null,
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_3_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "id": "chestn_10",
+    "index": 87,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_water",
+    "sender": "Водоочиститель «Омега» (Служба водоподготовки)",
+    "topic": "Прорыв внешнего водозаборного тоннеля",
+    "priority": "ШТАТНО",
+    "text": "Из внешнего водозаборного тоннеля прорвались одичавшие псы! Кидаются на дежурных у насосов! Срочно 1 ящик патронов!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": {
+      "sensorMotion": "6 отметок"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_11",
+    "index": 88,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Отказ автополива в оранжерее томатов",
+    "priority": "ШТАТНО",
+    "text": "В оранжерее томатов пересох контур автополива! Растения вянут, биомасса гибнет! Выделите 1 дистиллят на полив!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "water",
+      "val": 18
+    }
+  },
+  {
+    "id": "chestn_12",
+    "index": 89,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Авария фитоламп секции зерновых культур",
+    "priority": "ШТАТНО",
+    "text": "Вырубились ультрафиолетовые фитолампы секции зерновых! Растения замерзают без тепла ламп! Нужно 1 топливо на генератор!",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -9833,22 +3687,165 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Топливо: 1",
     "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
+      "sensorTemp": "+11°C"
     },
-    "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_3_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "id": "chestn_13",
+    "index": 90,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Прорыв фильтров: Серая гниль в оранжерее",
+    "priority": "ШТАТНО",
+    "text": "Споры серой гнили пробили фильтры оранжереи! Требуется 1 медпак (фунгициды и антисептики) на дезинфекцию лотков!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": {
+      "sensorBio": "Класс 2"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_14",
+    "index": 91,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Авральные работы агрономов по спасению почвы",
+    "priority": "ШТАТНО",
+    "text": "Смена агрономов вручную перелопачивает тонны грунта, спасая посевы от заморозка. Люди истощены. Выделите 1 паёк!",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 22
+    }
+  },
+  {
+    "id": "chestn_15",
+    "index": 92,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_hydro",
+    "sender": "Теплицы «Флора-3» (Агрослужба)",
+    "topic": "Попытка прорыва на склад семенного фонда",
+    "priority": "ШТАТНО",
+    "text": "Группа отчаявшихся работяг с ломами пытается прорваться на продовольственные склады теплиц! Срочно патроны охране!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "rebellion",
+      "val": 82
+    }
+  },
+  {
+    "id": "chestn_16",
+    "index": 93,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Вспышка инфекции: Прорыв канализации",
+    "priority": "ШТАТНО",
+    "text": "Тяжелейшая вспышка инфекции после прорыва канализации в коридоре! Антисептиков ноль! Срочно 1 медпак в санчасть!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "sanitation",
+      "val": 18
+    }
+  },
+  {
+    "id": "chestn_17",
+    "index": 94,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Критический дефицит физраствора в лазарете",
+    "priority": "ШТАТНО",
+    "text": "В лазарете закончился дистиллят для приготовления физрастворов и капельниц! Тяжёлые больные обезвожены! Дайте 1 воду!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "water",
+      "val": 15
+    }
+  },
+  {
+    "id": "chestn_18",
+    "index": 95,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Утечка хладагента в блоке хранения вакцин",
+    "priority": "ШТАТНО",
+    "text": "В блоке хранения вакцин растёт температура, хладагент вытек! Срочно 1 топливо на аварийный теплообменник!",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -9856,22 +3853,54 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Топливо: 1",
     "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
+      "sensorTemp": "+28°C"
     },
-    "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_3_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "id": "chestn_19",
+    "index": 96,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_med",
+    "sender": "Медсанчасть (Дежурный врач)",
+    "topic": "Истощение послеоперационных больных",
+    "priority": "ШТАТНО",
+    "text": "Послеоперационные больные не получают калорий, падают в голодные обмороки! Выделите 1 ящик диетпайков в лазарет!",
+    "req": {
+      "fuel": 0,
+      "food": 1,
+      "meds": 0,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 20
+    }
+  },
+  {
+    "id": "chestn_20",
+    "index": 97,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Обледенение антенной мачты вышки 'Зенит'",
+    "priority": "ШТАТНО",
+    "text": "Буран снаружи вышки 'Зенит'! Мачта антенны покрылась полуметровым льдом, сигнал гаснет! Нужен 1 мазут на термообогрев мачты!",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -9879,22 +3908,108 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Топливо: 1",
     "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
+      "sensorTemp": "-31.5°C"
     },
-    "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_3_4",
-    "isProcedural": true,
+    "id": "chestn_21",
+    "index": 98,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Нападение на внешний периметр вышки",
+    "priority": "ШТАТНО",
+    "text": "Внешний периметр вышки 'Зенит' атакован! К входному шлюзу пробиваются трое вооружённых мародёров! Срочно 1 патроны часовым!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 1,
+      "water": 0
+    },
+    "demandSummary": "Патроны: 1",
+    "telemetryFacts": {
+      "sensorMotion": "3 тепловых силуэта"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_22",
+    "index": 99,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Поражение током связиста при ремонте кабеля",
+    "priority": "ШТАТНО",
+    "text": "Связист вышки 'Зенит' при пайке высоковольтного кабеля получил удар током и тяжелый ожог! Срочно 1 медпак в радиорубку!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 1,
+      "ammo": 0,
+      "water": 0
+    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": {
+      "sensorAudio": "75 дБ (аварийная сирена в аппаратной)"
+    },
+    "mapMetric": null
+  },
+  {
+    "id": "chestn_23",
+    "index": 100,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
+    "sectorId": "sec_radar",
+    "sender": "Вышка «Зенит» (Пост наблюдения)",
+    "topic": "Закипание контура охлаждения передатчика",
+    "priority": "ШТАТНО",
+    "text": "Выкипел замкнутый контур водяного охлаждения передатчика вышки 'Зенит'! Радиолампы треснут! Дайте 1 дистиллят!",
+    "req": {
+      "fuel": 0,
+      "food": 0,
+      "meds": 0,
+      "ammo": 0,
+      "water": 1
+    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "water",
+      "val": 19
+    }
+  },
+  {
+    "id": "chestn_24",
+    "index": 101,
+    "category": "chestn",
+    "isStory": false,
+    "isFraud": false,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Разморозка трубы обратки в детском бараке",
+    "priority": "ШТАТНО",
+    "text": "Разморозило трубу обратки в детском бараке! Батареи звенят от льда, тепло уходит! Выделите 1 топливо на аварийный бойлер!",
     "req": {
       "fuel": 1,
       "food": 0,
@@ -9902,45 +4017,26 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 0
     },
+    "demandSummary": "Топливо: 1",
     "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
+      "sensorTemp": "+9°C"
     },
-    "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
+    "mapMetric": null
   },
   {
-    "id": "proc_sec_block_3_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "ВЫСОКИЙ",
-    "topic": "Засор стока и подтопление подвала фекалиями",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Ассенизационный колодец забит, стоки топят нижние жилые каморки. Требуется 1 ед. Топлива на откачивающую помпу.",
-    "demandSummary": "Требуется: 1 ед. Топлива ⛽",
-    "req": {
-      "fuel": 1,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSewageLevel": "+35 см сточных вод в коридоре",
-      "sensorMethane": "Метан: 1.8% (Опасность отравления)"
-    },
+    "id": "chestn_25",
+    "index": 102,
+    "category": "chestn",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Газоанализатор подтверждает разлив сточных вод и загазованность."
-  },
-  {
-    "id": "proc_sec_block_4_0",
-    "isProcedural": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Обезвоживание грудных детей в Жилом Блоке",
+    "priority": "ШТАТНО",
+    "text": "В Жилом Блоке растет обезвоживание среди грудных детей. Вода из кранов ржавая с хлопьями осадка. Требуется 1 канистра дистиллята!",
     "req": {
       "fuel": 0,
       "food": 0,
@@ -9948,916 +4044,232 @@ const PROCEDURAL_DISPATCH_DATABASE = [
       "ammo": 0,
       "water": 1
     },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
+    "demandSummary": "Вода: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "water",
+      "val": 25
+    }
+  },
+  {
+    "id": "chestn_26",
+    "index": 103,
+    "category": "chestn",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_4_1",
-    "isProcedural": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Сырость в бараке: Кожная инфекция",
+    "priority": "ШТАТНО",
+    "text": "Вспышка кожной инфекции из-за сырости в третьем бараке. Нужен 1 медпак с антисептиком для санобработки жильцов!",
     "req": {
       "fuel": 0,
       "food": 0,
-      "meds": 0,
+      "meds": 1,
       "ammo": 0,
-      "water": 1
+      "water": 0
     },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
+    "demandSummary": "Медпак: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "sanitation",
+      "val": 24
+    }
+  },
+  {
+    "id": "chestn_27",
+    "index": 104,
+    "category": "chestn",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_4_2",
-    "isProcedural": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Хищение продовольствия в третьем бараке",
+    "priority": "ШТАТНО",
+    "text": "На складе барака разворовали двухдневный запас хлеба. Семьи рабочих голодают до утра. Выделите 1 ящик сухпайков!",
     "req": {
       "fuel": 0,
-      "food": 0,
+      "food": 1,
       "meds": 0,
       "ammo": 0,
-      "water": 1
+      "water": 0
     },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
+    "demandSummary": "Пайки: 1",
+    "telemetryFacts": null,
+    "mapMetric": {
+      "key": "food",
+      "val": 19
+    }
+  },
+  {
+    "id": "chestn_28",
+    "index": 105,
+    "category": "chestn",
+    "isStory": false,
     "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_4_3",
-    "isProcedural": true,
+    "isBribe": false,
+    "bribeOffer": null,
+    "day": null,
     "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
+    "sender": "Жилой Блок №4 (Комендатура блока)",
+    "topic": "Массовые беспорядки и погром в бараках",
+    "priority": "ШТАТНО",
+    "text": "В бараках бунт пьяных маргиналов! Крушат переборки, ломятся в женские отсеки! Караулу нужны патроны для предупредительных выстрелов!",
     "req": {
       "fuel": 0,
       "food": 0,
       "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
-    "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_4_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
-    "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_4_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СТАНДАРТ",
-    "topic": "Пересыхание распределительного питьевого бака",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Очередь за водой стоит с утра, в баке пусто. Для предотвращения бунта женщин просим 1 ед. Воды на раздачу.",
-    "demandSummary": "Требуется: 1 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 1
-    },
-    "telemetryFacts": {
-      "sensorTapFlow": "Расход в кране 0.0 л/мин",
-      "sensorQueueCount": "В очереди 140 человек с ведрами"
-    },
-    "isFraud": false,
-    "reason": "Датчик крана подтверждает отсутствие воды при огромной очереди."
-  },
-  {
-    "id": "proc_sec_block_5_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
+      "ammo": 1,
       "water": 0
     },
+    "demandSummary": "Патроны: 1",
     "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
+      "sensorAudio": "88 дБ (Массовая драка)"
     },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани."
-  },
-  {
-    "id": "proc_sec_block_5_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
-    },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_block_5_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
-    },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани."
-  },
-  {
-    "id": "proc_sec_block_5_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
-    },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани."
-  },
-  {
-    "id": "proc_sec_block_5_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
-    },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани."
-  },
-  {
-    "id": "proc_sec_block_5_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Арктический буран внутри жилого коридора!",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Стены промерзли насквозь! Граждане замерзают штабелями! Выделите 2 Топлива для спасения народа!",
-    "demandSummary": "Требуется: 2 ед. Топлива ⛽",
-    "req": {
-      "fuel": 2,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorBlockTemp": "+21.0°C (Тепло)",
-      "sensorWallTemp": "+19.8°C",
-      "sensorAlcohol": "2.6 ‰ (Пьяный управдом)"
-    },
-    "isFraud": true,
-    "reason": "Стены теплые (+20°C). Управдом пытается выбить топливо для подпольной бани.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
-  },
-  {
-    "id": "proc_sec_block_6_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду."
-  },
-  {
-    "id": "proc_sec_block_6_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду."
-  },
-  {
-    "id": "proc_sec_block_6_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду."
-  },
-  {
-    "id": "proc_sec_block_6_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду.",
-    "bribeOffer": {
-      "amount": 750,
-      "note": "Конверт с 750 рублями. Текст на машинке: «За техническую ошибку в отчете. Тебе на семью пригодится»."
-    }
-  },
-  {
-    "id": "proc_sec_block_6_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду."
-  },
-  {
-    "id": "proc_sec_block_6_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Вооруженный мятеж рецидивистов в бараке",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Уголовники захватили этаж с заточками! Срочно выделите 2 ящика Патронов на расстрел бунтовщиков!",
-    "demandSummary": "Требуется: 2 ед. Патронов 🔫",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 2,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorNoiseLevel": "28 дБ (Шепот и тишина)",
-      "sensorGunshot": "0 выстрелов",
-      "sensorRebelRadio": "Попытка вооружения криминального авторитета"
-    },
-    "isFraud": true,
-    "reason": "Тишина в коридоре. Криминальный староста пытается вооружить свою банду."
-  },
-  {
-    "id": "proc_sec_block_7_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов."
-  },
-  {
-    "id": "proc_sec_block_7_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов.",
-    "bribeOffer": {
-      "amount": 600,
-      "note": "Хрустящий конверт на 600 рублей. На обороте нацарапано: «От парней из нижнего штрека. Проведи как списание»."
-    }
-  },
-  {
-    "id": "proc_sec_block_7_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов."
-  },
-  {
-    "id": "proc_sec_block_7_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов."
-  },
-  {
-    "id": "proc_sec_block_7_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов."
-  },
-  {
-    "id": "proc_sec_block_7_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Всеобщий голодный мор в блоке",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Люди едят кожаные ремни! Если не дадите 2 ящика Пайков со сгущенкой — завтра вынесут сто трупов!",
-    "demandSummary": "Требуется: 2 ед. Пайков 🍞",
-    "req": {
-      "fuel": 0,
-      "food": 2,
-      "meds": 0,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorWaste": "В мусоропроводе обнаружены кости свинины и банки икры",
-      "sensorScale": "Масса жителей стабильна"
-    },
-    "isFraud": true,
-    "reason": "В мусоропроводе остатки деликатесов. Наглая ложь спекулянтов.",
-    "bribeOffer": {
-      "amount": 800,
-      "note": "Толстый серый пакет: 800 рублей. Приписка: «Особый фонд. Подтверди выдачу, майор в курсе, вопросов не будет»."
-    }
-  },
-  {
-    "id": "proc_sec_block_8_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах."
-  },
-  {
-    "id": "proc_sec_block_8_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах."
-  },
-  {
-    "id": "proc_sec_block_8_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах."
-  },
-  {
-    "id": "proc_sec_block_8_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах.",
-    "bribeOffer": {
-      "amount": 500,
-      "note": "В накладную вложен плотный конверт. Внутри 500 рублей и записка: «Не задавай лишних вопросов, подмахни накладную»."
-    }
-  },
-  {
-    "id": "proc_sec_block_8_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах."
-  },
-  {
-    "id": "proc_sec_block_8_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Черная оспа у младенцев",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Все новорожденные покрыты язвами! Дайте 2 Медпака антибиотиков и спирта!",
-    "demandSummary": "Требуется: 2 ед. Медпаков 💊",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 2,
-      "ammo": 0,
-      "water": 0
-    },
-    "telemetryFacts": {
-      "sensorSkin": "У детей обычная потничка от пеленок",
-      "sensorPediatricExam": "Температура 36.6°C"
-    },
-    "isFraud": true,
-    "reason": "Обычная детская потница. Попытка наживы на дефицитных медикаментах."
-  },
-  {
-    "id": "proc_sec_block_9_0",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Комендант жилсектора Котов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Комендант жилсектора Котов. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат."
-  },
-  {
-    "id": "proc_sec_block_9_1",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Управдом Смирнов (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Управдом Смирнов. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат.",
-    "bribeOffer": {
-      "amount": 650,
-      "note": "К бланку приколоты 650 рублей новенькими купюрами. Приписка: «Диспетчер, пропусти партию, свои люди — сочтемся»."
-    }
-  },
-  {
-    "id": "proc_sec_block_9_2",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Председатель совета матерей (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Председатель совета матерей. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат."
-  },
-  {
-    "id": "proc_sec_block_9_3",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Староста нижнего яруса Фокин (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Староста нижнего яруса Фокин. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат."
-  },
-  {
-    "id": "proc_sec_block_9_4",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Диспетчер бытовых коммуникаций (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Диспетчер бытовых коммуникаций. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат."
-  },
-  {
-    "id": "proc_sec_block_9_5",
-    "isProcedural": true,
-    "sectorId": "sec_block",
-    "sender": "Дежурный дружинник блока (Сектор «Жилой Блок №4» (Каморки граждан))",
-    "priority": "СРОЧНО",
-    "topic": "Засуха: люди пьют мочу от жажды!",
-    "text": "Товарищ диспетчер! Докладывает Дежурный дружинник блока. Воды нет неделю! Люди теряют рассудок! Срочно выдайте 2 Воды!",
-    "demandSummary": "Требуется: 2 ед. Воды 💧",
-    "req": {
-      "fuel": 0,
-      "food": 0,
-      "meds": 0,
-      "ammo": 0,
-      "water": 2
-    },
-    "telemetryFacts": {
-      "sensorTapPressure": "Водопровод под давлением 2.8 атм",
-      "sensorPrivateDistillery": "Вода круглосуточно течет в самогонный куб управдома"
-    },
-    "isFraud": true,
-    "reason": "Давление в кранах есть. Управдом ворует воду на самогонный аппарат.",
-    "bribeOffer": {
-      "amount": 400,
-      "note": "Между страницами обнаружено 400 рублей. Записка: «На чай дежурной смене. На датчики закрой глаза»."
-    }
+    "mapMetric": null
   }
 ];
 
-function getDayDispatches(day, seenDispatchIds = []) {
-  // 1. Get story dispatches for this day
-  const story = DISPATCH_DATABASE.filter(d => d.day === day);
-  story.forEach(d => d.isStory = true);
+const DISPATCH_DATABASE = DISPATCHES_MASTER_REGISTRY;
+const PROCEDURAL_DISPATCH_DATABASE = DISPATCHES_MASTER_REGISTRY;
 
-  // 2. Need exactly 7 dispatches total per day
+function getDayDispatches(day, seenDispatchIds = []) {
+  if (day === 0) {
+    const tutList = DISPATCHES_MASTER_REGISTRY.filter(d => d.category === "tutorial").map(d => JSON.parse(JSON.stringify(d)));
+    tutList.forEach(disp => {
+      disp.onFulfill = (game, alloc) => {
+        if (disp.isFraud) {
+          game.logEvent(`[АТТЕСТАЦИЯ]: Ошибка! Вы удовлетворили фальшивый запрос саботажника.`);
+        } else {
+          game.logEvent(`[АТТЕСТАЦИЯ]: Отлично! Учебная заявка сектору [${disp.sender}] удовлетворена.`);
+        }
+      };
+      disp.onReject = (game) => {
+        if (disp.isFraud) {
+          game.logEvent(`[АТТЕСТАЦИЯ]: Отлично! Фальсификация в секторе [${disp.sender}] успешно разоблачена.`);
+        } else {
+          game.logEvent(`[АТТЕСТАЦИЯ]: Ошибка! Вы отказали в честной заявке аварийному сектору.`);
+        }
+      };
+    });
+    return tutList;
+  }
+
+  // 1. Get story dispatches for this day
+  const story = DISPATCHES_MASTER_REGISTRY.filter(d => d.isStory && d.day === day).map(d => {
+    const copy = JSON.parse(JSON.stringify(d));
+    copy.isStory = true;
+    return copy;
+  });
+
+  // 2. We need exactly 7 dispatches total per day
   const needed = Math.max(0, 7 - story.length);
   const picked = [];
 
-  const unseenPool = PROCEDURAL_DISPATCH_DATABASE.filter(d => !seenDispatchIds.includes(d.id));
-  const pool = unseenPool.length >= needed ? unseenPool : PROCEDURAL_DISPATCH_DATABASE;
+  // Filter pool: non-story, not tutorial, not in seenDispatchIds
+  const unseenPool = DISPATCHES_MASTER_REGISTRY.filter(d => 
+    !d.isStory && 
+    d.category !== "tutorial" && 
+    !seenDispatchIds.includes(d.id)
+  );
 
-  const shuffled = [...pool].sort(() => Math.random() - 0.5);
-  for (let i = 0; i < needed && i < shuffled.length; i++) {
-    const disp = JSON.parse(JSON.stringify(shuffled[i]));
+  const pool = unseenPool.length >= needed ? unseenPool : DISPATCHES_MASTER_REGISTRY.filter(d => !d.isStory && d.category !== "tutorial");
+
+  // Pick balanced selection: try to include 1 bribe, 2-3 honest, 2-3 fake/non-story
+  const bribes = pool.filter(d => d.isBribe && !seenDispatchIds.includes(d.id)).sort(() => Math.random() - 0.5);
+  const chestn = pool.filter(d => d.category === "chestn" && !seenDispatchIds.includes(d.id)).sort(() => Math.random() - 0.5);
+  const fakes = pool.filter(d => d.category === "fake" && !seenDispatchIds.includes(d.id)).sort(() => Math.random() - 0.5);
+  const others = pool.filter(d => !d.isBribe && d.category !== "chestn" && d.category !== "fake" && !seenDispatchIds.includes(d.id)).sort(() => Math.random() - 0.5);
+
+  const candidates = [];
+  if (bribes.length > 0) candidates.push(bribes.pop());
+  while (candidates.length < 3 && chestn.length > 0) candidates.push(chestn.pop());
+  while (candidates.length < 5 && fakes.length > 0) candidates.push(fakes.pop());
+  while (candidates.length < needed && others.length > 0) candidates.push(others.pop());
+  while (candidates.length < needed && chestn.length > 0) candidates.push(chestn.pop());
+  while (candidates.length < needed && fakes.length > 0) candidates.push(fakes.pop());
+
+  // Fill any remainder
+  const remainingShuffled = pool.filter(d => !candidates.some(c => c.id === d.id)).sort(() => Math.random() - 0.5);
+  while (candidates.length < needed && remainingShuffled.length > 0) {
+    candidates.push(remainingShuffled.pop());
+  }
+
+  for (let i = 0; i < needed && i < candidates.length; i++) {
+    const disp = JSON.parse(JSON.stringify(candidates[i]));
     disp.day = day;
-    
-    // Add functional callbacks
-    disp.onFulfill = (game, alloc) => {
-      game.modifyRating("gos", disp.isFraud ? -10 : 5);
-      if (disp.sectorId) {
-        const sec = game.getSector(disp.sectorId);
-        if (sec) {
-          if (disp.req.fuel) sec.heat = Math.min(100, (sec.heat || 70) + 15);
-          if (disp.req.food) sec.food = Math.min(100, (sec.food || 70) + 15);
-          if (disp.req.meds) sec.sanitation = Math.min(100, (sec.sanitation || 70) + 20);
-          if (disp.req.water) sec.water = Math.min(100, (sec.water || 70) + 15);
-        }
-      }
-      game.logEvent(`[НАКЛАДНАЯ ПОДПИСАНА]: Ресурсы направлены по заявке [${disp.sender}].`);
-    };
-
-    disp.onReject = (game) => {
-      if (disp.isFraud) {
-        game.logEvent(`[ОТКАЗАНО В СНАБЖЕНИИ]: Фальшивая заявка [${disp.sender}] отклонена. Склад спасен от растраты.`);
-      } else {
-        game.modifyRating("gos", -10);
-        if (disp.sectorId) {
-          const sec = game.getSector(disp.sectorId);
-          if (sec) {
-            sec.deadToday = (sec.deadToday || 0) + 2;
-            sec.population = Math.max(0, sec.population - 2);
-            sec.totalDead = (sec.totalDead || 0) + 2;
-            game.totalCasualties = (game.totalCasualties || 0) + 2;
-          }
-        }
-        game.logEvent(`[ОТКАЗАНО]: В секторе [${disp.sender}] зафиксированы потери из-за дефицита снабжения.`);
-      }
-    };
-
     picked.push(disp);
   }
 
-  return [...story, ...picked];
+  // Combine story + picked and shuffle inside the day
+  const combined = [...story, ...picked].sort(() => Math.random() - 0.5);
+
+  // Attach callbacks
+  combined.forEach(disp => {
+    disp.onFulfill = (game, alloc) => {
+      if (disp.isStory) {
+        game.logEvent(`[СЮЖЕТНАЯ НАКЛАДНАЯ]: Запрос [${disp.sender}] удовлетворен.`);
+      } else if (disp.isBribe) {
+        // Handled in approveCurrentDispatch(true)
+      } else {
+        if (disp.sectorId) {
+          const sec = game.getSector(disp.sectorId);
+          if (sec) {
+            if (disp.req.fuel) sec.heat = Math.min(100, (sec.heat || 70) + 15);
+            if (disp.req.food) sec.food = Math.min(100, (sec.food || 70) + 15);
+            if (disp.req.meds) sec.sanitation = Math.min(100, (sec.sanitation || 70) + 20);
+            if (disp.req.water) sec.water = Math.min(100, (sec.water || 70) + 15);
+          }
+        }
+        game.logEvent(`[НАКЛАДНАЯ ПОДПИСАНА]: Ресурсы направлены по заявке [${disp.sender}].`);
+      }
+    };
+
+    disp.onReject = (game) => {
+      if (disp.isStory) {
+        game.logEvent(`[СЮЖЕТНЫЙ ОТКАЗ]: Заявка [${disp.sender}] отклонена.`);
+      } else if (disp.isBribe) {
+        game.logEvent(`[ОТКАЗ В ВЗЯТКЕ]: Нецелевой запрос [${disp.sender}] отклонен. Склад спасен.`);
+      } else if (disp.isFraud) {
+        game.logEvent(`[ПРЕСЕЧЕНИЕ САБОТАЖА]: Фальшивая заявка [${disp.sender}] отклонена. Склад спасен.`);
+      } else {
+        const cas = 2;
+        game.deadToday = (game.deadToday || 0) + cas;
+        game.totalCasualties = (game.totalCasualties || 0) + cas;
+        if (disp.sectorId) {
+          const sec = game.getSector(disp.sectorId);
+          if (sec) {
+            sec.deadToday = (sec.deadToday || 0) + cas;
+            sec.population = Math.max(0, (sec.population || 50) - cas);
+            sec.totalDead = (sec.totalDead || 0) + cas;
+          }
+        }
+        game.logEvent(`[ТРАГЕДИЯ]: В секторе [${disp.sender}] погибло ${cas} чел. из-за отказа в аварийном ресурсе!`);
+        game.updateMapUI();
+      }
+    };
+  });
+
+  return combined;
+}
+
+if (typeof window !== "undefined") {
+  window.GAME_SECTORS_INIT = GAME_SECTORS_INIT;
+  window.INITIAL_RESOURCES = INITIAL_RESOURCES;
+  if (typeof RANDOM_EVENTS_DATABASE !== "undefined") window.RANDOM_EVENTS_DATABASE = RANDOM_EVENTS_DATABASE;
+  window.GAZETTE_DATABASE = GAZETTE_DATABASE;
+  window.EMAIL_DATABASE = EMAIL_DATABASE;
+  window.ACHIEVEMENTS_DATA = ACHIEVEMENTS_DATA;
+  window.TOR_MARKET_DATABASE = TOR_MARKET_DATABASE;
+  window.DISPATCHES_MASTER_REGISTRY = DISPATCHES_MASTER_REGISTRY;
+  window.DISPATCH_DATABASE = DISPATCH_DATABASE;
+  window.PROCEDURAL_DISPATCH_DATABASE = PROCEDURAL_DISPATCH_DATABASE;
+  window.APP_MARKET_DATABASE = APP_MARKET_DATABASE;
+  window.getDayDispatches = getDayDispatches;
 }
